@@ -1,0 +1,42 @@
+# Python bytecode and caches
+__pycache__/
+*.py[cod]
+*$py.class
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.coverage
+htmlcov/
+
+# Packaging and local environments
+*.egg-info/
+build/
+dist/
+.venv/
+venv/
+.python-version
+
+# Downloaded model artifacts
+models/
+*.onnx
+*.rknn
+*.tar.bz2
+
+# Runtime recordings, evaluations, and benchmarks
+evaluation/
+benchmark_results/
+*.wav
+*.pcm
+*.log
+
+# Local secrets and service configuration
+.env
+.env.*
+!.env.example
+secrets/
+
+# Editors and operating systems
+.idea/
+.vscode/
+.DS_Store
+Thumbs.db

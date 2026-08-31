@@ -1,0 +1,25 @@
+{
+  "sample_rate": 16000,
+  "microphone_sample_rate": null,
+  "chunk_duration_ms": 100,
+  "vad": {
+    "threshold": 0.5,
+    "min_silence_duration": 0.5,
+    "min_speech_duration": 0.25,
+    "max_speech_duration": 10.0,
+    "buffer_size_seconds": 30
+  },
+  "asr": {
+    "num_threads": 2,
+    "decoding_method": "modified_beam_search",
+    "max_active_paths": 4,
+    "hotwords_score": 2.0,
+    "modeling_unit": "cjkchar",
+    "tail_padding_seconds": 0.5,
+    "endpoint": {
+      "rule1_min_trailing_silence": 2.4,
+      "rule2_min_trailing_silence": 1.2,
+      "rule3_min_utterance_length": 20.0
+    }
+  }
+}

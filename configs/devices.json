@@ -1,0 +1,23 @@
+{
+  "living_room_light": {
+    "aliases": ["客厅灯", "客厅的灯", "灯"],
+    "capabilities": ["turn_on", "turn_off", "query_state"],
+    "initial_state": {"power": false}
+  },
+  "living_room_tv": {
+    "aliases": ["客厅电视", "客厅的电视", "电视"],
+    "capabilities": ["turn_on", "turn_off", "volume_up", "volume_down", "query_state"],
+    "initial_state": {"power": false, "volume": 20}
+  },
+  "living_room_air_conditioner": {
+    "aliases": ["客厅空调", "客厅的空调", "空调"],
+    "capabilities": ["turn_on", "turn_off", "set_temperature", "query_state"],
+    "initial_state": {"power": false, "temperature": 26}
+  },
+  "living_room_curtain": {
+    "aliases": ["客厅窗帘", "客厅的窗帘", "窗帘"],
+    "capabilities": ["open", "close", "query_state"],
+    "initial_state": {"position": "closed"}
+  }
+}
+

@@ -1,0 +1,7 @@
+{
+  "default_devices": {
+    "volume_up": "living_room_tv",
+    "volume_down": "living_room_tv"
+  }
+}
+
