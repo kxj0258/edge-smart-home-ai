@@ -1,0 +1,13 @@
+{
+  "action_risks": {
+    "query_state": "low",
+    "show_feed": "low",
+    "restart": "high",
+    "enable_privacy": "medium",
+    "disable_privacy": "medium",
+    "start_recording": "medium",
+    "stop_recording": "medium",
+    "enable_guest_wifi": "medium",
+    "disable_guest_wifi": "medium"
+  }
+}

@@ -4,32 +4,76 @@ import json
 from pathlib import Path
 from typing import Any
 
-from edge_smart_home.common import DeviceState, EventSource, PerceptionEvent
-from edge_smart_home.device import MockDeviceBackend
-from edge_smart_home.router import FastPathRouter
+from edge_smart_home.common import (
+    CommandExecutionResult,
+    DeviceState,
+    EventSource,
+    PerceptionEvent,
+    SceneExecutionResult,
+)
+from edge_smart_home.device import (
+    ConfirmationRequiredError,
+    DeviceBackendError,
+    MockDeviceBackend,
+    SafetyPolicy,
+)
+from edge_smart_home.router import FastPathRouter, SceneRouter
+
+
+ControlOutcome = DeviceState | SceneExecutionResult
 
 
 class TextControlPipeline:
-    def __init__(self, router: FastPathRouter, backend: MockDeviceBackend) -> None:
+    def __init__(
+        self,
+        router: FastPathRouter,
+        scene_router: SceneRouter,
+        backend: MockDeviceBackend,
+        safety: SafetyPolicy,
+    ) -> None:
         self.router = router
+        self.scene_router = scene_router
         self.backend = backend
+        self.safety = safety
 
     @classmethod
     def from_config_dir(cls, config_dir: Path) -> "TextControlPipeline":
         devices = _load_json(config_dir / "devices.json")
         intents = _load_json(config_dir / "intents.json")
         routing = _load_json(config_dir / "routing.json")
+        scenes = _load_json(config_dir / "scenes.json")
+        safety = _load_json(config_dir / "safety.json")
         return cls(
             FastPathRouter(devices, intents, routing.get("default_devices", {})),
+            SceneRouter(scenes),
             MockDeviceBackend(devices),
+            SafetyPolicy(safety.get("action_risks", {})),
         )
 
-    def handle_text(self, text: str) -> DeviceState:
+    def handle_text(self, text: str, confirmed: bool = False) -> ControlOutcome:
         event = PerceptionEvent(source=EventSource.TEXT, label=text)
-        return self.handle_event(event)
+        return self.handle_event(event, confirmed=confirmed)
 
-    def handle_event(self, event: PerceptionEvent) -> DeviceState:
-        return self.backend.execute(self.router.route(event))
+    def handle_event(
+        self, event: PerceptionEvent, confirmed: bool = False
+    ) -> ControlOutcome:
+        scene = self.scene_router.match(event)
+        if scene:
+            scene_id, commands = scene
+            results = []
+            for command in commands:
+                try:
+                    self.safety.check(command, confirmed=confirmed)
+                    state = self.backend.execute(command)
+                except (ConfirmationRequiredError, DeviceBackendError) as error:
+                    results.append(CommandExecutionResult(command, error=str(error)))
+                else:
+                    results.append(CommandExecutionResult(command, state=state))
+            return SceneExecutionResult(scene_id, tuple(results))
+
+        command = self.router.route(event)
+        self.safety.check(command, confirmed=confirmed)
+        return self.backend.execute(command)
 
 
 def _load_json(path: Path) -> dict[str, Any]:

@@ -18,6 +18,67 @@
     "aliases": ["客厅窗帘", "客厅的窗帘", "窗帘"],
     "capabilities": ["open", "close", "query_state"],
     "initial_state": {"position": "closed"}
+  },
+  "home_gateway": {
+    "aliases": ["家庭网关", "网关", "路由器", "家庭网络", "网络", "在线设备", "设备在线", "网速", "Mesh节点"],
+    "capabilities": ["query_state", "enable_guest_wifi", "disable_guest_wifi", "restart"],
+    "initial_state": {
+      "wan_connected": true,
+      "wifi_enabled": true,
+      "guest_wifi_enabled": false,
+      "connected_devices": 12,
+      "downlink_mbps": 820,
+      "uplink_mbps": 96,
+      "mesh_nodes_online": 3,
+      "restarting": false,
+      "restart_count": 0,
+      "last_restart_at": null
+    }
+  },
+  "living_room_set_top_box": {
+    "aliases": ["客厅机顶盒", "机顶盒", "IPTV"],
+    "capabilities": ["turn_on", "turn_off", "play", "pause", "resume", "home", "next", "previous", "open_app", "set_channel", "query_state"],
+    "initial_state": {
+      "power": false,
+      "playback": "stopped",
+      "channel": "CCTV-1",
+      "app": "IPTV",
+      "position_seconds": 0
+    }
+  },
+  "front_door_camera": {
+    "aliases": ["门口摄像头", "门外摄像头", "门口监控"],
+    "capabilities": ["query_state", "show_feed", "enable_privacy", "disable_privacy", "start_recording", "stop_recording"],
+    "initial_state": {"online": true, "privacy_mode": false, "motion_detected": false, "recording": false}
+  },
+  "living_room_camera": {
+    "aliases": ["客厅摄像头", "客厅监控", "摄像头"],
+    "capabilities": ["query_state", "show_feed", "enable_privacy", "disable_privacy", "start_recording", "stop_recording"],
+    "initial_state": {"online": true, "privacy_mode": true, "motion_detected": false, "recording": false}
+  },
+  "living_room_sensor": {
+    "aliases": ["客厅传感器", "客厅温度", "客厅湿度", "客厅环境", "客厅有人"],
+    "capabilities": ["query_state"],
+    "initial_state": {"temperature": 27.2, "humidity": 58, "occupancy": true, "ambient_light_lux": 180}
+  },
+  "bedroom_sensor": {
+    "aliases": ["卧室传感器", "卧室温度", "卧室湿度", "卧室环境", "卧室有人"],
+    "capabilities": ["query_state"],
+    "initial_state": {"temperature": 26.1, "humidity": 55, "occupancy": false, "ambient_light_lux": 40}
+  },
+  "living_room_fan": {
+    "aliases": ["客厅风扇", "风扇"],
+    "capabilities": ["turn_on", "turn_off", "speed_up", "speed_down", "query_state"],
+    "initial_state": {"power": false, "speed": 1}
+  },
+  "bedroom_air_purifier": {
+    "aliases": ["卧室空气净化器", "空气净化器", "净化器"],
+    "capabilities": ["turn_on", "turn_off", "set_mode", "query_state"],
+    "initial_state": {"power": false, "mode": "auto", "pm25": 18}
+  },
+  "living_room_smart_plug": {
+    "aliases": ["客厅智能插座", "智能插座", "插座"],
+    "capabilities": ["turn_on", "turn_off", "query_state"],
+    "initial_state": {"power": false, "power_watts": 0.0}
   }
 }
-

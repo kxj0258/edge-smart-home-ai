@@ -71,3 +71,23 @@ class DeviceState:
             raise ValueError("device_id must not be empty")
         object.__setattr__(self, "attributes", _frozen_mapping(self.attributes))
 
+
+@dataclass(frozen=True, slots=True)
+class CommandExecutionResult:
+    command: DeviceCommand
+    state: DeviceState | None = None
+    error: str | None = None
+
+    @property
+    def succeeded(self) -> bool:
+        return self.state is not None and self.error is None
+
+
+@dataclass(frozen=True, slots=True)
+class SceneExecutionResult:
+    scene_id: str
+    results: tuple[CommandExecutionResult, ...]
+
+    @property
+    def succeeded(self) -> bool:
+        return bool(self.results) and all(result.succeeded for result in self.results)

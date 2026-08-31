@@ -46,3 +46,12 @@ Streaming ASR 使用一个长期存在的 stream 和 OnlineRecognizer endpoint
 detection。endpoint 到达时追加可配置静音尾帧，完成解码后 reset stream。
 外部 Silero VAD adapter 继续保留供独立实验或未来 wake-word gating 使用，
 但不再负责主语音控制链路的断句。
+
+## 场景与安全策略
+
+场景 Router 在单设备 Fast Path 之前进行精确别名匹配，并将场景配置展开为
+一组标准 `DeviceCommand`。每条命令先经过 `SafetyPolicy`，再由同一 backend
+执行；`SceneExecutionResult` 保留每个子命令的状态或错误，不宣称原子事务。
+
+高风险单设备动作通过 `ConfirmationRequiredError` 阻止隐式执行。当前文本
+CLI 可交互确认重启网关，语音 pipeline 只报告需要确认，不自行放行。

@@ -1,7 +1,16 @@
 {
   "default_devices": {
     "volume_up": "living_room_tv",
-    "volume_down": "living_room_tv"
+    "volume_down": "living_room_tv",
+    "enable_guest_wifi": "home_gateway",
+    "disable_guest_wifi": "home_gateway",
+    "play": "living_room_set_top_box",
+    "pause": "living_room_set_top_box",
+    "resume": "living_room_set_top_box",
+    "home": "living_room_set_top_box",
+    "next": "living_room_set_top_box",
+    "previous": "living_room_set_top_box",
+    "speed_up": "living_room_fan",
+    "speed_down": "living_room_fan"
   }
 }
-

@@ -1,0 +1,44 @@
+{
+  "home": {
+    "aliases": ["回家模式", "我回来了", "开启回家模式"],
+    "commands": [
+      {"device_id": "living_room_light", "action": "turn_on"},
+      {"device_id": "living_room_curtain", "action": "open"},
+      {"device_id": "living_room_camera", "action": "enable_privacy"},
+      {"device_id": "home_gateway", "action": "query_state"}
+    ]
+  },
+  "away": {
+    "aliases": ["离家模式", "我要出门了", "开启离家模式"],
+    "commands": [
+      {"device_id": "living_room_light", "action": "turn_off"},
+      {"device_id": "living_room_tv", "action": "turn_off"},
+      {"device_id": "living_room_set_top_box", "action": "turn_off"},
+      {"device_id": "living_room_air_conditioner", "action": "turn_off"},
+      {"device_id": "living_room_curtain", "action": "close"},
+      {"device_id": "living_room_camera", "action": "disable_privacy"},
+      {"device_id": "front_door_camera", "action": "start_recording"}
+    ]
+  },
+  "movie": {
+    "aliases": ["观影模式", "电影模式", "我要看电影", "开启观影模式"],
+    "commands": [
+      {"device_id": "living_room_tv", "action": "turn_on"},
+      {"device_id": "living_room_set_top_box", "action": "turn_on"},
+      {"device_id": "living_room_set_top_box", "action": "open_app", "arguments": {"app": "IPTV"}},
+      {"device_id": "living_room_curtain", "action": "close"},
+      {"device_id": "living_room_light", "action": "turn_off"}
+    ]
+  },
+  "sleep": {
+    "aliases": ["睡眠模式", "晚安模式", "我要睡觉了", "开启睡眠模式"],
+    "commands": [
+      {"device_id": "living_room_light", "action": "turn_off"},
+      {"device_id": "living_room_tv", "action": "turn_off"},
+      {"device_id": "living_room_set_top_box", "action": "turn_off"},
+      {"device_id": "living_room_curtain", "action": "close"},
+      {"device_id": "bedroom_air_purifier", "action": "turn_on"},
+      {"device_id": "living_room_camera", "action": "disable_privacy"}
+    ]
+  }
+}

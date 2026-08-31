@@ -5,6 +5,7 @@ import json
 from pathlib import Path
 
 from edge_smart_home.app.pipeline import TextControlPipeline, _load_json
+from edge_smart_home.common import DeviceState
 from edge_smart_home.audio.microphone import SoundDeviceMicrophone
 from edge_smart_home.audio.diagnostics import AudioDiagnosticRecorder
 from edge_smart_home.audio.pipeline import VoiceControlPipeline
@@ -78,11 +79,25 @@ def main() -> None:
     try:
         for result in pipeline.run():
             payload = {"text": result.text}
-            if result.state is not None:
+            if isinstance(result.state, DeviceState):
                 payload.update({
                     "status": "executed",
                     "device_id": result.state.device_id,
                     "attributes": dict(result.state.attributes),
+                })
+            elif result.state is not None:
+                payload.update({
+                    "status": "executed" if result.state.succeeded else "partial_failure",
+                    "scene_id": result.state.scene_id,
+                    "results": [
+                        {
+                            "device_id": item.command.device_id,
+                            "action": item.command.action,
+                            "succeeded": item.succeeded,
+                            "error": item.error,
+                        }
+                        for item in result.state.results
+                    ],
                 })
             else:
                 payload.update({"status": "not_routed", "error": result.error})
