@@ -49,6 +49,10 @@ def main() -> None:
         ]
         if args.diagnostics_dir:
             forwarded.extend(["--diagnostics-dir", str(args.diagnostics_dir)])
+        if args.score_threshold is not None:
+            forwarded.extend(["--score-threshold", str(args.score_threshold)])
+        if args.guided_capture:
+            forwarded.append("--guided-capture")
         _launch(run, forwarded)
     elif args.mode == "voice":
         from run_voice_demo import main as run
@@ -104,6 +108,12 @@ def _build_parser() -> argparse.ArgumentParser:
     gesture.add_argument("--camera", type=int, default=0)
     gesture.add_argument("--config-dir", type=Path, default=Path("configs"))
     gesture.add_argument("--diagnostics-dir", type=Path)
+    gesture.add_argument(
+        "--score-threshold",
+        type=float,
+        help="Override the configured Gesture threshold for this run only",
+    )
+    gesture.add_argument("--guided-capture", action="store_true")
 
     voice = subparsers.add_parser("voice", help="Real sherpa-onnx microphone control")
     voice.add_argument("--tokens", type=Path, required=True)

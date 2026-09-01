@@ -7,15 +7,22 @@
 3. 相反动作和错误参数是安全指标，不能被总准确率掩盖。
 4. 不为提高测试数字改变产品语义。
 5. 没有真实 Ground Truth 或运行记录的指标保持 `null`。
+6. 先完成当前阶段的最小演示闭环，再讨论优化；不提前实现下一候选。
+7. 只为核心接口、安全边界和已发生故障增加必要验证，不扩张冗余测试矩阵。
 
-## P0：固定新基线
+## P0：固定已完成系统基线
 
-- 重跑 51 项测试和 Text E2E；
+- 62项测试已由用户手动验证；
 - 重录修复后 640×480 Gesture 会话；
 - 冻结当前最佳 ASR xlarge run；
 - 为模型、配置和命令集保存校验值。
 
 ## P1：Gesture
+
+Gesture 的端侧架构、候选模型、停止条件和版本管理见
+`docs/gesture_technical_route.md`。HaGRID-derived IMAGE smoke、阈值扫描和左右手引导
+Ground Truth已完成；官方test与目标域泛化仍是后续边界。没有真实失败证据前不开发
+Landmark MLP、TCN、YOLO或硬件转换。
 
 录制带时间标注的脚本化会话：每手势 10 次，覆盖保持、释放、快速切换、
 空背景、遮挡、距离、光照和左/右手。指标包含 classification accuracy、trigger
@@ -23,6 +30,38 @@ precision/recall、false trigger/min、duplicate/missed trigger、trigger latenc
 
 可调变量：score threshold、consecutive frames、neutral release duration、cooldown、分辨率和
 VIDEO/LIVE_STREAM adapter。
+
+公开数据阶段先使用 HaGRID 官方 test annotation 和 trial/按类别子集，在固定 manifest
+上评测当前 MediaPipe IMAGE 模式，再训练 candidate；随后使用 IPN Hand 等连续视频验证
+temporal filter。公开数据指标与最终目标摄像头自采验证集分开报告。具体流程见
+`docs/hagrid_evaluation.md`。
+
+### Gesture Ground Truth 协议
+
+一次标注 segment 表示一次用户意图，区间采用 `frames.jsonl` 中同一 monotonic
+毫秒时间轴和半开区间 `[start_ms, end_ms)`。`label` 使用 MediaPipe 原始手势名；明确的
+空背景/无手势区间使用 `null`。保持同一手势只标一个 segment，释放后再次做手势才新建
+segment；区间不得重叠。未标注区间内的触发会作为 annotation 外误触发报告，但
+`false_triggers/min` 的分母只使用显式标注为 neutral 的时长。
+
+手动生成模板并在 `segments` 中完成人工标注：
+
+```bash
+PYTHONPATH=src python scripts/create_gesture_ground_truth.py evaluation/gesture_sessions/<run_id>
+```
+
+模板初始 `segments` 为空，不能直接评测。必须先依据真实执行过程填入至少一个标注区间；
+评测器会拒绝空标注，避免把未标注触发误报为准确度结果。
+
+人工检查完成后评测：
+
+```bash
+PYTHONPATH=src python scripts/evaluate_gesture_ground_truth.py evaluation/gesture_sessions/<run_id>
+```
+
+评测输出 classification accuracy、trigger precision/recall、duplicate、miss、false
+trigger、neutral false triggers/min 和 trigger latency。只有完成 Ground Truth 后的输出才可
+记录为 Gesture 准确度指标。
 
 ## P2：ASR
 

@@ -45,6 +45,9 @@ AI 模型 → 端侧感知 → 统一事件 → 路由/Agent → 设备控制
 6. benchmark 只能记录真实运行结果；没有实机不得声称完成 NPU/Android/HA 实机部署。
 7. 简单命令默认走 deterministic Fast Path，不允许全部调用 LLM。
 8. `models/`、`evaluation/`、密钥和本地环境产物不能提交 Git。
+9. 每个模块先实现基本功能和可展示闭环，再基于真实输出做优化；不提前增加冗余功能、
+   抽象、测试矩阵或 benchmark。
+10. 每个已验证阶段形成一个聚焦 Git 提交，代码、配置和文档保持一致，不混入无关改动。
 
 ## 3. 当前完整架构
 
@@ -192,8 +195,8 @@ Home Assistant REST adapter 已实现配置化 entity/service/参数/状态转�
 ### 5.1 单元测试
 
 用户在统一 Orchestrator 阶段运行 33 项测试全部通过；之后继续加入 Agent、HA、benchmark、
-统一入口等测试，最近一次用户验证为 50 项全部通过。此后新增
-`tests/test_assistant_demo.py`，当前预期 51 项，但尚未由用户手动重跑确认。
+统一入口等测试曾验证 50 项和 53 项全部通过；空标注校验和 HaGRID 评测测试加入后，
+用户于2026-09-02确认62项测试全部通过。
 
 ### 5.2 Text + Mock
 
@@ -278,12 +281,14 @@ git log --oneline -5
 - `docs/device_catalog.md`：设备、能力和场景；
 - `docs/asr_evaluation.md`：ASR 数据集与评测流程；
 - `docs/optimization_roadmap.md`：接下来准确度优化路线；
+- `docs/gesture_technical_route.md`：端侧 RGB 在线 Gesture 权威技术决策、停止条件和版本纪律；
+- `docs/hagrid_evaluation.md`：HaGRID 固定 manifest 与 MediaPipe IMAGE 公开评测；
 - `docs/product_decisions.md`：待产品确认的语义；
 - `docs/upstream_projects.md`：上游来源和版本；
 - `configs/`：设备、意图、场景、安全、语音、视觉、Agent 等配置；
 - `src/edge_smart_home/`：common/audio/vision/router/agent/device/benchmark/app；
 - `scripts/run_assistant_demo.py`：统一产品入口；
-- `tests/`：当前预期 51 项测试。
+- `tests/`：最近62项已验证全部通过。
 
 ## 8. 已确认与待确认的产品决策
 
@@ -312,19 +317,35 @@ git log --oneline -5
 - Gesture 修复后没有带人工标注的准确度基线；
 - Voice 缺少真人近场/远场/噪声/混响分层数据和实时 E2E/内存/稳定性指标。
 
-## 10. 下一阶段：优化和准确度提高
+## 10. 下一阶段：Gesture 公开 baseline
 
-推荐严格按以下优先级推进，并坚持“一次只改一类变量”：
+端侧约束已冻结为算力受限设备、普通 RGB 摄像头和在线识别。Gesture 主线为 MediaPipe
+hand tracking/landmarks + 轻量静态分类器 + online temporal decoder。MediaPipe canned
+model 是 baseline；下一候选仅为 Landmarks + 轻量 MLP。完整依据见
+`docs/gesture_technical_route.md`。
 
-### P0：冻结可比较基线
+当前 HaGRID MediaPipe 可比较 baseline 状态：
 
-1. 请用户手动运行当前预期 51 项测试；
-2. 重跑 Text E2E，确认新代码没有回归；
-3. 保留 xlarge ASR run 作为冻结 baseline；
-4. 建立模型、配置、命令集校验值；
-5. 新建 Gesture 脚本化录制与人工 Ground Truth 协议。
+1. 62项测试已由用户手动通过；
+2. HaGRID-derived 3.81 GB 数据已下载；
+3. 已生成固定 120 张 smoke manifest 和 SHA256；
+4. 已完成 120 张 IMAGE run：Accuracy 75.00%、Macro-F1 76.59%、Mean 14.370 ms、
+   P95 15.211 ms；
+5. 离线阈值扫描已完成：0.60 候选 Accuracy 88.33%、Macro-F1 89.32%、手势召回率
+   86.00%、neutral false-trigger 0/20；
+6. 0.60候选摄像头功能会话已完成：3652帧、18.591 FPS、Mean 7.613 ms、P95
+   8.366 ms、18次Mock响应全部executed，但没有独立标注；
+7. 固定左右手引导协议已实现：六类各4遍（左右手各2遍），自动保存视频、逐帧索引
+   和独立时间轴Ground Truth；
+8. 左右手引导会话已完成：24/24匹配，Precision/Recall 100%，237秒neutral零误触发，
+   左右手各12/12；
+9. 默认Gesture阈值已设为0.60，视频名义FPS改由最初60个实际处理帧估算；
+10. 官方HaGRID test baseline仍未完成，derived train smoke不作替代。
 
-### P1：Gesture 准确度
+达到以上停止条件后，才讨论并开发 Landmark MLP candidate。此前不增加训练器、TCN、
+YOLO、实时标注 UI 或硬件转换。后续仍按 Gesture、ASR、Router/Agent、系统性能顺序推进。
+
+### 后续 Gesture 目标域准确度
 
 每种手势至少 10 次，覆盖保持、释放、快速切换、空背景、遮挡、距离、光照和左右手。
 评测 classification accuracy、trigger precision/recall、false trigger/min、duplicate、miss、
@@ -417,6 +438,6 @@ candidate run：
 2. 将上一节提示词原样发送；
 3. 如果新对话能访问本地文件，让其自行读取；若不能访问本地文件，则将本文内容粘贴/上传；
 4. 等它完成只读检查并复述基线；
-5. 首先发送当前 51 项测试输出；
-6. 再决定是实现 Gesture 标注评测工具，还是先执行已存在的修复后摄像头复测；
+5. 最近62项测试已验证；
+6. Gesture可复现基线已形成里程碑，下一步按真实需求进入官方test或目标域泛化验证；
 7. 每完成一个可复现实验，更新本文、`docs/project_status.md` 和 Git 提交。

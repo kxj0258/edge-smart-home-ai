@@ -1,0 +1,18 @@
+{
+  "schema_version": 1,
+  "dataset": "HaGRID",
+  "labels": {
+    "like": {"include": true, "product_label": "Thumb_Up"},
+    "dislike": {"include": true, "product_label": "Thumb_Down"},
+    "fist": {"include": true, "product_label": "Closed_Fist"},
+    "palm": {"include": true, "product_label": "Open_Palm"},
+    "peace": {"include": true, "product_label": "Victory"},
+    "no_gesture": {"include": true, "product_label": null},
+    "stop": {
+      "include": false,
+      "product_label": null,
+      "reason": "Visually related to an open palm, but not treated as semantically identical."
+    }
+  },
+  "unmapped_policy": "report_only"
+}

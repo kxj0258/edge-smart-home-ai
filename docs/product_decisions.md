@@ -20,3 +20,23 @@
 - 决策：简单命令始终先走 deterministic Fast Path，只有无法确定性解析的输入
   才进入 Intelligent Path。
 - 安全：Agent plan 不能绕过 allowlist、参数校验和 `SafetyPolicy`。
+
+## PD-004：Gesture 端侧主架构
+
+- 状态：已确定。
+- 约束：算力受限端侧、普通 RGB 摄像头、在线识别、当前六种静态手势。
+- 决策：以 MediaPipe hand tracking/landmarks + 轻量静态分类器 + online temporal decoder
+  为主线，MediaPipe canned model 为 baseline。
+- 候选：baseline 完成后优先评估 Landmarks + 轻量 MLP；只有动态需求或真实时序瓶颈才进入
+  TCN/GRU/ST-GCN。
+- 排除：当前不引入 3D reconstruction、大型 RGB 视频模型或非 RGB 传感器方案。
+- 依据：详见 `docs/gesture_technical_route.md`。
+
+## PD-005：先闭环、后优化的开发顺序
+
+- 状态：已确定。
+- 决策：每个任务先实现基本功能和可展示主路径，形成可运行闭环后，再基于真实结果讨论
+  准确度、性能和工程优化。
+- 约束：不为尚未发生的需求增加冗余功能、抽象、测试矩阵或 benchmark；必要测试只保护
+  核心接口、关键安全边界和真实修复。
+- 版本管理：每个已验证阶段形成一个聚焦提交，代码、配置和文档同步；运行产物和模型不入库。

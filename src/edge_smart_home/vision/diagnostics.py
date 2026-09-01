@@ -45,6 +45,7 @@ class GestureDiagnosticRecorder:
         inference_ms: float,
         observations: list[Mapping[str, Any]],
         responses: list[Mapping[str, Any]],
+        video_frame_index: int | None = None,
     ) -> None:
         self._frames += 1
         self._observations += len(observations)
@@ -74,6 +75,7 @@ class GestureDiagnosticRecorder:
                     "inference_ms": inference_ms,
                     "observations": observations,
                     "responses": responses,
+                    "video_frame_index": video_frame_index,
                 },
                 ensure_ascii=False,
             )

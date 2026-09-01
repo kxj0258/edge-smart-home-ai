@@ -1,6 +1,6 @@
 {
   "gesture": {
-    "score_threshold": 0.65,
+    "score_threshold": 0.60,
     "min_consecutive_frames": 3,
     "release_frames": 2,
     "release_duration_seconds": 0.8,

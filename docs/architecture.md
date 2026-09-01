@@ -62,6 +62,11 @@ release 帧数、连续 neutral 时长和 cooldown。
 真实摄像头暴露出低 FPS 下短暂 neutral 导致重复触发，当前已增加 0.8 s 连续
 neutral 释放条件。该修复需用新标注会话继续验证。
 
+端侧 Gesture 主线固定为普通 RGB 摄像头、MediaPipe hand tracking/landmarks、轻量静态
+分类器和 online temporal decoder。当前 canned model 是 baseline；下一候选仅为 Landmarks
++ 轻量 MLP。更重或动态方案只有在真实数据证明需要时进入，详见
+`docs/gesture_technical_route.md`。
+
 ## Intelligent Path 与 Agent 安全
 
 当前 provider 为可复现 rule-based planner，用于验证未来本地 LLM 必须遵守的

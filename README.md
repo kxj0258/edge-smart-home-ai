@@ -14,10 +14,14 @@
 - Agent plan allowlist、参数校验、高风险确认和执行前预检；
 - Mock backend 和 Home Assistant REST adapter；
 - ASR/TTS、Text E2E、Gesture 和统一多模态 benchmark；
+- Gesture 人工 Ground Truth 模板与离线准确度评测工具；
+- HaGRID 固定 manifest、MediaPipe IMAGE 评测与离线阈值扫描；
 - 统一演示入口 `scripts/run_assistant_demo.py`。
 
-最近一次用户验证为 50 项单元测试全部通过；此后新增统一入口测试，当前
-预期 51 项，尚待手动重跑。详见 [项目状态](docs/project_status.md)。
+用户于2026-09-02手动运行62项单元测试并全部通过。引导采集使用中文终端提示，
+六类各4遍（左右手各2遍），
+固定协议约357秒，并自动保存同步视频和逐帧索引。
+详见 [项目状态](docs/project_status.md)。
 
 ## 系统流程
 
@@ -107,6 +111,19 @@ Synthetic TTS 不代表远场、噪声或真实麦克风表现。
 - 当时为 1280×720 @ 10 FPS，已改为 640×480 @ 30 FPS 默认配置；
 - 已针对重复触发增加 0.8 s 连续 neutral release，修复后尚待重测。
 
+### HaGRID-derived IMAGE smoke baseline
+
+- 固定 6 类 × 20 张，共 120 张，manifest seed 42；
+- Accuracy 75.00%，Macro-F1 76.59%，手势样本召回率 70.00%；
+- Mean inference 14.370 ms，P95 15.211 ms；
+- 这是第三方派生 train 数据的 IMAGE smoke，不是官方 test 或摄像头在线准确率。
+
+0.60候选已完成真实摄像头功能会话：3652帧、18.591 FPS、Mean 7.613 ms、P95
+8.366 ms，18次Mock响应全部执行；该会话没有独立标注，不报告准确率。
+
+左右手引导会话完成24/24匹配，Trigger Precision/Recall 100%，237秒neutral零误触发，
+左右手各12/12；该结果来自单人、单环境的提示驱动会话，不代表最终产品准确率。
+
 ## 文档
 
 - [对话与项目交接总结](docs/CONVERSATION_HANDOFF.md)
@@ -115,6 +132,8 @@ Synthetic TTS 不代表远场、噪声或真实麦克风表现。
 - [快速运行指南](docs/quickstart.md)
 - [设备与场景](docs/device_catalog.md)
 - [ASR 可复现评测](docs/asr_evaluation.md)
+- [HaGRID 公开数据离线评测](docs/hagrid_evaluation.md)
+- [Gesture 端侧技术决策与实施路线](docs/gesture_technical_route.md)
 - [优化与准确度路线](docs/optimization_roadmap.md)
 - [产品决策记录](docs/product_decisions.md)
 - [上游项目与版本](docs/upstream_projects.md)
@@ -130,12 +149,13 @@ Synthetic TTS 不代表远场、噪声或真实麦克风表现。
 
 ## 下一阶段
 
-项目已完成技术路线基线，下一阶段转入“优化与准确度提升”：
+项目整体 PoC 已贯通。当前推进 Gesture 的可比较 baseline：
 
-1. 固定修复后 Gesture 标注基线；
-2. 建立真人/噪声/远场 ASR 小型验证集；
-3. 基于真实 ASR confusion 优化 Router 容错；
-4. 补齐实时 Voice E2E、内存和稳定性指标；
-5. 有真实环境时再进行 Home Assistant 联调。
+1. 已完成 HaGRID-derived 固定 manifest 和 120 张 IMAGE smoke；
+2. 从保存结果离线扫描阈值，选择真实摄像头验证候选值；
+3. 完成摄像头 Ground Truth，测量触发精度、召回、误触发和延迟；
+4. 证据仍不足时再开发 Landmarks + 轻量 MLP candidate。
 
-详见 [优化路线](docs/optimization_roadmap.md)。
+坚持先形成基本可展示闭环，再基于真实结果做准确度和性能优化；不提前增加训练器、动态
+模型、硬件转换或冗余测试。详见 [Gesture 技术路线](docs/gesture_technical_route.md)和
+[优化路线](docs/optimization_roadmap.md)。
