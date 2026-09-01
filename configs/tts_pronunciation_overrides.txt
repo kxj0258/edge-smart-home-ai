@@ -1,0 +1,5 @@
+# Project-specific VITS lexicon entries. Format: word followed by model tokens.
+# “调” means tiáo when changing a device setting.
+调高 ㄊ ㄧ ㄠ ˊ ㄍ ㄠ ˉ
+调低 ㄊ ㄧ ㄠ ˊ ㄉ ㄧ ˉ
+调到 ㄊ ㄧ ㄠ ˊ ㄉ ㄠ ˋ

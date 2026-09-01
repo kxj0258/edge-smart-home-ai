@@ -45,6 +45,11 @@ class MockDeviceBackend(DeviceBackend):
             state["volume"] = min(100, int(state["volume"]) + 5)
         elif command.action == "volume_down":
             state["volume"] = max(0, int(state["volume"]) - 5)
+        elif command.action == "set_volume":
+            volume = command.arguments.get("volume")
+            if not isinstance(volume, int) or not 0 <= volume <= 100:
+                raise DeviceBackendError("volume must be an integer from 0 to 100")
+            state["volume"] = volume
         elif command.action == "set_temperature":
             temperature = command.arguments.get("temperature")
             if not isinstance(temperature, int) or not 16 <= temperature <= 30:

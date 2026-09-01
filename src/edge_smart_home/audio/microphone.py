@@ -21,6 +21,8 @@ class SoundDeviceMicrophone(AudioSource):
         self.chunk_duration_ms = chunk_duration_ms
         self.device = device
         self.microphone_sample_rate = microphone_sample_rate
+        self.portaudio_overflow_count = 0
+        self.queue_drop_count = 0
 
     def chunks(self) -> Iterable[AudioChunk]:
         try:
@@ -41,6 +43,8 @@ class SoundDeviceMicrophone(AudioSource):
             nonlocal dropped_chunks
             if status:
                 LOGGER.warning("microphone status: %s", status)
+                if getattr(status, "input_overflow", False):
+                    self.portaudio_overflow_count += 1
             samples = indata[:, 0].copy()
             try:
                 audio_queue.put_nowait(samples)
@@ -51,6 +55,7 @@ class SoundDeviceMicrophone(AudioSource):
                     pass
                 audio_queue.put_nowait(samples)
                 dropped_chunks += 1
+                self.queue_drop_count = dropped_chunks
                 if dropped_chunks == 1 or dropped_chunks % 10 == 0:
                     LOGGER.warning(
                         "audio processing is behind; dropped %d old chunk(s)",

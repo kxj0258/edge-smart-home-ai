@@ -6,7 +6,7 @@
   },
   "living_room_tv": {
     "aliases": ["客厅电视", "客厅的电视", "电视"],
-    "capabilities": ["turn_on", "turn_off", "volume_up", "volume_down", "query_state"],
+    "capabilities": ["turn_on", "turn_off", "volume_up", "volume_down", "set_volume", "query_state"],
     "initial_state": {"power": false, "volume": 20}
   },
   "living_room_air_conditioner": {

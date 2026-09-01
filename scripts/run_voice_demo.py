@@ -4,7 +4,8 @@ import argparse
 import json
 from pathlib import Path
 
-from edge_smart_home.app.pipeline import TextControlPipeline, _load_json
+from edge_smart_home.app import AssistantOrchestrator
+from edge_smart_home.app.pipeline import _load_json
 from edge_smart_home.common import DeviceState
 from edge_smart_home.audio.microphone import SoundDeviceMicrophone
 from edge_smart_home.audio.diagnostics import AudioDiagnosticRecorder
@@ -57,13 +58,12 @@ def main() -> None:
             },
         )
         print(f"Diagnostics: {diagnostics.session_dir}")
-    pipeline = VoiceControlPipeline(
-        SoundDeviceMicrophone(
-            int(audio["chunk_duration_ms"]),
-            args.device,
-            args.mic_sample_rate or audio.get("microphone_sample_rate"),
-        ),
-        SherpaOnnxStreamingAsr(
+    source = SoundDeviceMicrophone(
+        int(audio["chunk_duration_ms"]),
+        args.device,
+        args.mic_sample_rate or audio.get("microphone_sample_rate"),
+    )
+    recognizer = SherpaOnnxStreamingAsr(
             args.tokens,
             args.encoder,
             args.decoder,
@@ -71,42 +71,64 @@ def main() -> None:
             sample_rate,
             audio["asr"],
             args.hotwords or root / "configs" / "hotwords.txt",
-        ),
-        TextControlPipeline.from_config_dir(root / "configs"),
+    )
+    print(
+        f"Hotwords: {len(recognizer.hotword_validation.valid)} valid, "
+        f"{len(recognizer.hotword_validation.invalid)} skipped"
+    )
+    pipeline = VoiceControlPipeline(
+        source,
+        recognizer,
+        AssistantOrchestrator.from_config_dir(root / "configs"),
         diagnostics,
     )
     print("Voice demo started. Press Ctrl+C to stop.")
     try:
         for result in pipeline.run():
-            payload = {"text": result.text}
-            if isinstance(result.state, DeviceState):
-                payload.update({
-                    "status": "executed",
-                    "device_id": result.state.device_id,
-                    "attributes": dict(result.state.attributes),
-                })
-            elif result.state is not None:
-                payload.update({
-                    "status": "executed" if result.state.succeeded else "partial_failure",
-                    "scene_id": result.state.scene_id,
-                    "results": [
-                        {
-                            "device_id": item.command.device_id,
-                            "action": item.command.action,
-                            "succeeded": item.succeeded,
-                            "error": item.error,
-                        }
-                        for item in result.state.results
-                    ],
-                })
-            else:
-                payload.update({"status": "not_routed", "error": result.error})
-            print(json.dumps(payload, ensure_ascii=False))
+            print(json.dumps(_result_payload(result), ensure_ascii=False))
     except KeyboardInterrupt:
         print("\nVoice demo stopped.")
+        for result in pipeline.finish():
+            print(json.dumps(_result_payload(result), ensure_ascii=False))
     finally:
         if diagnostics:
+            diagnostics.update_summary({
+                "portaudio_overflow_count": source.portaudio_overflow_count,
+                "queue_drop_count": source.queue_drop_count,
+            })
             diagnostics.close()
+
+
+def _result_payload(result) -> dict:
+    payload = {
+        "text": result.text,
+        "audio_seconds": round(result.audio_seconds, 3),
+        "decode_seconds": round(result.decode_seconds, 3),
+        "rtf": round(result.rtf, 4) if result.rtf is not None else None,
+    }
+    if isinstance(result.state, DeviceState):
+        payload.update({
+            "status": "executed",
+            "device_id": result.state.device_id,
+            "attributes": dict(result.state.attributes),
+        })
+    elif result.state is not None:
+        payload.update({
+            "status": "executed" if result.state.succeeded else "partial_failure",
+            "scene_id": result.state.scene_id,
+            "results": [
+                {
+                    "device_id": item.command.device_id,
+                    "action": item.command.action,
+                    "succeeded": item.succeeded,
+                    "error": item.error,
+                }
+                for item in result.state.results
+            ],
+        })
+    else:
+        payload.update({"status": result.status, "error": result.error})
+    return payload
 
 
 if __name__ == "__main__":

@@ -15,6 +15,19 @@ class AudioChunk:
             raise ValueError("sample_rate must be positive")
 
 
+@dataclass(frozen=True, slots=True)
+class StreamingRecognition:
+    text: str
+    audio_seconds: float
+    decode_seconds: float
+
+    @property
+    def rtf(self) -> float | None:
+        if self.audio_seconds <= 0:
+            return None
+        return self.decode_seconds / self.audio_seconds
+
+
 class AudioSource(ABC):
     @abstractmethod
     def chunks(self) -> Iterable[AudioChunk]:
@@ -29,5 +42,9 @@ class VoiceActivityDetector(ABC):
 
 class StreamingSpeechRecognizer(ABC):
     @abstractmethod
-    def accept(self, chunk: AudioChunk) -> Sequence[str]:
-        """Accept audio and return final texts completed at endpoints."""
+    def accept(self, chunk: AudioChunk) -> Sequence[StreamingRecognition]:
+        """Accept audio and return final recognitions completed at endpoints."""
+
+    @abstractmethod
+    def finish(self) -> Sequence[StreamingRecognition]:
+        """Flush the final stream with tail padding and finish input."""

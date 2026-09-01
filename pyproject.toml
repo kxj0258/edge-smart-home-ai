@@ -15,6 +15,10 @@ voice = [
   "sherpa-onnx==1.13.6",
   "sounddevice",
 ]
+vision = [
+  "mediapipe",
+  "opencv-python",
+]
 
 [project.scripts]
 edge-smart-home = "edge_smart_home.app.cli:main"

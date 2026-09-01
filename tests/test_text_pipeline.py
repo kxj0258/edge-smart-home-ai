@@ -22,6 +22,12 @@ class TextControlPipelineTest(unittest.TestCase):
         self.assertEqual(state.attributes["temperature"], 26)
         self.assertTrue(state.attributes["power"])
 
+    def test_chinese_temperature_and_absolute_volume(self) -> None:
+        air_conditioner = self.pipeline.handle_text("空调设置二十六度")
+        self.assertEqual(air_conditioner.attributes["temperature"], 26)
+        television = self.pipeline.handle_text("电视音量调到三十")
+        self.assertEqual(television.attributes["volume"], 30)
+
     def test_volume_command_uses_configured_default_device(self) -> None:
         state = self.pipeline.handle_text("音量调高")
         self.assertEqual(state.device_id, "living_room_tv")

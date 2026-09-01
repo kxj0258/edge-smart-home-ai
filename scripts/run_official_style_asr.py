@@ -16,6 +16,8 @@ import wave
 import numpy as np
 import sherpa_onnx
 
+from edge_smart_home.audio.hotwords import create_validated_hotwords_file
+
 
 def main() -> None:
     parser = argparse.ArgumentParser()
@@ -27,6 +29,12 @@ def main() -> None:
     parser.add_argument("--hotwords", type=Path)
     args = parser.parse_args()
 
+    validated_hotwords = None
+    if args.hotwords:
+        validated_hotwords, validation = create_validated_hotwords_file(
+            args.tokens, args.hotwords
+        )
+        print(f"Hotwords: {len(validation.valid)} valid, {len(validation.invalid)} skipped")
     recognizer = sherpa_onnx.OnlineRecognizer.from_transducer(
         tokens=str(args.tokens),
         encoder=str(args.encoder),
@@ -38,11 +46,13 @@ def main() -> None:
         rule1_min_trailing_silence=2.4,
         rule2_min_trailing_silence=1.2,
         rule3_min_utterance_length=20.0,
-        decoding_method="modified_beam_search" if args.hotwords else "greedy_search",
-        hotwords_file=str(args.hotwords) if args.hotwords else "",
-        hotwords_score=2.0,
+        decoding_method="modified_beam_search" if validated_hotwords else "greedy_search",
+        hotwords_file=str(validated_hotwords) if validated_hotwords else "",
+        hotwords_score=1.5,
         modeling_unit="cjkchar",
     )
+    if validated_hotwords:
+        validated_hotwords.unlink(missing_ok=True)
     samples, input_rate = read_pcm16_mono(args.wav)
     stream = recognizer.create_stream()
     chunk_size = input_rate // 10
@@ -79,4 +89,3 @@ def read_pcm16_mono(path: Path) -> tuple[np.ndarray, int]:
 
 if __name__ == "__main__":
     main()
-

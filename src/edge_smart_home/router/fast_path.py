@@ -25,7 +25,8 @@ class FastPathRouter:
         text = self._normalize(event.label)
         device_id = self._match_device(text)
         capabilities = set(self._devices[device_id]["capabilities"])
-        action, arguments = self._match_action(text, device_id, capabilities)
+        action_text = self._remove_device_aliases(text, device_id)
+        action, arguments = self._match_action(action_text, device_id, capabilities)
         return DeviceCommand(
             device_id=device_id,
             action=action,
@@ -35,9 +36,20 @@ class FastPathRouter:
             request_id=event.event_id,
         )
 
+    def _remove_device_aliases(self, text: str, device_id: str) -> str:
+        aliases = sorted(self._devices[device_id]["aliases"], key=len, reverse=True)
+        for alias in aliases:
+            text = text.replace(self._normalize(alias), "")
+        return text
+
     @staticmethod
     def _normalize(text: str) -> str:
-        return re.sub(r"[\s，。！？,.!?]", "", text)
+        normalized = re.sub(r"[\s，。！？,.!?]", "", text)
+        return re.sub(
+            r"[零〇一二两三四五六七八九十]+",
+            lambda match: str(_parse_chinese_number(match.group())),
+            normalized,
+        )
 
     def _match_device(self, text: str) -> str:
         matched_aliases = {
@@ -75,10 +87,20 @@ class FastPathRouter:
             if match:
                 return "set_temperature", {"temperature": int(match.group(1))}
 
-        if "set_channel" in capabilities:
-            match = re.search(r"(?:切换到|换到|播放)(CCTV-?\d+)", text, re.IGNORECASE)
+        if "set_volume" in capabilities:
+            match = re.search(r"(?:音量)?(?:设置|调到|调至|调为)(\d{1,3})", text)
             if match:
-                return "set_channel", {"channel": match.group(1).upper()}
+                return "set_volume", {"volume": int(match.group(1))}
+
+        if "set_channel" in capabilities:
+            match = re.search(
+                r"(?:切换到|换到|播放)(?:CCTV-?(\d+)|中央(\d+)台)",
+                text,
+                re.IGNORECASE,
+            )
+            if match:
+                channel_number = match.group(1) or match.group(2)
+                return "set_channel", {"channel": f"CCTV-{channel_number}"}
 
         if "set_mode" in capabilities:
             modes = {"自动模式": "auto", "睡眠模式": "sleep", "强力模式": "turbo"}
@@ -100,3 +122,17 @@ class FastPathRouter:
             ):
                 return action, {}
         raise UnsupportedCommandError("no deterministic action rule matched")
+
+
+def _parse_chinese_number(value: str) -> int:
+    digits = {"零": 0, "〇": 0, "一": 1, "二": 2, "两": 2, "三": 3,
+              "四": 4, "五": 5, "六": 6, "七": 7, "八": 8, "九": 9}
+    if "十" in value:
+        left, right = value.split("十", 1)
+        tens = digits[left] if left else 1
+        ones = digits[right] if right else 0
+        return tens * 10 + ones
+    result = 0
+    for character in value:
+        result = result * 10 + digits[character]
+    return result

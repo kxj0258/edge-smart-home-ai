@@ -3,37 +3,35 @@ from __future__ import annotations
 import json
 from pathlib import Path
 
-from edge_smart_home.app.pipeline import ControlOutcome, TextControlPipeline
+from edge_smart_home.app.orchestrator import AssistantOrchestrator, AssistantResponse
+from edge_smart_home.app.pipeline import ControlOutcome
 from edge_smart_home.common import DeviceState, SceneExecutionResult
-from edge_smart_home.device import ConfirmationRequiredError, DeviceBackendError
-from edge_smart_home.router import UnsupportedCommandError
 
 
 def main() -> None:
     project_root = Path(__file__).resolve().parents[3]
-    pipeline = TextControlPipeline.from_config_dir(project_root / "configs")
-    print("Edge Smart Home Phase 0（输入“退出”结束）")
+    orchestrator = AssistantOrchestrator.from_config_dir(project_root / "configs")
+    print("Edge AI Smart Home Assistant（输入“退出”结束）")
     while True:
         text = input("> ").strip()
         if text in {"退出", "exit", "quit"}:
             return
         if not text:
             continue
-        try:
-            outcome = pipeline.handle_text(text)
-        except ConfirmationRequiredError as error:
-            print(f"需要确认：{error}")
+        response = orchestrator.handle_text(text)
+        if response.status == "confirmation_required":
+            print(f"需要确认：{response.error}")
             if input("确认执行？[y/N] ").strip().lower() not in {"y", "yes"}:
                 print("已取消")
                 continue
-            outcome = pipeline.handle_text(text, confirmed=True)
-        except (UnsupportedCommandError, DeviceBackendError) as error:
-            print(f"无法执行：{error}")
+            response = orchestrator.handle_text(text, confirmed=True)
+        if response.outcome is None:
+            print(json.dumps(serialize_response(response), ensure_ascii=False))
             continue
-        print(json.dumps(_serialize_outcome(outcome), ensure_ascii=False))
+        print(json.dumps(serialize_response(response), ensure_ascii=False))
 
 
-def _serialize_outcome(outcome: ControlOutcome) -> dict:
+def serialize_outcome(outcome: ControlOutcome) -> dict:
     if isinstance(outcome, DeviceState):
         return {
             "type": "device_state",
@@ -57,6 +55,38 @@ def _serialize_outcome(outcome: ControlOutcome) -> dict:
             for result in outcome.results
         ],
     }
+
+
+_serialize_outcome = serialize_outcome
+
+
+def serialize_response(response: AssistantResponse) -> dict:
+    payload = {
+        "status": response.status,
+        "source": response.event.source.value,
+        "label": response.event.label,
+        "event_id": response.event.event_id,
+        "processing_ms": response.processing_ms,
+    }
+    if response.outcome is not None:
+        payload["result"] = serialize_outcome(response.outcome)
+    if response.error is not None:
+        payload["error"] = response.error
+    if response.intelligent_result is not None:
+        payload["intelligent_path"] = {
+            "kind": response.intelligent_result.kind.value,
+            "message": response.intelligent_result.message,
+            "reason": response.intelligent_result.reason,
+            "commands": [
+                {
+                    "device_id": command.device_id,
+                    "action": command.action,
+                    "arguments": dict(command.arguments),
+                }
+                for command in response.intelligent_result.commands
+            ],
+        }
+    return payload
 
 
 if __name__ == "__main__":

@@ -28,10 +28,19 @@ class ExtendedHomeTest(unittest.TestCase):
         self.assertEqual(playing.attributes["playback"], "playing")
         channel = self.pipeline.handle_text("机顶盒切换到CCTV-5")
         self.assertEqual(channel.attributes["channel"], "CCTV-5")
+        chinese_channel = self.pipeline.handle_text("机顶盒切换到中央五台")
+        self.assertEqual(chinese_channel.attributes["channel"], "CCTV-5")
 
     def test_longest_camera_alias_selects_front_door(self) -> None:
         state = self.pipeline.handle_text("查看门口摄像头")
         self.assertEqual(state.device_id, "front_door_camera")
+
+    def test_device_name_can_appear_inside_privacy_action(self) -> None:
+        enabled = self.pipeline.handle_text("打开客厅摄像头隐私模式")
+        self.assertEqual(enabled.device_id, "living_room_camera")
+        self.assertTrue(enabled.attributes["privacy_mode"])
+        disabled = self.pipeline.handle_text("关闭客厅摄像头隐私模式")
+        self.assertFalse(disabled.attributes["privacy_mode"])
 
     def test_environment_sensor_query(self) -> None:
         state = self.pipeline.handle_text("查询客厅温度")
@@ -54,6 +63,12 @@ class ExtendedHomeTest(unittest.TestCase):
             self.pipeline.backend.get_state("living_room_set_top_box").attributes["app"],
             "IPTV",
         )
+
+    def test_natural_sleep_phrase_triggers_sleep_scene(self) -> None:
+        outcome = self.pipeline.handle_text("我要 睡 了")
+        self.assertIsInstance(outcome, SceneExecutionResult)
+        self.assertEqual(outcome.scene_id, "sleep")
+        self.assertTrue(outcome.succeeded)
 
 
 if __name__ == "__main__":

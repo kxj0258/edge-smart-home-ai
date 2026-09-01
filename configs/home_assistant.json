@@ -1,0 +1,84 @@
+{
+  "backend": "mock",
+  "base_url": "http://127.0.0.1:8123",
+  "token_env": "HOME_ASSISTANT_TOKEN",
+  "request_timeout_seconds": 5.0,
+  "entities": {
+    "living_room_light": {
+      "entity_id": "light.living_room",
+      "actions": {
+        "turn_on": {"domain": "light", "service": "turn_on"},
+        "turn_off": {"domain": "light", "service": "turn_off"}
+      },
+      "state_fields": {
+        "power": {"source": "state", "values": {"on": true, "off": false}}
+      }
+    },
+    "living_room_tv": {
+      "entity_id": "media_player.living_room_tv",
+      "actions": {
+        "turn_on": {"domain": "media_player", "service": "turn_on"},
+        "turn_off": {"domain": "media_player", "service": "turn_off"},
+        "volume_up": {"domain": "media_player", "service": "volume_up"},
+        "volume_down": {"domain": "media_player", "service": "volume_down"},
+        "set_volume": {"domain": "media_player", "service": "volume_set", "arguments": {"volume_level": {"source": "volume", "scale": 0.01}}}
+      },
+      "state_fields": {
+        "power": {"source": "state", "values": {"on": true, "off": false, "playing": true, "paused": true}},
+        "volume": {"source": "volume_level", "scale": 100, "round": 0}
+      }
+    },
+    "living_room_air_conditioner": {
+      "entity_id": "climate.living_room",
+      "actions": {
+        "turn_on": {"domain": "climate", "service": "turn_on"},
+        "turn_off": {"domain": "climate", "service": "turn_off"},
+        "set_temperature": {"domain": "climate", "service": "set_temperature", "arguments": {"temperature": {"source": "temperature"}}}
+      },
+      "state_fields": {
+        "power": {"source": "state", "values": {"off": false, "cool": true, "heat": true, "auto": true}},
+        "temperature": {"source": "temperature"}
+      }
+    },
+    "living_room_curtain": {
+      "entity_id": "cover.living_room_curtain",
+      "actions": {
+        "open": {"domain": "cover", "service": "open_cover"},
+        "close": {"domain": "cover", "service": "close_cover"}
+      },
+      "state_fields": {"position": {"source": "state"}}
+    },
+    "living_room_fan": {
+      "entity_id": "fan.living_room",
+      "actions": {
+        "turn_on": {"domain": "fan", "service": "turn_on"},
+        "turn_off": {"domain": "fan", "service": "turn_off"}
+      },
+      "state_fields": {"power": {"source": "state", "values": {"on": true, "off": false}}}
+    },
+    "bedroom_air_purifier": {
+      "entity_id": "fan.bedroom_air_purifier",
+      "actions": {
+        "turn_on": {"domain": "fan", "service": "turn_on"},
+        "turn_off": {"domain": "fan", "service": "turn_off"},
+        "set_mode": {"domain": "fan", "service": "set_preset_mode", "arguments": {"preset_mode": {"source": "mode"}}}
+      },
+      "state_fields": {
+        "power": {"source": "state", "values": {"on": true, "off": false}},
+        "mode": {"source": "preset_mode"},
+        "pm25": {"source": "pm25"}
+      }
+    },
+    "living_room_smart_plug": {
+      "entity_id": "switch.living_room_smart_plug",
+      "actions": {
+        "turn_on": {"domain": "switch", "service": "turn_on"},
+        "turn_off": {"domain": "switch", "service": "turn_off"}
+      },
+      "state_fields": {
+        "power": {"source": "state", "values": {"on": true, "off": false}},
+        "power_watts": {"source": "power_watts"}
+      }
+    }
+  }
+}

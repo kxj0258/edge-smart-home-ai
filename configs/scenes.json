@@ -31,7 +31,7 @@
     ]
   },
   "sleep": {
-    "aliases": ["睡眠模式", "晚安模式", "我要睡觉了", "开启睡眠模式"],
+    "aliases": ["睡眠模式", "晚安模式", "我要睡觉了", "我要睡了", "我睡了", "睡觉了", "睡了", "晚安", "开启睡眠模式"],
     "commands": [
       {"device_id": "living_room_light", "action": "turn_off"},
       {"device_id": "living_room_tv", "action": "turn_off"},

@@ -4,7 +4,12 @@ from pathlib import Path
 import unittest
 
 from edge_smart_home.app.pipeline import TextControlPipeline
-from edge_smart_home.audio.interfaces import AudioChunk, AudioSource, StreamingSpeechRecognizer
+from edge_smart_home.audio.interfaces import (
+    AudioChunk,
+    AudioSource,
+    StreamingRecognition,
+    StreamingSpeechRecognizer,
+)
 from edge_smart_home.audio.pipeline import VoiceControlPipeline
 
 
@@ -15,7 +20,10 @@ class FakeSource(AudioSource):
 
 class FakeAsr(StreamingSpeechRecognizer):
     def accept(self, chunk):
-        return ("打开客厅灯",)
+        return (StreamingRecognition("打开客厅灯", 1.0, 0.1),)
+
+    def finish(self):
+        return ()
 
 
 class VoicePipelineTest(unittest.TestCase):
@@ -30,7 +38,10 @@ class VoicePipelineTest(unittest.TestCase):
     def test_unroutable_transcript_is_reported_without_crashing(self) -> None:
         class UnroutableAsr(StreamingSpeechRecognizer):
             def accept(self, chunk):
-                return ("今天天气怎么样",)
+                return (StreamingRecognition("今天天气怎么样", 1.0, 0.1),)
+
+            def finish(self):
+                return ()
 
         root = Path(__file__).resolve().parents[1]
         control = TextControlPipeline.from_config_dir(root / "configs")
@@ -40,6 +51,15 @@ class VoicePipelineTest(unittest.TestCase):
         self.assertEqual(result.text, "今天天气怎么样")
         self.assertIsNone(result.state)
         self.assertIsNotNone(result.error)
+
+    def test_duplicate_voice_command_is_suppressed(self) -> None:
+        root = Path(__file__).resolve().parents[1]
+        control = TextControlPipeline.from_config_dir(root / "configs")
+        pipeline = VoiceControlPipeline(FakeSource(), FakeAsr(), control)
+        first = next(pipeline.run())
+        second = next(pipeline.run())
+        self.assertEqual(first.status, "executed")
+        self.assertEqual(second.status, "duplicate_suppressed")
 
 
 if __name__ == "__main__":

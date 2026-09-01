@@ -13,7 +13,7 @@
     "num_threads": 2,
     "decoding_method": "modified_beam_search",
     "max_active_paths": 4,
-    "hotwords_score": 2.0,
+    "hotwords_score": 1.5,
     "modeling_unit": "cjkchar",
     "tail_padding_seconds": 0.5,
     "endpoint": {

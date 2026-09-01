@@ -1,4 +1,10 @@
-from .interfaces import AudioChunk, AudioSource, StreamingSpeechRecognizer, VoiceActivityDetector
+from .interfaces import (
+    AudioChunk,
+    AudioSource,
+    StreamingRecognition,
+    StreamingSpeechRecognizer,
+    VoiceActivityDetector,
+)
 from .diagnostics import AudioDiagnosticRecorder
 from .pipeline import VoiceControlPipeline, VoiceControlResult
 
@@ -7,6 +13,7 @@ __all__ = [
     "AudioDiagnosticRecorder",
     "AudioSource",
     "StreamingSpeechRecognizer",
+    "StreamingRecognition",
     "VoiceActivityDetector",
     "VoiceControlPipeline",
     "VoiceControlResult",

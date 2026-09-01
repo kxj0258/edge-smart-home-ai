@@ -1,4 +1,5 @@
 {
+  "voice_dedup_window_seconds": 1.5,
   "default_devices": {
     "volume_up": "living_room_tv",
     "volume_down": "living_room_tv",
