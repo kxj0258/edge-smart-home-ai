@@ -109,6 +109,7 @@ Synthetic TTS 不代表远场、噪声或真实麦克风表现。
 
 ## 文档
 
+- [对话与项目交接总结](docs/CONVERSATION_HANDOFF.md)
 - [系统架构](docs/architecture.md)
 - [项目状态](docs/project_status.md)
 - [快速运行指南](docs/quickstart.md)
