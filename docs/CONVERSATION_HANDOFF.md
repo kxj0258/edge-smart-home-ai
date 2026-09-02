@@ -1,9 +1,9 @@
 # Edge AI Smart Home Assistant 对话与项目交接总结
 
-更新时间：2026-09-01  
+更新时间：2026-09-02  
 仓库：`/home/kxj/zte_ws/edge-smart-home-ai`  
 当前分支：`main`  
-交接前基线提交：`8205c7e feat: complete multimodal smart home PoC baseline`
+当前里程碑提交：`a83c176 feat: establish reproducible gesture evaluation baseline`
 
 ## 1. 本文用途与信息边界
 
@@ -169,7 +169,14 @@ Home Assistant REST adapter 已实现配置化 entity/service/参数/状态转�
 - confidence threshold、连续帧确认、latch、neutral release、cooldown；
 - 真实低 FPS 测试暴露保持手势时可能重复触发，已加入“释放帧数 + 0.8 秒连续 neutral”条件；
 - 默认摄像头配置已由 1280×720 @ 10 FPS 改为 640×480 @ 30 FPS；
-- 上述修改后的真实摄像头效果尚未重新建立带 Ground Truth 的基线。
+- 默认 `score_threshold` 已由0.65改为0.60；
+- 已加入独立 IMAGE 模式 adapter，避免公开图片之间污染 tracking 状态；
+- 已实现人工 Ground Truth 模板、严格空标注拒绝和离线事件评测；
+- 已实现固定中文引导采集：六类各4遍，右手2遍、左手2遍；
+- 引导模式自动保存干净镜像视频、逐帧预测、触发事件、配置、Ground Truth和视频元数据；
+- `camera.mp4` 第N帧由 `frames.jsonl.video_frame_index=N` 对应，精确时间使用同一行
+  `timestamp_ms`；播放器速度不是权威时钟；
+- 已完成带Ground Truth的左右手真实摄像头基线，见5.4。
 
 当前 PoC 手势语义（配置在 `configs/gestures.json`，尚属产品待定）：
 
@@ -189,6 +196,10 @@ Home Assistant REST adapter 已实现配置化 entity/service/参数/状态转�
 - Gesture FPS、inference latency 和触发日志；
 - 统一多模态汇总，明确离线 ASR 不等于设备执行成功；
 - 没有 Ground Truth 的 Gesture false trigger 等指标保持空缺，不填估计值。
+- HaGRID固定manifest、IMAGE评测、逐类confusion和离线阈值扫描；
+- Gesture引导Ground Truth评测包含trigger precision/recall、duplicate、miss、neutral
+  false trigger/min、提示到触发延迟、按类别和按引导手别统计；
+- 引导视频自动保存，最初60个实际处理帧用于估算MP4名义FPS，但精确同步仍依赖JSONL时间戳。
 
 ## 5. 用户实际验证和当前基线
 
@@ -243,8 +254,38 @@ Home Assistant REST adapter 已实现配置化 entity/service/参数/状态转�
 - max 18.332 ms；
 - 路径：`evaluation/gesture_sessions/20260901T073112.934843Z`。
 
-该 run 使用 1280×720 @ 10 FPS，并暴露重复触发。之后做了 release 逻辑和默认分辨率/FPS
-修复，尚未重测，因此不能把旧结果当作修复后的准确度。
+该run使用1280×720 @ 10 FPS并暴露重复触发，只保留为历史性能基线。
+
+HaGRID-derived静态IMAGE smoke：
+
+- 数据源：`cj-mills/hagrid-classification-512p-no-gesture-150k`，3.81 GB、153735张、19类；
+- 该数据只有train split且无官方`user_id`，只能称为derived smoke，不是官方HaGRID test；
+- 固定manifest：6类×20张，seed 42，SHA256
+  `c75334c7782ad4a186110cb095d2fa7d5ca331299e5741c2b37cbcfbd305483e`；
+- run：`evaluation/hagrid_runs/20260901T154555.455784Z`；
+- 0.65基线：Accuracy 75.00%、Macro-F1 76.59%、手势召回70.00%、Mean 14.370 ms、
+  P95 15.211 ms；
+- 离线阈值扫描选择0.60：Accuracy 88.33%、Macro-F1 89.32%、手势召回86.00%、
+  neutral false-trigger 0/20；0.55虽有93%手势召回，但neutral误触发3/20，因此拒绝。
+
+首次单手引导会话：
+
+- run：`evaluation/gesture_sessions/20260901T162204.142230Z`；
+- 17/18匹配，Precision 89.47%、Recall 94.44%、2次边界/提前动作触发、无duplicate；
+- 189秒neutral，false trigger/min 0.6349；Mean提示到触发1278.176 ms；
+- 5240帧，18.667 FPS，Mean inference 7.525 ms，P95 8.307 ms。
+
+当前冻结的左右手引导基线：
+
+- run：`evaluation/gesture_sessions/20260901T163747.659978Z`；
+- 24/24匹配，Trigger Precision 100%、Recall 100%、duplicate 0、false trigger 0；
+- 六类各4/4，左手12/12、右手12/12；
+- 237秒neutral，false trigger/min 0；
+- classification accuracy 81.58%（包含起手/释放过渡帧，不能替代事件指标）；
+- Mean提示到触发1352.167 ms，包含人的反应时间；
+- 6716帧，18.710 FPS，Mean inference 7.423 ms，P95 7.983 ms，camera read failure 0；
+- `camera.mp4` 140068061 bytes，视频6716帧与`frames.jsonl` 6716行一一对应；
+- 该结果只代表单人、单环境、提示驱动开发机摄像头，不是最终产品准确率。
 
 ### 5.5 多模态汇总
 
@@ -256,12 +297,14 @@ Home Assistant REST adapter 已实现配置化 entity/service/参数/状态转�
 已有提交：
 
 ```text
+a83c176 feat: establish reproducible gesture evaluation baseline
+bcc08d6 docs: add project conversation handoff
 8205c7e feat: complete multimodal smart home PoC baseline
 c7d5faf feat: add FM-oriented home devices and scenes
 b580ee9 feat: establish edge smart home PoC baseline
 ```
 
-交接文档创建前工作区为 clean。`.gitignore` 排除了 `models/`、`evaluation/`、模型压缩包、
+`a83c176`提交后工作区为clean。`.gitignore`排除了`models/`、`evaluation/`、模型压缩包、
 WAV、本地环境和 secrets。接管后先执行：
 
 ```bash
@@ -314,17 +357,20 @@ git log --oneline -5
 - 未集成 openWakeWord；
 - 没有 Android App/智慧中屏 UI；
 - 没有 Rockchip/Amlogic 实机，不得声称 NPU 部署完成；
-- Gesture 修复后没有带人工标注的准确度基线；
+- Gesture已有单人单环境的左右手引导基线，但缺少多人、距离、暗光、遮挡、复杂背景、
+  非提示自然动作和目标硬件验证；
+- HaGRID仅完成第三方derived train smoke，官方test annotations/dataset尚未验证；
+- 当前MP4播放器时间不是权威采集时钟；验证/训练必须使用`video_frame_index + timestamp_ms`；
 - Voice 缺少真人近场/远场/噪声/混响分层数据和实时 E2E/内存/稳定性指标。
 
-## 10. 下一阶段：Gesture 公开 baseline
+## 10. 当前里程碑与下一阶段
 
 端侧约束已冻结为算力受限设备、普通 RGB 摄像头和在线识别。Gesture 主线为 MediaPipe
 hand tracking/landmarks + 轻量静态分类器 + online temporal decoder。MediaPipe canned
 model 是 baseline；下一候选仅为 Landmarks + 轻量 MLP。完整依据见
 `docs/gesture_technical_route.md`。
 
-当前 HaGRID MediaPipe 可比较 baseline 状态：
+Gesture可复现baseline里程碑已经完成并提交为`a83c176`：
 
 1. 62项测试已由用户手动通过；
 2. HaGRID-derived 3.81 GB 数据已下载；
@@ -342,8 +388,14 @@ model 是 baseline；下一候选仅为 Landmarks + 轻量 MLP。完整依据见
 9. 默认Gesture阈值已设为0.60，视频名义FPS改由最初60个实际处理帧估算；
 10. 官方HaGRID test baseline仍未完成，derived train smoke不作替代。
 
-达到以上停止条件后，才讨论并开发 Landmark MLP candidate。此前不增加训练器、TCN、
-YOLO、实时标注 UI 或硬件转换。后续仍按 Gesture、ASR、Router/Agent、系统性能顺序推进。
+当前没有证据要求立即开发Landmark MLP。下一步仍按Gesture、ASR、Router/Agent、系统性能
+顺序推进，但具体选择应等待用户的新运行结果或明确指令：
+
+1. 若继续Gesture：优先官方HaGRID test或多人/距离/光照/遮挡的目标域验证；只在真实
+   confusion证明canned model不足时开发Landmark MLP；
+2. 若Gesture展示已足够：转入ASR真人近场/远场/噪声分层基线；
+3. 不要因单次24/24就宣称产品准确率100%，也不要重复采集相同人/相同环境的同质数据；
+4. `evaluation/`与下载数据继续不进Git，每个新阶段验证后形成独立聚焦提交。
 
 ### 后续 Gesture 目标域准确度
 
@@ -427,9 +479,14 @@ candidate run：
 6. 只记录真实运行指标，不虚构 HA、Android 或 Rockchip/Amlogic 实机结果；
 7. 简单命令始终保持 deterministic Fast Path 优先。
 
-我们下一阶段的主题是“优化和准确度提高”。先从 P0 可比较基线和 Gesture Ground Truth
-开始，再按 Gesture、ASR、Router/Agent、系统性能的顺序推进。请等我发送下一条运行结果
-或明确指令后再开始修改。
+当前Gesture可复现基线里程碑已完成，提交为：
+`a83c176 feat: establish reproducible gesture evaluation baseline`。
+62项测试已由用户确认通过。左右手引导会话24/24匹配，但只代表单人、单环境、提示驱动，
+不得宣传为产品准确率100%。
+
+下一阶段主题仍是“优化和准确度提高”，优先级为Gesture泛化/官方test、ASR、
+Router/Agent、系统性能。请先等待我发送新的运行结果或明确选择下一阶段，不要重复采集
+同质Gesture数据，也不要提前开发MLP、Android或NPU转换。
 ```
 
 ## 13. 建议新对话的首轮顺序
@@ -438,6 +495,38 @@ candidate run：
 2. 将上一节提示词原样发送；
 3. 如果新对话能访问本地文件，让其自行读取；若不能访问本地文件，则将本文内容粘贴/上传；
 4. 等它完成只读检查并复述基线；
-5. 最近62项测试已验证；
-6. Gesture可复现基线已形成里程碑，下一步按真实需求进入官方test或目标域泛化验证；
-7. 每完成一个可复现实验，更新本文、`docs/project_status.md` 和 Git 提交。
+5. 确认Git历史包含Gesture里程碑`a83c176`，并报告当前最新提交和工作区状态；
+6. 最近62项测试已验证；
+7. Gesture可复现基线已形成里程碑，下一步等待用户选择官方test/目标域泛化或转入ASR；
+8. 每完成一个可复现实验，更新本文、`docs/project_status.md` 和Git提交。
+
+## 14. 最近一轮对话的关键过程与已踩过的坑
+
+1. 最初对未填写`segments`的Gesture Ground Truth模板运行评测，得到0个标注实例和14个
+   outside annotation triggers。该结果只说明“没有标注”，不能用于判断模型误触发率；
+   后续评测器已拒绝空标注。
+2. 用户决定公开数据优先、自采验证集最后验收。端侧约束冻结为普通RGB、在线、算力受限；
+   主线选择MediaPipe landmarks/静态分类器+temporal decoder，不追逐重型视频模型。
+3. 使用`/path/to/...`占位路径运行HaGRID manifest脚本时报`no HaGRID annotation samples
+   found`，根因是尚未准备真实annotations/dataset，不是脚本算法故障。
+4. Hugging Face旧`huggingface-cli`已弃用；改用`hf download`。首次`hf`失败是因为
+   `ALL_PROXY=socks://127.0.0.1:7897/`格式不被当前客户端接受，而HTTP/HTTPS代理有效；
+   清除大小写`ALL_PROXY/all_proxy`后成功下载3.81 GB derived数据。
+5. 下载源`cj-mills/hagrid-classification-512p-no-gesture-150k`实际为8个Parquet shard、
+   153735张、19类、train-only、无官方`user_id`；因此只作为pipeline smoke，不能命名为
+   官方HaGRID test accuracy。
+6. 固定120张manifest后，最初`--limit 10`只覆盖排序最前的`dislike`类；完整120张run才
+   形成六类smoke。0.65下主要问题是正确raw label低于阈值，不是类别互相混淆。
+7. 离线阈值扫描证明0.55虽提高召回，却在20张neutral中产生3次误触发；0.60在该小集上
+   保持0/20并显著提高召回，因此进入摄像头验证，最终成为默认候选。
+8. 第一版人工Ground Truth没有视频，无法在事后可靠判断人的真实起手时间；随后增加固定
+   引导时间轴。第一轮18次会话的1次miss和2次false主要发生在release/READY边界，促使
+   延长提示并明确不要提前起手。
+9. 最终协议为六类各4遍、右手2遍、左手2遍：初始neutral 15秒，每遍READY 4秒、DO 5秒、
+   RELEASE 4秒，最终自然neutral 30秒，总计357秒。终端显示中文，OpenCV overlay保留英文，
+   避免增加字体依赖。
+10. 引导模式自动保存`camera.mp4`。首个视频按摄像头报告30 FPS编码而实际约18.71 FPS，
+    播放会加速，但6716个视频帧与6716行JSONL一一对应，数据仍有效。后续代码用最初60个
+    处理帧估算名义FPS；无论播放器速度如何，权威同步始终是`video_frame_index + timestamp_ms`。
+11. 用户明确不需要为播放器速度重复录制；已有左右手数据保留为真实验证集。62项测试通过
+    后创建`a83c176`里程碑，工作区clean。
