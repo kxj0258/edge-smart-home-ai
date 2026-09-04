@@ -46,6 +46,15 @@
 - 本轮还加入了“小兴”本地确定性简单对话、常用中文同义表达、TTS 仅播报结果/澄清/确认
   等反馈，以及 Ollama `keep_alive=10m` 启动预热。上述扩展后的完整评测和实时语音结果待
   用户按文末命令手动复测；不把旧版本真实 run 指标冒充为本轮新基线。
+- 实时语音增加了 ASR 持续消费线程、命令执行线程和有限识别结果队列；同一编排器增加了
+  线程串行化、15 秒待确认状态和精确语音确认/取消。线程拆分的收益仍需新的真实会话对比
+  `portaudio_overflow_count` 和 `recognition_queue_drop_count` 后确认。
+- 2026-09-04 用户复测扩展后的实时会话：`evaluation/live_voice_sessions/20260904T163459.114888Z`。
+  9 条语音端点中 executed 5、confirmation_required 1、clarification_required 3；“我想听歌”
+  正确走客厅音箱 Fast Path/LLM 0，“安防模式 → 确认”正确执行完整安防计划；本次
+  `portaudio_overflow_count=2`、`queue_drop_count=0`、`recognition_queue_drop_count=0`、
+  mean RTF 0.157175。该会话同时暴露了“我想睡觉了”别名缺失和中文频道数字测试回归，已在
+  当前未验证修复中处理。
 - 实时媒体语音回归：`evaluation/live_voice_sessions/20260904T145944.361342Z`；下一集、上一集、
   暂停、继续播放均正确路由到机顶盒并保持 Fast Path、LLM 0 次；voice endpoint 5 条中
   4 条执行、1 条因 ASR 输出“继续放”进入澄清；Mean RTF 0.15946，PortAudio overflow 6，

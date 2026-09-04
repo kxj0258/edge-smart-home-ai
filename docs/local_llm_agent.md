@@ -150,6 +150,9 @@ voice 这里有点暗，帮我处理一下
 gesture Closed_Fist
 text 播放网络音乐
 text 把电视音量设置为1000
+voice 我想听歌
+voice 安防模式
+voice 确认
 ```
 
 Demo 会明确显示 `path`、`provider`、`llm_calls`、`llm_latency_ms`，并同时显示模型计划
@@ -186,6 +189,15 @@ PYTHONPATH=src python3 scripts/run_multimodal_demo.py \
 常见固定场景包括回家、离家、观影、睡眠、起床、用餐、夜灯、节能和安防。门锁的锁定/解锁
 属于高风险动作，离家/安防场景会在任何设备执行前完成全量确认预检。
 
+媒体路由规则为：没有明确设备时，“我想听歌”“播放音乐”等本地音乐请求默认使用客厅音箱；
+电视/机顶盒媒体控制仍使用客厅机顶盒。媒体动作先于设备选择解析，避免“播放下一集”同时
+命中“播放”和“下一集”而误判为设备歧义。
+
+高风险命令支持语音确认。第一次请求只保存已经解析并通过 Validator/Safety 预检的完整命令集，
+不会产生设备副作用；反馈会说明待执行内容。随后只有精确的“确认”“确认执行”“可以”等词会执行
+保存的命令，“取消”等词会清除命令，其他语音会继续要求确认。确认不会重新调用 Ollama，也不会
+重新生成计划；待确认状态 15 秒后过期。
+
 如果需要同时打开真实摄像头和麦克风窗口，可使用实时多模态 Demo。它在主线程显示
 OpenCV 摄像头窗口，在后台运行流式 ASR，并共享同一个编排器、设备后端和反馈队列：
 
@@ -206,7 +218,8 @@ PYTHONPATH=src python3 scripts/run_live_multimodal_demo.py \
   --tts-speed 1.0
 ```
 
-在窗口中按 `q` 或 `Esc` 退出。语音线程和 TTS 播放队列不会阻塞摄像头刷新；终端会输出
+在窗口中按 `q` 或 `Esc` 退出。实时语音已拆成 ASR 持续消费线程和命令执行线程；摄像头刷新、
+ASR 音频消费不会被 Ollama 请求阻塞，TTS 仍通过独立播放队列执行。终端会输出
 识别文本、Fast/Intelligent Path、provider、LLM 调用次数和处理时延。首次使用建议保持
 `--backend mock`，验证通过后再切换到 Home Assistant 后端。指定
 `--diagnostics-dir` 后会保存原始麦克风 WAV、逐条识别事件、路径/LLM 指标和输入溢出计数，
@@ -214,6 +227,10 @@ PYTHONPATH=src python3 scripts/run_live_multimodal_demo.py \
 实时窗口的 `REPLY` 行显示最近一条对话、澄清或拒绝说明；终端 JSON 中的 `message` 字段
 保留同一条可观测结果。语音反馈仍通过反馈层播放，模型不能直接调用设备、Shell、Python
 或网络。
+
+线程拆分只能消除“命令执行阻塞 ASR 消费”这一类调度问题，不能保证所有机器都没有
+`input overflow`。诊断摘要同时记录 PortAudio overflow、麦克风队列丢块和识别结果队列丢块，
+后续仍需在纯麦克风、摄像头并发和 TTS 并发三种条件下分别测量。
 
 多模态、实时语音、摄像头手势和文本入口启动时都会自动向本地 Ollama 发送一次极短的预热
 请求，并设置 `keep_alive=10m`，用于提前加载 Qwen3-4B。预热失败只打印警告，之后仍按原有
@@ -244,6 +261,30 @@ Fast Path LLM calls：
 `llama.cpp` provider；当前 Ollama 已验证有效，因此下一步仍先优化现有 provider 和实时链路。
 
 ## 真实实时语音与手势验证
+
+### 扩展能力与语音确认复测
+
+2026-09-04 用户在加入客厅音箱默认媒体路由、语音确认和 ASR/命令线程分离后完成复测，诊断目录为：
+
+```text
+evaluation/live_voice_sessions/20260904T163459.114888Z
+```
+
+本次真实摘要：
+
+```text
+voice endpoint_count：9
+status：executed 5，confirmation_required 1，clarification_required 3
+portaudio_overflow_count：2
+queue_drop_count：0
+recognition_queue_drop_count：0
+mean RTF：0.1571750112306705
+```
+
+已验证“我想听歌”默认执行 `living_room_speaker.play`，以及“安防模式 → 确认”执行完整
+高风险场景且确认事件 LLM 调用为 0。该次会话中的“我想睡觉了”仍进入澄清，原因是场景
+别名缺失；同次完整测试还发现了中文频道数字和若干过期测试期望。修复已在工作区完成，
+待用户重新运行测试后再记录为稳定基线。
 
 2026-09-04 用户使用 `run_live_multimodal_demo.py` 完成媒体控制回归。诊断目录为：
 
