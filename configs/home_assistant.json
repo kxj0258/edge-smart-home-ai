@@ -8,7 +8,8 @@
       "entity_id": "light.living_room",
       "actions": {
         "turn_on": {"domain": "light", "service": "turn_on"},
-        "turn_off": {"domain": "light", "service": "turn_off"}
+        "turn_off": {"domain": "light", "service": "turn_off"},
+        "set_brightness": {"domain": "light", "service": "turn_on", "arguments": {"brightness": {"source": "brightness", "scale": 2.55}}}
       },
       "state_fields": {
         "power": {"source": "state", "values": {"on": true, "off": false}}
@@ -33,7 +34,8 @@
       "actions": {
         "turn_on": {"domain": "climate", "service": "turn_on"},
         "turn_off": {"domain": "climate", "service": "turn_off"},
-        "set_temperature": {"domain": "climate", "service": "set_temperature", "arguments": {"temperature": {"source": "temperature"}}}
+        "set_temperature": {"domain": "climate", "service": "set_temperature", "arguments": {"temperature": {"source": "temperature"}}},
+        "set_hvac_mode": {"domain": "climate", "service": "set_hvac_mode", "arguments": {"hvac_mode": {"source": "mode"}}}
       },
       "state_fields": {
         "power": {"source": "state", "values": {"off": false, "cool": true, "heat": true, "auto": true}},
@@ -44,7 +46,8 @@
       "entity_id": "cover.living_room_curtain",
       "actions": {
         "open": {"domain": "cover", "service": "open_cover"},
-        "close": {"domain": "cover", "service": "close_cover"}
+        "close": {"domain": "cover", "service": "close_cover"},
+        "set_position": {"domain": "cover", "service": "set_cover_position", "arguments": {"position": {"source": "position"}}}
       },
       "state_fields": {"position": {"source": "state"}}
     },
@@ -52,7 +55,8 @@
       "entity_id": "fan.living_room",
       "actions": {
         "turn_on": {"domain": "fan", "service": "turn_on"},
-        "turn_off": {"domain": "fan", "service": "turn_off"}
+        "turn_off": {"domain": "fan", "service": "turn_off"},
+        "set_speed": {"domain": "fan", "service": "set_percentage", "arguments": {"percentage": {"source": "speed", "scale": 33.333333}}}
       },
       "state_fields": {"power": {"source": "state", "values": {"on": true, "off": false}}}
     },
@@ -79,6 +83,141 @@
         "power": {"source": "state", "values": {"on": true, "off": false}},
         "power_watts": {"source": "power_watts"}
       }
+    },
+    "living_room_speaker": {
+      "entity_id": "media_player.living_room_speaker",
+      "actions": {
+        "turn_on": {"domain": "media_player", "service": "turn_on"},
+        "turn_off": {"domain": "media_player", "service": "turn_off"},
+        "play": {"domain": "media_player", "service": "media_play"},
+        "pause": {"domain": "media_player", "service": "media_pause"},
+        "resume": {"domain": "media_player", "service": "media_play"},
+        "next": {"domain": "media_player", "service": "media_next_track"},
+        "previous": {"domain": "media_player", "service": "media_previous_track"},
+        "set_volume": {"domain": "media_player", "service": "volume_set", "arguments": {"volume_level": {"source": "volume", "scale": 0.01}}}
+      },
+      "state_fields": {
+        "power": {"source": "state", "values": {"on": true, "off": false, "playing": true, "paused": true}},
+        "volume": {"source": "volume_level", "scale": 100, "round": 0},
+        "playback": {"source": "state"}
+      }
+    },
+    "bedroom_light": {
+      "entity_id": "light.bedroom",
+      "actions": {
+        "turn_on": {"domain": "light", "service": "turn_on"},
+        "turn_off": {"domain": "light", "service": "turn_off"},
+        "set_brightness": {"domain": "light", "service": "turn_on", "arguments": {"brightness": {"source": "brightness", "scale": 2.55}}}
+      },
+      "state_fields": {"power": {"source": "state", "values": {"on": true, "off": false}}, "brightness": {"source": "brightness", "scale": 0.3921568627, "round": 0}}
+    },
+    "bedroom_air_conditioner": {
+      "entity_id": "climate.bedroom",
+      "actions": {
+        "turn_on": {"domain": "climate", "service": "turn_on"},
+        "turn_off": {"domain": "climate", "service": "turn_off"},
+        "set_temperature": {"domain": "climate", "service": "set_temperature", "arguments": {"temperature": {"source": "temperature"}}},
+        "set_hvac_mode": {"domain": "climate", "service": "set_hvac_mode", "arguments": {"hvac_mode": {"source": "mode"}}}
+      },
+      "state_fields": {"power": {"source": "state", "values": {"off": false, "cool": true, "heat": true, "auto": true, "dry": true}}, "temperature": {"source": "temperature"}, "hvac_mode": {"source": "state"}}
+    },
+    "bedroom_curtain": {
+      "entity_id": "cover.bedroom_curtain",
+      "actions": {
+        "open": {"domain": "cover", "service": "open_cover"},
+        "close": {"domain": "cover", "service": "close_cover"},
+        "set_position": {"domain": "cover", "service": "set_cover_position", "arguments": {"position": {"source": "position"}}}
+      },
+      "state_fields": {"position": {"source": "state"}}
+    },
+    "kitchen_light": {
+      "entity_id": "light.kitchen",
+      "actions": {
+        "turn_on": {"domain": "light", "service": "turn_on"},
+        "turn_off": {"domain": "light", "service": "turn_off"},
+        "set_brightness": {"domain": "light", "service": "turn_on", "arguments": {"brightness": {"source": "brightness", "scale": 2.55}}}
+      },
+      "state_fields": {"power": {"source": "state", "values": {"on": true, "off": false}}, "brightness": {"source": "brightness", "scale": 0.3921568627, "round": 0}}
+    },
+    "kitchen_smart_plug": {
+      "entity_id": "switch.kitchen_smart_plug",
+      "actions": {"turn_on": {"domain": "switch", "service": "turn_on"}, "turn_off": {"domain": "switch", "service": "turn_off"}},
+      "state_fields": {"power": {"source": "state", "values": {"on": true, "off": false}}}
+    },
+    "kitchen_smoke_sensor": {
+      "entity_id": "binary_sensor.kitchen_smoke",
+      "actions": {},
+      "state_fields": {"smoke_detected": {"source": "state", "values": {"on": true, "off": false}}, "temperature": {"source": "temperature"}}
+    },
+    "bathroom_fan": {
+      "entity_id": "fan.bathroom",
+      "actions": {"turn_on": {"domain": "fan", "service": "turn_on"}, "turn_off": {"domain": "fan", "service": "turn_off"}, "set_speed": {"domain": "fan", "service": "set_percentage", "arguments": {"percentage": {"source": "speed", "scale": 33.333333}}}},
+      "state_fields": {"power": {"source": "state", "values": {"on": true, "off": false}}, "speed": {"source": "percentage", "scale": 0.03, "round": 0}}
+    },
+    "front_door_lock": {
+      "entity_id": "lock.front_door",
+      "actions": {"lock": {"domain": "lock", "service": "lock"}, "unlock": {"domain": "lock", "service": "unlock"}},
+      "state_fields": {"locked": {"source": "state", "values": {"locked": true, "unlocked": false}}}
+    },
+    "front_door_sensor": {
+      "entity_id": "binary_sensor.front_door",
+      "actions": {},
+      "state_fields": {"open": {"source": "state", "values": {"on": true, "off": false}}}
+    },
+    "living_room_presence_sensor": {
+      "entity_id": "binary_sensor.living_room_presence",
+      "actions": {},
+      "state_fields": {"presence": {"source": "state", "values": {"on": true, "off": false}}, "motion": {"source": "motion"}}
+    },
+    "water_leak_sensor": {
+      "entity_id": "binary_sensor.bathroom_water_leak",
+      "actions": {},
+      "state_fields": {"leak_detected": {"source": "state", "values": {"on": true, "off": false}}}
+    },
+    "home_gateway": {
+      "entity_id": "sensor.home_gateway",
+      "actions": {
+        "enable_guest_wifi": {"domain": "switch", "service": "turn_on", "data": {"entity_id": "switch.guest_wifi"}},
+        "disable_guest_wifi": {"domain": "switch", "service": "turn_off", "data": {"entity_id": "switch.guest_wifi"}},
+        "restart": {"domain": "button", "service": "press", "data": {"entity_id": "button.home_gateway_restart"}}
+      },
+      "state_fields": {"wan_connected": {"source": "wan_connected"}, "wifi_enabled": {"source": "wifi_enabled"}, "connected_devices": {"source": "connected_devices"}}
+    },
+    "living_room_set_top_box": {
+      "entity_id": "media_player.living_room_set_top_box",
+      "actions": {
+        "turn_on": {"domain": "media_player", "service": "turn_on"},
+        "turn_off": {"domain": "media_player", "service": "turn_off"},
+        "play": {"domain": "media_player", "service": "media_play"},
+        "pause": {"domain": "media_player", "service": "media_pause"},
+        "resume": {"domain": "media_player", "service": "media_play"},
+        "next": {"domain": "media_player", "service": "media_next_track"},
+        "previous": {"domain": "media_player", "service": "media_previous_track"},
+        "home": {"domain": "media_player", "service": "select_source", "data": {"source": "Home"}},
+        "open_app": {"domain": "media_player", "service": "select_source", "arguments": {"source": {"source": "app"}}},
+        "set_channel": {"domain": "media_player", "service": "select_source", "arguments": {"source": {"source": "channel"}}}
+      },
+      "state_fields": {"power": {"source": "state", "values": {"off": false, "on": true, "playing": true, "paused": true}}, "playback": {"source": "state"}, "channel": {"source": "source"}, "app": {"source": "source"}}
+    },
+    "front_door_camera": {
+      "entity_id": "camera.front_door",
+      "actions": {},
+      "state_fields": {"online": {"source": "state", "values": {"idle": true, "streaming": true, "unavailable": false}}}
+    },
+    "living_room_camera": {
+      "entity_id": "camera.living_room",
+      "actions": {},
+      "state_fields": {"online": {"source": "state", "values": {"idle": true, "streaming": true, "unavailable": false}}}
+    },
+    "living_room_sensor": {
+      "entity_id": "sensor.living_room_environment",
+      "actions": {},
+      "state_fields": {"temperature": {"source": "temperature"}, "humidity": {"source": "humidity"}, "occupancy": {"source": "occupancy"}, "ambient_light_lux": {"source": "ambient_light_lux"}}
+    },
+    "bedroom_sensor": {
+      "entity_id": "sensor.bedroom_environment",
+      "actions": {},
+      "state_fields": {"temperature": {"source": "temperature"}, "humidity": {"source": "humidity"}, "occupancy": {"source": "occupancy"}, "ambient_light_lux": {"source": "ambient_light_lux"}}
     }
   }
 }

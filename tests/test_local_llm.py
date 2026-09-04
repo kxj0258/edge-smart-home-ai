@@ -332,6 +332,15 @@ class LocalLlmIntelligentPathTest(unittest.TestCase):
                 )
                 self.assertEqual(result.kind, IntelligentResultKind.UNAVAILABLE)
 
+    def test_preload_keeps_model_warm_without_counting_as_event_call(self) -> None:
+        transport = FakeTransport({"response": ""})
+        path = make_path(transport)
+        latency = path.preload()
+        self.assertGreaterEqual(latency, 0.0)
+        self.assertEqual(path.last_call_count, 0)
+        self.assertEqual(transport.calls[0][1]["keep_alive"], "10m")
+        self.assertEqual(transport.calls[0][1]["options"]["num_predict"], 1)
+
     def test_prompt_injection_cannot_bypass_validator(self) -> None:
         transport = FakeTransport(
             {

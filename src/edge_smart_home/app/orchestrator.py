@@ -2,6 +2,7 @@ from __future__ import annotations
 
 from dataclasses import dataclass
 from pathlib import Path
+import re
 from time import perf_counter
 
 from edge_smart_home.agent import (
@@ -83,6 +84,7 @@ class AssistantOrchestrator:
                         temperature=float(ollama.get("temperature", 0.0)),
                         seed=int(ollama.get("seed", 42)),
                         think=bool(ollama.get("think", False)),
+                        keep_alive=ollama.get("keep_alive", "10m"),
                         state_provider=control.backend.list_states,
                         response_schema=schema,
                     )
@@ -98,6 +100,13 @@ class AssistantOrchestrator:
             plan_validator,
         )
 
+    def preload_model(self) -> float | None:
+        """Warm up a configured local provider without routing a user event."""
+        preload = getattr(self.intelligent_path, "preload", None)
+        if not callable(preload):
+            return None
+        return float(preload())
+
     def handle_text(self, text: str, confirmed: bool = False) -> AssistantResponse:
         return self.handle_event(
             PerceptionEvent(source=EventSource.TEXT, label=text), confirmed=confirmed
@@ -107,6 +116,9 @@ class AssistantOrchestrator:
         self, event: PerceptionEvent, confirmed: bool = False
     ) -> AssistantResponse:
         started = perf_counter()
+        local_dialogue = self._local_dialogue_response(event, started)
+        if local_dialogue is not None:
+            return local_dialogue
         try:
             outcome = self.control.handle_event(event, confirmed=confirmed)
         except ConfirmationRequiredError as error:
@@ -207,6 +219,51 @@ class AssistantOrchestrator:
             provider=self._provider_name(),
             llm_calls=self._llm_calls(),
             llm_latency_ms=self._llm_latency_ms(),
+        )
+
+    def _local_dialogue_response(
+        self, event: PerceptionEvent, started: float
+    ) -> AssistantResponse | None:
+        if event.source not in {EventSource.TEXT, EventSource.VOICE}:
+            return None
+        text = re.sub(r"[\s，。！？,.!?]", "", event.label).lower()
+        if text in {"你好", "嗨", "小兴你好", "你好小兴", "hello"}:
+            message = "你好，我是小兴，可以帮你控制家里的设备。"
+        elif text in {"你是谁", "你叫什么", "你叫什么名字"}:
+            message = "我是小兴，负责理解你的家庭设备指令，并在安全校验后执行。"
+        elif text in {
+            "你能控制哪些设备",
+            "你支持哪些设备",
+            "你能控制什么",
+            "你会什么",
+            "请介绍你能做什么",
+            "怎么使用你",
+            "我应该怎么使用你",
+        }:
+            names = [
+                str(config.get("display_name", device_id))
+                for device_id, config in self.control.router.devices.items()
+            ]
+            message = "我可以控制或查询：" + "、".join(names) + "。"
+        elif text in {"谢谢", "感谢", "谢谢你"} or text.startswith("谢谢"):
+            message = "不客气，有需要时叫我小兴。"
+        elif text in {"你会把我的话直接执行吗", "你会直接执行我的话吗"}:
+            message = "不会。设备命令必须先经过确定性路由、安全校验和必要确认。"
+        else:
+            return None
+        result = IntelligentPathResult(
+            kind=IntelligentResultKind.RESPONSE,
+            message=message,
+        )
+        return AssistantResponse(
+            event=event,
+            status="responded",
+            processing_ms=round((perf_counter() - started) * 1000, 3),
+            intelligent_result=result,
+            path="fast_path",
+            provider=None,
+            llm_calls=0,
+            llm_latency_ms=None,
         )
 
     def _provider_name(self) -> str | None:

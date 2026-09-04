@@ -65,8 +65,6 @@ class GestureControlPipeline:
                 "timestamp_ms": observation.timestamp_ms,
             },
         )
-        if self.feedback:
-            self.feedback.received(intent_text)
         response = self.orchestrator.handle_event(event)
         if self.feedback:
             self.feedback.response(response)

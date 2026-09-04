@@ -1,25 +1,30 @@
 {
   "living_room_light": {
-    "aliases": ["客厅灯", "客厅的灯", "灯"],
-    "capabilities": ["turn_on", "turn_off", "query_state"],
-    "initial_state": {"power": false}
+    "display_name": "客厅灯",
+    "aliases": ["客厅灯", "客厅的灯", "客厅照明", "灯"],
+    "capabilities": ["turn_on", "turn_off", "set_brightness", "query_state"],
+    "initial_state": {"power": false, "brightness": 0}
   },
   "living_room_tv": {
+    "display_name": "客厅电视",
     "aliases": ["客厅电视", "客厅的电视", "电视"],
     "capabilities": ["turn_on", "turn_off", "volume_up", "volume_down", "set_volume", "query_state"],
     "initial_state": {"power": false, "volume": 20}
   },
   "living_room_air_conditioner": {
+    "display_name": "客厅空调",
     "aliases": ["客厅空调", "客厅的空调", "空调"],
-    "capabilities": ["turn_on", "turn_off", "set_temperature", "query_state"],
-    "initial_state": {"power": false, "temperature": 26}
+    "capabilities": ["turn_on", "turn_off", "set_temperature", "set_hvac_mode", "query_state"],
+    "initial_state": {"power": false, "temperature": 26, "hvac_mode": "cool"}
   },
   "living_room_curtain": {
+    "display_name": "客厅窗帘",
     "aliases": ["客厅窗帘", "客厅的窗帘", "窗帘"],
-    "capabilities": ["open", "close", "query_state"],
-    "initial_state": {"position": "closed"}
+    "capabilities": ["open", "close", "set_position", "query_state"],
+    "initial_state": {"position": "closed", "position_percent": 0}
   },
   "home_gateway": {
+    "display_name": "家庭网关",
     "aliases": ["家庭网关", "网关", "路由器", "家庭网络", "网络", "在线设备", "设备在线", "网速", "Mesh节点"],
     "capabilities": ["query_state", "enable_guest_wifi", "disable_guest_wifi", "restart"],
     "initial_state": {
@@ -36,6 +41,7 @@
     }
   },
   "living_room_set_top_box": {
+    "display_name": "客厅机顶盒",
     "aliases": ["客厅机顶盒", "机顶盒", "IPTV"],
     "capabilities": ["turn_on", "turn_off", "play", "pause", "resume", "home", "next", "previous", "open_app", "set_channel", "query_state"],
     "initial_state": {
@@ -47,38 +53,117 @@
     }
   },
   "front_door_camera": {
+    "display_name": "门口摄像头",
     "aliases": ["门口摄像头", "门外摄像头", "门口监控"],
     "capabilities": ["query_state", "show_feed", "enable_privacy", "disable_privacy", "start_recording", "stop_recording"],
     "initial_state": {"online": true, "privacy_mode": false, "motion_detected": false, "recording": false}
   },
   "living_room_camera": {
+    "display_name": "客厅摄像头",
     "aliases": ["客厅摄像头", "客厅监控", "摄像头"],
     "capabilities": ["query_state", "show_feed", "enable_privacy", "disable_privacy", "start_recording", "stop_recording"],
     "initial_state": {"online": true, "privacy_mode": true, "motion_detected": false, "recording": false}
   },
   "living_room_sensor": {
+    "display_name": "客厅环境传感器",
     "aliases": ["客厅传感器", "客厅温度", "客厅湿度", "客厅环境", "客厅有人", "客厅现在有人"],
     "capabilities": ["query_state"],
     "initial_state": {"temperature": 27.2, "humidity": 58, "occupancy": true, "ambient_light_lux": 180}
   },
   "bedroom_sensor": {
+    "display_name": "卧室环境传感器",
     "aliases": ["卧室传感器", "卧室温度", "卧室湿度", "卧室环境", "卧室有人", "卧室现在有人"],
     "capabilities": ["query_state"],
     "initial_state": {"temperature": 26.1, "humidity": 55, "occupancy": false, "ambient_light_lux": 40}
   },
   "living_room_fan": {
+    "display_name": "客厅风扇",
     "aliases": ["客厅风扇", "风扇"],
-    "capabilities": ["turn_on", "turn_off", "speed_up", "speed_down", "query_state"],
+    "capabilities": ["turn_on", "turn_off", "speed_up", "speed_down", "set_speed", "query_state"],
     "initial_state": {"power": false, "speed": 1}
   },
   "bedroom_air_purifier": {
+    "display_name": "卧室空气净化器",
     "aliases": ["卧室空气净化器", "空气净化器", "净化器"],
     "capabilities": ["turn_on", "turn_off", "set_mode", "query_state"],
     "initial_state": {"power": false, "mode": "auto", "pm25": 18}
   },
   "living_room_smart_plug": {
+    "display_name": "客厅智能插座",
     "aliases": ["客厅智能插座", "智能插座", "插座"],
     "capabilities": ["turn_on", "turn_off", "query_state"],
     "initial_state": {"power": false, "power_watts": 0.0}
+  },
+  "living_room_speaker": {
+    "display_name": "客厅音箱",
+    "aliases": ["客厅音箱", "客厅音响", "音箱", "音响"],
+    "capabilities": ["turn_on", "turn_off", "play", "pause", "resume", "next", "previous", "set_volume", "query_state"],
+    "initial_state": {"power": false, "volume": 30, "playback": "stopped", "track": "本地演示音乐"}
+  },
+  "bedroom_light": {
+    "display_name": "卧室灯",
+    "aliases": ["卧室灯", "卧室的灯", "卧室照明"],
+    "capabilities": ["turn_on", "turn_off", "set_brightness", "query_state"],
+    "initial_state": {"power": false, "brightness": 0}
+  },
+  "bedroom_air_conditioner": {
+    "display_name": "卧室空调",
+    "aliases": ["卧室空调", "卧室的空调", "卧室冷气"],
+    "capabilities": ["turn_on", "turn_off", "set_temperature", "set_hvac_mode", "query_state"],
+    "initial_state": {"power": false, "temperature": 26, "hvac_mode": "cool"}
+  },
+  "bedroom_curtain": {
+    "display_name": "卧室窗帘",
+    "aliases": ["卧室窗帘", "卧室的窗帘", "卧室遮阳帘"],
+    "capabilities": ["open", "close", "set_position", "query_state"],
+    "initial_state": {"position": "closed", "position_percent": 0}
+  },
+  "kitchen_light": {
+    "display_name": "厨房灯",
+    "aliases": ["厨房灯", "厨房的灯", "厨房照明"],
+    "capabilities": ["turn_on", "turn_off", "set_brightness", "query_state"],
+    "initial_state": {"power": false, "brightness": 0}
+  },
+  "kitchen_smart_plug": {
+    "display_name": "厨房智能插座",
+    "aliases": ["厨房智能插座", "厨房插座"],
+    "capabilities": ["turn_on", "turn_off", "query_state"],
+    "initial_state": {"power": false, "power_watts": 0.0}
+  },
+  "kitchen_smoke_sensor": {
+    "display_name": "厨房烟雾传感器",
+    "aliases": ["厨房烟雾传感器", "烟雾传感器", "厨房烟雾"],
+    "capabilities": ["query_state"],
+    "initial_state": {"smoke_detected": false, "temperature": 25.0}
+  },
+  "bathroom_fan": {
+    "display_name": "卫生间排气扇",
+    "aliases": ["卫生间排气扇", "卫生间风扇", "排气扇"],
+    "capabilities": ["turn_on", "turn_off", "speed_up", "speed_down", "set_speed", "query_state"],
+    "initial_state": {"power": false, "speed": 1}
+  },
+  "front_door_lock": {
+    "display_name": "入户门锁",
+    "aliases": ["入户门锁", "门锁", "家门锁"],
+    "capabilities": ["lock", "unlock", "query_state"],
+    "initial_state": {"locked": true}
+  },
+  "front_door_sensor": {
+    "display_name": "入户门磁",
+    "aliases": ["入户门磁", "门磁", "家门状态"],
+    "capabilities": ["query_state"],
+    "initial_state": {"open": false}
+  },
+  "living_room_presence_sensor": {
+    "display_name": "客厅人体存在传感器",
+    "aliases": ["客厅人体传感器", "客厅人体存在", "客厅动作传感器"],
+    "capabilities": ["query_state"],
+    "initial_state": {"presence": true, "motion": false}
+  },
+  "water_leak_sensor": {
+    "display_name": "卫生间漏水传感器",
+    "aliases": ["漏水传感器", "卫生间漏水", "水浸传感器"],
+    "capabilities": ["query_state"],
+    "initial_state": {"leak_detected": false}
   }
 }

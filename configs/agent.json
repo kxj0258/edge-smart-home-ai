@@ -10,18 +10,19 @@
     "max_output_tokens": 256,
     "temperature": 0.0,
     "seed": 42,
-    "think": false
+    "think": false,
+    "keep_alive": "10m"
   },
   "rules": [
     {
       "exact": ["你好", "嗨", "hello"],
       "kind": "response",
-      "message": "你好，我是本地智慧家庭助手。"
+      "message": "你好，我是小兴，可以帮你控制家里的设备。"
     },
     {
       "exact": ["你是谁"],
       "kind": "response",
-      "message": "我是 Edge AI Smart Home Assistant PoC，简单设备命令由本地 Fast Path 执行。"
+      "message": "我是小兴，负责理解你的家庭设备指令，并在安全校验后执行。"
     },
     {
       "contains_all": ["客厅", "暗"],

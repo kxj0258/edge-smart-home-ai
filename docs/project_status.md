@@ -6,12 +6,13 @@
 |---|---|---|
 | 核心 schema | 已完成 | Event、Command、State、Backend 边界稳定 |
 | Text Fast Path | 已完成 | 42 条固定命令全部执行成功 |
-| 设备与场景 | 已完成 | 13 个逻辑设备、4 个家庭场景 |
+| 设备与场景 | 已完成第一版 | 25 个逻辑设备、9 个家庭场景 |
 | Voice | 已完成实时联动验证 | 麦克风、streaming ASR、TTS反馈、回声保护、诊断和离线评测 |
 | Gesture | 已完成基线 | 真实摄像头、MediaPipe、滤波和诊断 |
 | Orchestrator | 已完成 | Text/Voice/Gesture 共用应用边界 |
 | Intelligent Path | 已完成并验证 | Fast Path 优先；Ollama + Qwen3-4B 固定 JSON 规划、Validator 和 Safety 已完成真实评测 |
 | 简单单轮对话 | 已完成并验证 | response/clarification/rejected/unavailable 固定 JSON 输出，30 条 Qwen3-4B 真实评测通过，并接入多模态 Demo |
+| 全屋设备扩展 | 已完成第一版 | 25 个 Mock 逻辑设备、灯光/窗帘/风扇/空调参数动作、音箱、安防与厨房/卫生间传感器已接入统一目录 |
 | Mock Backend | 已完成 | 内存状态机和 capability 校验 |
 | Home Assistant | adapter 已完成 | mock HTTP 测试完成，未真实联调 |
 | Benchmark | 已完成第一版 | ASR、Text E2E、Gesture、多模态和 HaGRID IMAGE smoke |
@@ -39,6 +40,12 @@
 - 本地 Agent 对话：30 条固定样例路径准确率 100%，IntelligentPath kind 准确率 100%，
   顺序无关结构化匹配 100%，对话误生成 plan 0 条，非空命令 0 条，Fast Path 仍保持 0 次
   LLM 调用。运行记录：`evaluation/agent_dialogue_runs/qwen3_4b_dialogue_guarded_v2.json`。
+- 本轮设备扩展加入亮度 0–100、窗帘位置 0–100、风速 1–3、空调模式和本地演示音箱，
+  并为离家/安防场景增加门锁高风险确认；场景执行现在会先完成全量 Safety preflight，
+  避免高风险命令位于场景后部时出现部分副作用。
+- 本轮还加入了“小兴”本地确定性简单对话、常用中文同义表达、TTS 仅播报结果/澄清/确认
+  等反馈，以及 Ollama `keep_alive=10m` 启动预热。上述扩展后的完整评测和实时语音结果待
+  用户按文末命令手动复测；不把旧版本真实 run 指标冒充为本轮新基线。
 - 实时媒体语音回归：`evaluation/live_voice_sessions/20260904T145944.361342Z`；下一集、上一集、
   暂停、继续播放均正确路由到机顶盒并保持 Fast Path、LLM 0 次；voice endpoint 5 条中
   4 条执行、1 条因 ASR 输出“继续放”进入澄清；Mean RTF 0.15946，PortAudio overflow 6，

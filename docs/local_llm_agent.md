@@ -1,7 +1,7 @@
 # 本地语义规划智能体验证
 
-当前已实现 Ollama 本地 HTTP provider，但默认配置仍为 `rule_based`，以保护已有
-Fast Path 和无模型环境。已完成一轮真实 Qwen3-4B 评测；后续结果只记录用户实际运行
+当前已实现 Ollama 本地 HTTP provider，配置可在 `configs/agent.json` 中切换。Fast Path
+和无模型环境仍保留安全降级。已完成一轮真实 Qwen3-4B 评测；后续结果只记录用户实际运行
 数据，不扩展为未经验证的硬件或产品指标。
 
 ## 已完成的真实 Ollama run
@@ -157,11 +157,12 @@ Demo 会明确显示 `path`、`provider`、`llm_calls`、`llm_latency_ms`，并�
 麦克风仍使用现有 Voice Demo。
 
 脚本内置的固定流程还包含“你好”和“你能控制哪些设备”两条简单对话。它们会进入同一个
-编排器和本地模型，但结果是 `responded`，命令列表为空，不会执行设备操作。`--feedback
-console` 会在终端打印“已收到指令”和模型回复；`--feedback tts` 会播报收到的指令、模型
-回复以及设备执行结果。
+编排器的本地确定性回复层，结果是 `responded`、Fast Path 和零 LLM 调用，命令列表为空，
+不会执行设备操作。未覆盖的复杂说明仍可进入本地模型。`--feedback
+console` 会在终端打印模型回复和设备结果；`--feedback tts` 只播报模型回复、澄清、拒绝、
+确认或设备执行结果，不重复播报“已收到指令”，以减少延迟和回声。
 
-反馈层先播报“已收到指令”，处理后播报完成、澄清、拒绝、确认或失败结果。默认
+反馈层在处理后播报完成、澄清、拒绝、确认或失败结果。默认
 `--feedback console` 不增加依赖；如果操作者已经准备好现有 sherpa-onnx TTS 模型和
 音频输出依赖，可手动使用：
 
@@ -179,6 +180,11 @@ PYTHONPATH=src python3 scripts/run_multimodal_demo.py \
 `--tts-audio-device` 可指定 `sounddevice.query_devices()` 中的输出设备编号。实时摄像头 Demo 使用同样的
 `--feedback console|tts` 参数；Gesture 的 TTS 播报是阻塞式的，正式实时演示建议先使用
 控制台反馈，避免播报音频影响摄像头帧循环。
+
+当前 Mock 家庭目录已扩展到 25 个逻辑设备，覆盖客厅、卧室、厨房、卫生间和入户区域；新增
+亮度、窗帘位置、风扇档位、空调模式、本地音箱、门锁、门磁、烟雾、人体存在和漏水状态。
+常见固定场景包括回家、离家、观影、睡眠、起床、用餐、夜灯、节能和安防。门锁的锁定/解锁
+属于高风险动作，离家/安防场景会在任何设备执行前完成全量确认预检。
 
 如果需要同时打开真实摄像头和麦克风窗口，可使用实时多模态 Demo。它在主线程显示
 OpenCV 摄像头窗口，在后台运行流式 ASR，并共享同一个编排器、设备后端和反馈队列：
@@ -208,6 +214,10 @@ PYTHONPATH=src python3 scripts/run_live_multimodal_demo.py \
 实时窗口的 `REPLY` 行显示最近一条对话、澄清或拒绝说明；终端 JSON 中的 `message` 字段
 保留同一条可观测结果。语音反馈仍通过反馈层播放，模型不能直接调用设备、Shell、Python
 或网络。
+
+多模态、实时语音、摄像头手势和文本入口启动时都会自动向本地 Ollama 发送一次极短的预热
+请求，并设置 `keep_alive=10m`，用于提前加载 Qwen3-4B。预热失败只打印警告，之后仍按原有
+安全降级逻辑运行；预热不是用户事件路由，不计入任意一次 Fast Path 的 `llm_calls`。
 
 建议至少人工验证：明确 Fast Path、模糊澄清、有效 plan、未知设备/action、越界参数、
 超过最大命令数、高风险重启确认、超时和 Ollama 不可用降级。
@@ -316,9 +326,10 @@ PYTHONPATH=src python3 scripts/evaluate_agent_dialogue.py \
    来源，再比较 chunk 时长、PortAudio latency 和设备配置。不能只降低日志噪声来掩盖问题。
 2. **ASR 领域混淆**：基于真实记录补充“继续放”等高频、安全且语义明确的同义表达；相反动作
    和不确定表达继续澄清，不做激进自动纠正。
-3. **对话评测**：增加固定的 response/clarification/rejected/unavailable 样例，记录 JSON
+3. **对话评测**：继续增加固定的 response/clarification/rejected/unavailable 样例，记录 JSON
    合法率、意图类别、澄清正确率、端到端延迟和越界拒绝，不虚构开放域聊天指标。
-4. **Demo 可视化**：在实时窗口明确显示“已收到 → 路由路径 → LLM/零调用 → 安全结果 →
+4. **Demo 可视化**：在实时窗口明确显示“输入 → 路由路径 → LLM/零调用 → 安全结果 →
    设备状态”，并保留 TTS；这样面试时能同时展示语音交互和系统可观测性。
-5. **系统稳定性与真实后端**：完成 Voice/Gesture soak、CPU/RSS、overflow/drop 和恢复
-   记录后，再进行真实 Home Assistant 联调。当前不增加 llama.cpp provider。
+5. **设备覆盖与系统稳定性**：继续完善分房间设备目录、状态上下文和 Home Assistant 映射，
+   再完成 Voice/Gesture soak、CPU/RSS、overflow/drop 和恢复记录后，进行真实 Home Assistant
+   联调。当前不增加 llama.cpp provider。

@@ -35,6 +35,20 @@ class AssistantOrchestratorTest(unittest.TestCase):
         self.assertIsNone(confirmation.outcome)
         self.assertIsNotNone(unroutable.intelligent_result)
 
+    def test_common_dialogue_is_local_and_does_not_call_llm(self) -> None:
+        response = self.orchestrator.handle_text("你好")
+        self.assertEqual(response.status, "responded")
+        self.assertEqual(response.path, "fast_path")
+        self.assertEqual(response.llm_calls, 0)
+        self.assertIn("小兴", response.intelligent_result.message)
+
+    def test_capability_response_uses_complete_device_catalog(self) -> None:
+        response = self.orchestrator.handle_text("你能控制哪些设备")
+        message = response.intelligent_result.message
+        self.assertIn("厨房烟雾传感器", message)
+        self.assertIn("入户门锁", message)
+        self.assertIn("客厅音箱", message)
+
 
 if __name__ == "__main__":
     unittest.main()

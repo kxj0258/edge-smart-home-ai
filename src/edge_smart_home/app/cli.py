@@ -11,7 +11,14 @@ from edge_smart_home.common import DeviceState, SceneExecutionResult
 def main() -> None:
     project_root = Path(__file__).resolve().parents[3]
     orchestrator = AssistantOrchestrator.from_config_dir(project_root / "configs")
-    print("Edge AI Smart Home Assistant（输入“退出”结束）")
+    try:
+        latency_ms = orchestrator.preload_model()
+    except Exception as error:
+        print(f"小兴模型预热失败，将在需要时安全降级：{type(error).__name__}: {error}")
+    else:
+        if latency_ms is not None:
+            print(f"小兴模型已预热：{latency_ms:.1f} ms")
+    print("小兴（Edge AI Smart Home Assistant，输入“退出”结束）")
     while True:
         text = input("> ").strip()
         if text in {"退出", "exit", "quit"}:

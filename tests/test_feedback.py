@@ -29,7 +29,7 @@ class FakeSoundDevice:
 
 
 class AssistantFeedbackTest(unittest.TestCase):
-    def test_feedback_acknowledges_and_reports_completed_command(self) -> None:
+    def test_feedback_reports_completed_command_without_acknowledgement(self) -> None:
         speaker = FakeSpeaker()
         feedback = AssistantFeedback(speaker)
         feedback.received("打开客厅灯")
@@ -40,8 +40,13 @@ class AssistantFeedbackTest(unittest.TestCase):
                 intelligent_result=None,
             )
         )
-        self.assertEqual(speaker.messages[0], "已收到指令：打开客厅灯")
-        self.assertIn("已完成：客厅灯", speaker.messages[1])
+        self.assertEqual(len(speaker.messages), 1)
+        self.assertIn("已完成：客厅灯", speaker.messages[0])
+
+    def test_feedback_does_not_speak_received_transcript(self) -> None:
+        speaker = FakeSpeaker()
+        AssistantFeedback(speaker).received("你好")
+        self.assertEqual(speaker.messages, [])
 
     def test_feedback_reports_clarification_without_execution(self) -> None:
         speaker = FakeSpeaker()

@@ -1,6 +1,6 @@
 {
   "home": {
-    "aliases": ["回家模式", "我回来了", "开启回家模式"],
+    "aliases": ["回家模式", "我回来了", "开启回家模式", "我下班回来了", "下班回来了", "我到家了", "到家了", "刚回家"],
     "commands": [
       {"device_id": "living_room_light", "action": "turn_on"},
       {"device_id": "living_room_curtain", "action": "open"},
@@ -9,7 +9,7 @@
     ]
   },
   "away": {
-    "aliases": ["离家模式", "我要出门了", "开启离家模式"],
+    "aliases": ["离家模式", "我要出门了", "开启离家模式", "我出门了", "准备出门", "我要离开家了"],
     "commands": [
       {"device_id": "living_room_light", "action": "turn_off"},
       {"device_id": "living_room_tv", "action": "turn_off"},
@@ -17,11 +17,12 @@
       {"device_id": "living_room_air_conditioner", "action": "turn_off"},
       {"device_id": "living_room_curtain", "action": "close"},
       {"device_id": "living_room_camera", "action": "disable_privacy"},
-      {"device_id": "front_door_camera", "action": "start_recording"}
+      {"device_id": "front_door_camera", "action": "start_recording"},
+      {"device_id": "front_door_lock", "action": "lock"}
     ]
   },
   "movie": {
-    "aliases": ["观影模式", "电影模式", "我要看电影", "开启观影模式"],
+    "aliases": ["观影模式", "电影模式", "我要看电影", "我想看电影", "我想看电视", "开启观影模式", "开始观影"],
     "commands": [
       {"device_id": "living_room_tv", "action": "turn_on"},
       {"device_id": "living_room_set_top_box", "action": "turn_on"},
@@ -31,14 +32,62 @@
     ]
   },
   "sleep": {
-    "aliases": ["睡眠模式", "晚安模式", "我要睡觉了", "我要睡了", "我睡了", "睡觉了", "睡了", "晚安", "开启睡眠模式"],
+    "aliases": ["睡眠模式", "晚安模式", "我要睡觉了", "我要睡觉", "我想睡觉", "我想睡了", "我要睡了", "我睡了", "睡觉了", "睡了", "准备睡觉", "该睡觉了", "我要休息了", "晚安", "晚安了", "开启睡眠模式"],
     "commands": [
       {"device_id": "living_room_light", "action": "turn_off"},
       {"device_id": "living_room_tv", "action": "turn_off"},
       {"device_id": "living_room_set_top_box", "action": "turn_off"},
       {"device_id": "living_room_curtain", "action": "close"},
+      {"device_id": "bedroom_light", "action": "turn_off"},
+      {"device_id": "bedroom_curtain", "action": "close"},
       {"device_id": "bedroom_air_purifier", "action": "turn_on"},
-      {"device_id": "living_room_camera", "action": "disable_privacy"}
+      {"device_id": "living_room_camera", "action": "enable_privacy"}
+    ]
+  },
+  "wake_up": {
+    "aliases": ["起床模式", "早上好", "我起床了", "早安"],
+    "commands": [
+      {"device_id": "bedroom_light", "action": "turn_on"},
+      {"device_id": "bedroom_curtain", "action": "open"},
+      {"device_id": "bedroom_air_purifier", "action": "turn_off"}
+    ]
+  },
+  "dinner": {
+    "aliases": ["用餐模式", "吃饭模式", "准备吃饭", "我要吃饭了"],
+    "commands": [
+      {"device_id": "kitchen_light", "action": "turn_on"},
+      {"device_id": "living_room_light", "action": "turn_on"},
+      {"device_id": "living_room_curtain", "action": "close"}
+    ]
+  },
+  "night_light": {
+    "aliases": ["夜灯模式", "开启夜灯", "晚上开灯"],
+    "commands": [
+      {"device_id": "living_room_light", "action": "set_brightness", "arguments": {"brightness": 20}},
+      {"device_id": "bedroom_light", "action": "set_brightness", "arguments": {"brightness": 20}},
+      {"device_id": "living_room_curtain", "action": "close"},
+      {"device_id": "bedroom_curtain", "action": "close"}
+    ]
+  },
+  "energy_saving": {
+    "aliases": ["节能模式", "省电模式", "开启节能"],
+    "commands": [
+      {"device_id": "living_room_tv", "action": "turn_off"},
+      {"device_id": "living_room_set_top_box", "action": "turn_off"},
+      {"device_id": "living_room_air_conditioner", "action": "turn_off"},
+      {"device_id": "bedroom_air_conditioner", "action": "turn_off"},
+      {"device_id": "living_room_fan", "action": "turn_off"},
+      {"device_id": "living_room_smart_plug", "action": "turn_off"},
+      {"device_id": "kitchen_smart_plug", "action": "turn_off"}
+    ]
+  },
+  "security": {
+    "aliases": ["安防模式", "开启安防", "家庭安防"],
+    "commands": [
+      {"device_id": "front_door_lock", "action": "lock"},
+      {"device_id": "living_room_camera", "action": "disable_privacy"},
+      {"device_id": "front_door_camera", "action": "disable_privacy"},
+      {"device_id": "front_door_camera", "action": "start_recording"}
     ]
   }
 }

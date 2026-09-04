@@ -87,18 +87,21 @@ def main() -> None:
         f"Hotwords: {len(recognizer.hotword_validation.valid)} valid, "
         f"{len(recognizer.hotword_validation.invalid)} skipped"
     )
+    orchestrator = AssistantOrchestrator.from_config_dir(root / "configs")
+    _preload_model(orchestrator)
+    feedback = create_feedback(
+        args.feedback,
+        tts_model_dir=args.tts_model_dir,
+        speaker_id=args.tts_speaker_id,
+        speed=args.tts_speed,
+        audio_device=args.tts_audio_device,
+    )
     pipeline = VoiceControlPipeline(
         source,
         recognizer,
-        AssistantOrchestrator.from_config_dir(root / "configs"),
+        orchestrator,
         diagnostics,
-        create_feedback(
-            args.feedback,
-            tts_model_dir=args.tts_model_dir,
-            speaker_id=args.tts_speaker_id,
-            speed=args.tts_speed,
-            audio_device=args.tts_audio_device,
-        ),
+        feedback,
     )
     print("Voice demo started. Press Ctrl+C to stop.")
     try:
@@ -115,11 +118,24 @@ def main() -> None:
                 "queue_drop_count": source.queue_drop_count,
             })
             diagnostics.close()
+        if feedback:
+            feedback.close()
+
+
+def _preload_model(orchestrator: AssistantOrchestrator) -> None:
+    try:
+        latency_ms = orchestrator.preload_model()
+    except Exception as error:
+        print(f"小兴模型预热失败，将在需要时安全降级：{type(error).__name__}: {error}")
+    else:
+        if latency_ms is not None:
+            print(f"小兴模型已预热：{latency_ms:.1f} ms")
 
 
 def _result_payload(result) -> dict:
     payload = {
         "text": result.text,
+        "message": result.message,
         "audio_seconds": round(result.audio_seconds, 3),
         "decode_seconds": round(result.decode_seconds, 3),
         "rtf": round(result.rtf, 4) if result.rtf is not None else None,

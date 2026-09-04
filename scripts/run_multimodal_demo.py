@@ -23,6 +23,8 @@ def main() -> None:
     os.environ["EDGE_SMART_HOME_BACKEND"] = args.backend
     config_dir = args.config_dir.resolve()
     orchestrator = AssistantOrchestrator.from_config_dir(config_dir)
+    if args.preload_model:
+        _preload_model(orchestrator)
     feedback = create_feedback(
         args.feedback,
         tts_model_dir=args.tts_model_dir,
@@ -34,7 +36,7 @@ def main() -> None:
         gesture_pipeline = _build_gesture_pipeline(
             config_dir, orchestrator, feedback
         )
-        print("Edge AI 多模态联动 Demo")
+        print("小兴 · Edge AI 多模态联动 Demo")
         print("共享一个 AssistantOrchestrator 和 Mock DeviceBackend。")
         print("输入格式：text <文本> | voice <ASR文本> | gesture <手势标签> | q")
         print("支持简单单轮对话：问候、能力询问和一般说明不会执行设备操作。")
@@ -54,6 +56,12 @@ def _build_parser() -> argparse.ArgumentParser:
     parser.add_argument("--backend", choices=("mock", "home_assistant"), default="mock")
     parser.add_argument("--config-dir", type=Path, default=Path("configs"))
     parser.add_argument("--scripted", action="store_true")
+    parser.add_argument(
+        "--preload-model",
+        action=argparse.BooleanOptionalAction,
+        default=True,
+        help="Warm up the configured local model before the first event",
+    )
     parser.add_argument(
         "--feedback", choices=("none", "console", "tts"), default="console"
     )
@@ -84,6 +92,16 @@ def _build_gesture_pipeline(config_dir, orchestrator, feedback):
         orchestrator,
         feedback,
     )
+
+
+def _preload_model(orchestrator: AssistantOrchestrator) -> None:
+    try:
+        latency_ms = orchestrator.preload_model()
+    except Exception as error:
+        print(f"本地模型预热失败，将在需要时安全降级：{type(error).__name__}: {error}")
+    else:
+        if latency_ms is not None:
+            print(f"本地模型已预热：{latency_ms:.1f} ms")
 
 
 def _run_scripted(orchestrator, gesture_pipeline, feedback) -> None:
@@ -130,8 +148,6 @@ def _dispatch(kind, value, orchestrator, gesture_pipeline, feedback):
     if kind not in {"text", "voice"}:
         print("未知输入类型：请使用 text、voice 或 gesture")
         return None
-    if feedback:
-        feedback.received(value)
     event = PerceptionEvent(
         source=EventSource.TEXT if kind == "text" else EventSource.VOICE,
         label=value,

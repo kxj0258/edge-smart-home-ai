@@ -162,14 +162,20 @@ class AssistantFeedback:
             close()
 
     def received(self, text: str) -> None:
-        self.speaker.speak(f"已收到指令：{text}")
+        """Keep the legacy hook without speaking an acknowledgement.
+
+        The input transcript is already visible in the terminal/window. Speaking
+        it again increases latency and makes acoustic echo more likely. Result
+        feedback is emitted by :meth:`response` instead.
+        """
+        return None
 
     def response(self, assistant_response: Any) -> None:
         status = assistant_response.status
         if status == "executed":
             self.speaker.speak(self._completed_text(assistant_response))
         elif status == "confirmation_required":
-            self.speaker.speak("已收到指令，但这是高风险操作，需要确认后才能执行。")
+            self.speaker.speak("这是高风险操作，需要确认后才能执行。")
         elif status == "clarification_required":
             message = self._result_message(assistant_response) or "请补充房间或设备信息。"
             self.speaker.speak(f"需要补充信息：{message}")
@@ -178,11 +184,14 @@ class AssistantFeedback:
         elif status == "plan_rejected":
             self.speaker.speak("生成的控制计划未通过安全校验，已拒绝执行。")
         elif status == "device_error":
-            self.speaker.speak("已收到指令，但设备执行失败。")
+            self.speaker.speak("设备执行失败。")
         elif status == "partial_failure":
             self.speaker.speak("指令已处理，但只有部分设备完成。")
         elif status == "needs_intelligence":
-            self.speaker.speak("当前能力无法完成这条指令。")
+            result = assistant_response.intelligent_result
+            self.speaker.speak(
+                result.message if result is not None and result.message else "当前能力暂不支持。"
+            )
         elif status == "responded":
             self.speaker.speak(
                 self._result_message(assistant_response)
@@ -232,12 +241,21 @@ def _describe_command(device_id: str, action: str) -> str:
         "play": "开始播放",
         "volume_up": "调高音量",
         "volume_down": "调低音量",
+        "set_volume": "设置音量",
+        "set_brightness": "设置亮度",
+        "set_position": "设置位置",
+        "set_speed": "设置风速",
+        "set_temperature": "设置温度",
+        "set_hvac_mode": "设置空调模式",
         "restart": "重启",
         "next": "播放下一集",
         "pause": "暂停播放",
         "resume": "继续播放",
         "query_state": "查询状态",
         "enable_privacy": "开启隐私模式",
+        "disable_privacy": "关闭隐私模式",
+        "lock": "锁上",
+        "unlock": "解锁",
     }
     action_name = actions.get(action, "执行操作")
     device_name = _device_name(device_id)
@@ -256,6 +274,18 @@ def _device_name(device_id: str) -> str:
         "living_room_fan": "客厅风扇",
         "bedroom_air_purifier": "卧室空气净化器",
         "living_room_smart_plug": "客厅智能插座",
+        "living_room_speaker": "客厅音箱",
+        "bedroom_light": "卧室灯",
+        "bedroom_air_conditioner": "卧室空调",
+        "bedroom_curtain": "卧室窗帘",
+        "kitchen_light": "厨房灯",
+        "kitchen_smart_plug": "厨房智能插座",
+        "kitchen_smoke_sensor": "厨房烟雾传感器",
+        "bathroom_fan": "卫生间排气扇",
+        "front_door_lock": "入户门锁",
+        "front_door_sensor": "入户门磁",
+        "living_room_presence_sensor": "客厅人体存在传感器",
+        "water_leak_sensor": "卫生间漏水传感器",
         "home_gateway": "家庭网关",
     }.get(device_id, "设备")
 

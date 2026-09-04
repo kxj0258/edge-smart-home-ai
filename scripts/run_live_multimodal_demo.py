@@ -46,6 +46,8 @@ def main() -> None:
     vision_config = _load_json(config_dir / "vision.json")["gesture"]
     mappings = _load_json(config_dir / "gestures.json")
     orchestrator = AssistantOrchestrator.from_config_dir(config_dir)
+    if args.preload_model:
+        _preload_model(orchestrator)
     capture_blocked = Event()
 
     def resume_capture() -> None:
@@ -155,7 +157,7 @@ def main() -> None:
     frame_times: deque[int] = deque(maxlen=30)
     last_timestamp_ms = 0
 
-    print("Edge AI Smart Home Assistant - live multimodal window")
+    print("小兴 · Edge AI Smart Home Assistant - live multimodal window")
     print("Voice: listening in background")
     print("Gesture: camera recognition active")
     print("Press q or ESC in the camera window to stop.")
@@ -236,7 +238,7 @@ def main() -> None:
                     last_gesture,
                     last_event,
                 )
-                cv2.imshow("Edge AI Smart Home Assistant", frame)
+                cv2.imshow("小兴 · Edge AI Smart Home Assistant", frame)
                 key = cv2.waitKey(1) & 0xFF
                 if key in (ord("q"), 27):
                     break
@@ -286,6 +288,12 @@ def _build_parser() -> argparse.ArgumentParser:
     parser.add_argument("--tts-speed", type=float, default=1.0)
     parser.add_argument("--tts-audio-device", type=int)
     parser.add_argument(
+        "--preload-model",
+        action=argparse.BooleanOptionalAction,
+        default=True,
+        help="Warm up the configured local model before listening",
+    )
+    parser.add_argument(
         "--echo-guard-seconds",
         type=float,
         default=0.4,
@@ -296,6 +304,16 @@ def _build_parser() -> argparse.ArgumentParser:
 
 def _resolve(root: Path, value: Path) -> Path:
     return value if value.is_absolute() else root / value
+
+
+def _preload_model(orchestrator: AssistantOrchestrator) -> None:
+    try:
+        latency_ms = orchestrator.preload_model()
+    except Exception as error:
+        print(f"本地模型预热失败，将在需要时安全降级：{type(error).__name__}: {error}")
+    else:
+        if latency_ms is not None:
+            print(f"本地模型已预热：{latency_ms:.1f} ms")
 
 
 def _fps(frame_times: deque[int]) -> float:
@@ -318,7 +336,7 @@ def _draw_overlay(
     last_event: str,
 ) -> None:
     lines = (
-        "Edge AI Smart Home Assistant",
+        "小兴 · Edge AI Smart Home Assistant",
         f"FPS: {fps:.1f} | Press Q/ESC to quit",
         f"VOICE: {last_voice_result}",
         f"REPLY: {last_reply}",

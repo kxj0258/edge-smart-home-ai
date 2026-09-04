@@ -64,6 +64,21 @@ def default_agent_response_schema() -> dict[str, Any]:
                                     "minimum": 0,
                                     "maximum": 100,
                                 },
+                                "brightness": {
+                                    "type": "integer",
+                                    "minimum": 0,
+                                    "maximum": 100,
+                                },
+                                "position": {
+                                    "type": "integer",
+                                    "minimum": 0,
+                                    "maximum": 100,
+                                },
+                                "speed": {
+                                    "type": "integer",
+                                    "minimum": 1,
+                                    "maximum": 3,
+                                },
                                 "temperature": {
                                     "type": "integer",
                                     "minimum": 16,
@@ -170,19 +185,27 @@ def _parse_command(value: Any) -> PlannedDeviceCommand:
 
 
 def _validate_arguments_shape(arguments: Mapping[str, Any]) -> None:
-    allowed = {"volume", "temperature", "channel", "app", "mode"}
+    allowed = {
+        "volume", "brightness", "position", "speed", "temperature",
+        "channel", "app", "mode",
+    }
     unexpected = set(arguments) - allowed
     if unexpected:
         raise AgentResponseContractError(
             f"unexpected fields in command arguments: {sorted(unexpected)}"
         )
-    for name in ("volume", "temperature"):
+    for name in ("volume", "brightness", "position", "speed", "temperature"):
         if name not in arguments:
             continue
         value = arguments[name]
         if type(value) is not int:
             raise AgentResponseContractError(f"{name} must be an integer")
-        minimum, maximum = (0, 100) if name == "volume" else (16, 30)
+        if name in {"volume", "brightness", "position"}:
+            minimum, maximum = 0, 100
+        elif name == "speed":
+            minimum, maximum = 1, 3
+        else:
+            minimum, maximum = 16, 30
         if not minimum <= value <= maximum:
             raise AgentResponseContractError(
                 f"{name} must be between {minimum} and {maximum}"

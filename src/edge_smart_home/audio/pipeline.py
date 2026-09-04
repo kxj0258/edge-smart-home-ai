@@ -103,8 +103,17 @@ class VoiceControlPipeline:
         text = recognition.text.strip()
         if not text:
             return None
-        if self.feedback:
-            self.feedback.received(text)
+        if len(text) < 2:
+            if self.feedback:
+                self.feedback.processing_error()
+            return VoiceControlResult(
+                text=text,
+                error="recognized transcript is too short to route safely",
+                status="processing_error",
+                audio_seconds=recognition.audio_seconds,
+                decode_seconds=recognition.decode_seconds,
+                rtf=recognition.rtf,
+            )
         event = PerceptionEvent(source=EventSource.VOICE, label=text)
         metrics = {
             "audio_seconds": recognition.audio_seconds,

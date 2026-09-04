@@ -21,6 +21,10 @@ class FastPathRouter:
         self._intents = intents
         self._default_devices = dict(default_devices or {})
 
+    @property
+    def devices(self) -> Mapping[str, Mapping[str, Any]]:
+        return self._devices
+
     def route(self, event: PerceptionEvent) -> DeviceCommand:
         text = self._normalize(event.label)
         if any(
@@ -115,6 +119,21 @@ class FastPathRouter:
             if match:
                 return "set_volume", {"volume": int(match.group(1))}
 
+        if "set_brightness" in capabilities:
+            match = re.search(
+                r"(?:亮度)?(?:设置(?:为)?|设为|调到|调至|调为)(\d{1,3})(?:%|百分之)?",
+                text,
+            )
+            if match and ("亮度" in text or "灯" in text):
+                return "set_brightness", {"brightness": int(match.group(1))}
+
+        if "set_position" in capabilities:
+            if "半开" in text or "开一半" in text:
+                return "set_position", {"position": 50}
+            match = re.search(r"(?:窗帘)?(?:设置|调到|调至)(\d{1,3})%?", text)
+            if match:
+                return "set_position", {"position": int(match.group(1))}
+
         if "set_channel" in capabilities:
             match = re.search(
                 r"(?:切换到|换到|播放)(?:CCTV-?(\d+)|中央(\d+)台)",
@@ -131,12 +150,33 @@ class FastPathRouter:
                 if phrase in text:
                     return "set_mode", {"mode": mode}
 
+        if "set_hvac_mode" in capabilities:
+            modes = {
+                "制冷": "cool",
+                "冷气": "cool",
+                "制热": "heat",
+                "暖气": "heat",
+                "自动": "auto",
+                "除湿": "dry",
+            }
+            for phrase, mode in modes.items():
+                if phrase in text:
+                    return "set_hvac_mode", {"mode": mode}
+
+        if "set_speed" in capabilities:
+            match = re.search(
+                r"(?:风速|档位)(?:设置为|设为|调到|调至)?([1-3])档?", text
+            )
+            if match:
+                return "set_speed", {"speed": int(match.group(1))}
+
         action_order = [
             "enable_guest_wifi", "disable_guest_wifi", "restart",
             "enable_privacy", "disable_privacy", "start_recording", "stop_recording",
             "show_feed", "resume", "pause", "next", "previous", "home", "open_app",
             "volume_up", "volume_down", "speed_up", "speed_down",
-            "query_state", "open", "close", "turn_on", "turn_off", "play",
+            "lock", "unlock", "set_brightness", "set_position", "set_speed",
+            "set_hvac_mode", "query_state", "open", "close", "turn_on", "turn_off", "play",
         ]
 
         for action in action_order:
@@ -155,6 +195,14 @@ class FastPathRouter:
         unrelated TV power command.
         """
         media_actions = ("play", "pause", "resume", "next", "previous", "home", "open_app")
+        explicit = [
+            device_id
+            for device_id, config in self._devices.items()
+            if any(self._normalize(alias) in text for alias in config.get("aliases", []))
+            and set(config.get("capabilities", [])).intersection(media_actions)
+        ]
+        if len(explicit) == 1:
+            return explicit[0]
         matches = []
         for device_id, config in self._devices.items():
             capabilities = set(config.get("capabilities", []))

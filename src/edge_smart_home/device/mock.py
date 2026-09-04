@@ -50,16 +50,38 @@ class MockDeviceBackend(DeviceBackend):
             if not isinstance(volume, int) or not 0 <= volume <= 100:
                 raise DeviceBackendError("volume must be an integer from 0 to 100")
             state["volume"] = volume
+        elif command.action == "set_brightness":
+            brightness = command.arguments.get("brightness")
+            if not isinstance(brightness, int) or not 0 <= brightness <= 100:
+                raise DeviceBackendError("brightness must be an integer from 0 to 100")
+            state["brightness"] = brightness
+            state["power"] = brightness > 0
         elif command.action == "set_temperature":
             temperature = command.arguments.get("temperature")
             if not isinstance(temperature, int) or not 16 <= temperature <= 30:
                 raise DeviceBackendError("temperature must be an integer from 16 to 30")
             state["temperature"] = temperature
             state["power"] = True
+        elif command.action == "set_hvac_mode":
+            mode = command.arguments.get("mode")
+            if mode not in {"cool", "heat", "auto", "dry"}:
+                raise DeviceBackendError("unsupported HVAC mode")
+            state["power"] = True
+            state["hvac_mode"] = mode
         elif command.action == "open":
             state["position"] = "open"
         elif command.action == "close":
             state["position"] = "closed"
+            if "position_percent" in state:
+                state["position_percent"] = 0
+        elif command.action == "set_position":
+            position = command.arguments.get("position")
+            if not isinstance(position, int) or not 0 <= position <= 100:
+                raise DeviceBackendError("position must be an integer from 0 to 100")
+            state["position_percent"] = position
+            state["position"] = (
+                "closed" if position == 0 else "open" if position == 100 else "partial"
+            )
         elif command.action == "enable_guest_wifi":
             state["guest_wifi_enabled"] = True
         elif command.action == "disable_guest_wifi":
@@ -106,6 +128,10 @@ class MockDeviceBackend(DeviceBackend):
             state["recording"] = True
         elif command.action == "stop_recording":
             state["recording"] = False
+        elif command.action == "lock":
+            state["locked"] = True
+        elif command.action == "unlock":
+            state["locked"] = False
         elif command.action == "show_feed":
             if not state["online"] or state["privacy_mode"]:
                 raise DeviceBackendError("camera feed is unavailable")
@@ -114,6 +140,12 @@ class MockDeviceBackend(DeviceBackend):
             state["speed"] = min(3, int(state["speed"]) + 1)
         elif command.action == "speed_down":
             state["speed"] = max(1, int(state["speed"]) - 1)
+        elif command.action == "set_speed":
+            speed = command.arguments.get("speed")
+            if not isinstance(speed, int) or not 1 <= speed <= 3:
+                raise DeviceBackendError("speed must be an integer from 1 to 3")
+            state["power"] = True
+            state["speed"] = speed
         elif command.action == "set_mode":
             mode = command.arguments.get("mode")
             if mode not in {"auto", "sleep", "turbo"}:

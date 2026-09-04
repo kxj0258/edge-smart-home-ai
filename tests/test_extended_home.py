@@ -70,6 +70,36 @@ class ExtendedHomeTest(unittest.TestCase):
         self.assertEqual(outcome.scene_id, "sleep")
         self.assertTrue(outcome.succeeded)
 
+    def test_common_scene_synonyms_stay_on_fast_path(self) -> None:
+        for phrase, scene_id in (
+            ("我想睡觉", "sleep"),
+            ("我想看电影", "movie"),
+            ("我下班回来了", "home"),
+        ):
+            with self.subTest(phrase=phrase):
+                outcome = self.pipeline.handle_text(phrase)
+                self.assertIsInstance(outcome, SceneExecutionResult)
+                self.assertEqual(outcome.scene_id, scene_id)
+
+    def test_new_home_devices_support_safe_parameter_actions(self) -> None:
+        light = self.pipeline.handle_text("卧室灯亮度设置为40")
+        self.assertEqual(light.device_id, "bedroom_light")
+        self.assertEqual(light.attributes["brightness"], 40)
+        curtain = self.pipeline.handle_text("卧室窗帘半开")
+        self.assertEqual(curtain.attributes["position"], "partial")
+        fan = self.pipeline.handle_text("卫生间排气扇风速设置为2档")
+        self.assertEqual(fan.attributes["speed"], 2)
+        music = self.pipeline.handle_text("音箱播放音乐")
+        self.assertEqual(music.device_id, "living_room_speaker")
+        self.assertEqual(music.attributes["playback"], "playing")
+
+    def test_security_scene_preflights_lock_before_side_effects(self) -> None:
+        with self.assertRaises(ConfirmationRequiredError):
+            self.pipeline.handle_text("安防模式")
+        self.assertFalse(
+            self.pipeline.backend.get_state("front_door_camera").attributes["recording"]
+        )
+
 
 if __name__ == "__main__":
     unittest.main()

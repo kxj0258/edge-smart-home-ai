@@ -64,6 +64,7 @@ def main() -> None:
         vision_config["score_threshold"] = args.score_threshold
     mappings = _load_json(args.config_dir / "gestures.json")
     control = AssistantOrchestrator.from_config_dir(args.config_dir)
+    _preload_model(control)
     feedback = create_feedback(
         args.feedback,
         tts_model_dir=args.tts_model_dir,
@@ -284,6 +285,16 @@ def main() -> None:
                     encoding="utf-8",
                 )
                 print(f"Guided Video: {video_path}")
+
+
+def _preload_model(orchestrator: AssistantOrchestrator) -> None:
+    try:
+        latency_ms = orchestrator.preload_model()
+    except Exception as error:
+        print(f"小兴模型预热失败，将在需要时安全降级：{type(error).__name__}: {error}")
+    else:
+        if latency_ms is not None:
+            print(f"小兴模型已预热：{latency_ms:.1f} ms")
 
 
 def _estimate_video_fps(frames, fallback_fps: float) -> float:

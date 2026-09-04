@@ -1,11 +1,11 @@
 [
-  {"id": "response_greeting", "category": "response", "text": "你好", "expected_path": "intelligent", "expected": {"kind": "response", "commands": []}},
-  {"id": "response_identity", "category": "response", "text": "你是谁", "expected_path": "intelligent", "expected": {"kind": "response", "commands": []}},
-  {"id": "response_capability", "category": "response", "text": "请介绍你能做什么", "expected_path": "intelligent", "expected": {"kind": "response", "commands": []}},
-  {"id": "response_device_capability", "category": "response", "text": "你能控制哪些设备", "expected_path": "intelligent", "expected": {"kind": "response", "commands": []}},
-  {"id": "response_help", "category": "response", "text": "我应该怎么使用你", "expected_path": "intelligent", "expected": {"kind": "response", "commands": []}},
-  {"id": "response_thanks", "category": "response", "text": "谢谢你的帮助", "expected_path": "intelligent", "expected": {"kind": "response", "commands": []}},
-  {"id": "response_status_explanation", "category": "response", "text": "你会把我的话直接执行吗", "expected_path": "intelligent", "expected": {"kind": "response", "commands": []}},
+  {"id": "response_greeting", "category": "response", "text": "你好", "expected_path": "fast_path", "expected": {"kind": "response", "commands": []}},
+  {"id": "response_identity", "category": "response", "text": "你是谁", "expected_path": "fast_path", "expected": {"kind": "response", "commands": []}},
+  {"id": "response_capability", "category": "response", "text": "请介绍你能做什么", "expected_path": "fast_path", "expected": {"kind": "response", "commands": []}},
+  {"id": "response_device_capability", "category": "response", "text": "你能控制哪些设备", "expected_path": "fast_path", "expected": {"kind": "response", "commands": []}},
+  {"id": "response_help", "category": "response", "text": "我应该怎么使用你", "expected_path": "fast_path", "expected": {"kind": "response", "commands": []}},
+  {"id": "response_thanks", "category": "response", "text": "谢谢你的帮助", "expected_path": "fast_path", "expected": {"kind": "response", "commands": []}},
+  {"id": "response_status_explanation", "category": "response", "text": "你会把我的话直接执行吗", "expected_path": "fast_path", "expected": {"kind": "response", "commands": []}},
 
   {"id": "clarify_dark_room", "category": "clarification", "text": "这里有点暗，帮我处理一下", "expected_path": "intelligent", "expected": {"kind": "clarification", "commands": []}},
   {"id": "clarify_hot_room", "category": "clarification", "text": "有点热，帮我调一下", "expected_path": "intelligent", "expected": {"kind": "clarification", "commands": []}},

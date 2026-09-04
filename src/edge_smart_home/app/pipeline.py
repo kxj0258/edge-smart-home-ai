@@ -85,10 +85,13 @@ class TextControlPipeline:
         scene = self.scene_router.match(event)
         if scene:
             scene_id, commands = scene
+            # Check the complete scene before the first side effect. A high-risk
+            # command late in the scene must not leave a partially applied scene.
+            for command in commands:
+                self.safety.check(command, confirmed=confirmed)
             results = []
             for command in commands:
                 try:
-                    self.safety.check(command, confirmed=confirmed)
                     self.deduplicator.check(command)
                     state = self.backend.execute(command)
                 except (
