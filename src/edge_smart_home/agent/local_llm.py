@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import http.client
 import json
+import re
 import socket
 from collections.abc import Callable, Mapping, Sequence
 from time import monotonic
@@ -107,6 +108,58 @@ class UrllibJsonTransport:
         return value
 
 
+class LocalLlmRequestGuard:
+    """Apply narrow request-level safety semantics after JSON parsing."""
+
+    _UNAVAILABLE_PHRASES = (
+        "网络音乐",
+        "在线音乐",
+        "网络歌曲",
+        "网络电台",
+    )
+    _UNKNOWN_REQUEST_MARKERS = (
+        "未知设备",
+        "不存在的设备",
+        "不存在的燃气阀门",
+    )
+    _ROOM_MARKERS = ("客厅", "卧室", "门口")
+
+    def __init__(self, devices: Mapping[str, Mapping[str, Any]]) -> None:
+        self._devices = devices
+
+    def apply(
+        self, event: PerceptionEvent, result: IntelligentPathResult
+    ) -> IntelligentPathResult:
+        text = _normalize_request(event.label)
+        if any(phrase in text for phrase in self._UNAVAILABLE_PHRASES):
+            return IntelligentPathResult(
+                kind=IntelligentResultKind.UNAVAILABLE,
+                reason="requested capability is not available locally",
+            )
+        if any(marker in text for marker in self._UNKNOWN_REQUEST_MARKERS):
+            if result.kind != IntelligentResultKind.REJECTED:
+                return IntelligentPathResult(
+                    kind=IntelligentResultKind.REJECTED,
+                    message="请求包含设备目录中不存在的设备，已拒绝。",
+                )
+        if result.kind == IntelligentResultKind.PLAN and not self._has_unique_target(text):
+            return IntelligentPathResult(
+                kind=IntelligentResultKind.CLARIFICATION,
+                message="请说明具体房间或设备后再生成控制计划。",
+            )
+        return result
+
+    def _has_unique_target(self, text: str) -> bool:
+        matched_devices = {
+            device_id
+            for device_id, config in self._devices.items()
+            if any(_normalize_request(alias) in text for alias in config.get("aliases", []))
+        }
+        if len(matched_devices) == 1:
+            return True
+        return any(marker in text for marker in self._ROOM_MARKERS)
+
+
 class LocalLlmIntelligentPath:
     """Single-turn, JSON-only local model planner with safe degradation."""
 
@@ -151,6 +204,7 @@ class LocalLlmIntelligentPath:
         self.think = think
         self.state_provider = state_provider
         self.response_schema = dict(response_schema or default_agent_response_schema())
+        self.request_guard = LocalLlmRequestGuard(devices)
 
     def route(self, event: PerceptionEvent) -> IntelligentPathResult:
         try:
@@ -187,7 +241,8 @@ class LocalLlmIntelligentPath:
             raw_response = response.get("response")
             if not isinstance(raw_response, str) or not raw_response.strip():
                 return self._unavailable("local LLM returned an empty response")
-            return parse_agent_response(raw_response, max_commands=self.max_commands)
+            result = parse_agent_response(raw_response, max_commands=self.max_commands)
+            return self.request_guard.apply(event, result)
         except (
             LlmTransportError,
             AgentResponseContractError,
@@ -251,6 +306,12 @@ def build_agent_prompt(
 10. 只输出完成用户请求所必需的命令；除非用户明确要求查询，不要添加 query_state 或其他辅助命令。
 11. 参数约束：volume 必须是 0–100 的整数；temperature 必须是 16–30 的整数；set_mode 的 mode 只能是 auto、sleep、turbo，其中“强力模式”对应 turbo。越界时返回 rejected，绝不截断到边界值。
 
+固定判断样例：
+- “这里有点暗，帮我处理一下”没有唯一房间或设备，必须返回 clarification，不能生成开灯计划。
+- “有点热，帮我调一下”缺少房间、目标设备和温度，必须返回 clarification。
+- “准备客厅观影环境”只生成用户请求必需的客厅电视和客厅机顶盒开机命令，不添加音量、频道、灯光或窗帘命令。
+- “播放网络音乐”返回 unavailable；“请把未知设备 secret_door 打开”返回 rejected。
+
 JSON Schema：
 {schema_text}
 
@@ -273,6 +334,10 @@ def _validate_local_http_url(url: str):
     if parsed.username or parsed.password or parsed.fragment:
         raise ValueError("local LLM URL must not contain credentials or fragments")
     return parsed
+
+
+def _normalize_request(text: str) -> str:
+    return re.sub(r"[\s，。！？,.!?]", "", text)
 
 
 def _set_socket_timeout(response: http.client.HTTPResponse, timeout: float) -> None:

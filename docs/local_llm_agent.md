@@ -57,6 +57,29 @@ validator rejection：0
 缺少唯一目标的请求直接生成并执行计划；对观影场景添加用户未要求的音量、频道、灯光
 和窗帘命令；将未知设备请求返回 clarification；将网络音乐返回 response。下一步应
 继续在 Ollama 上优化分类和最小计划约束，并复测同一固定数据集。
+
+当前继续使用 Ollama 的原因是这些失败属于请求语义对齐和计划最小化问题，不是推理
+后端接口问题。本轮增加了模型输出解析后的窄范围请求护栏：无明确目标的 plan 会被降为
+clarification，显式未知设备会被 rejected，网络音乐等本地不具备的能力会被 unavailable。
+护栏不执行设备、不修改参数，合法 plan 仍必须继续经过 AgentPlanValidator 和 SafetyPolicy。
+
+## Guarded v3 真实 run
+
+加入请求对齐护栏后，用户再次运行固定 38 条评测：
+
+```text
+run：evaluation/agent_runs/qwen3_4b_guarded_v3.json
+path accuracy：100.00%
+intelligent kind accuracy：95.24%（20/21）
+intelligent exact structured match：95.24%（20/21）
+Fast Path LLM calls：0
+Fast Path zero-call violations：0
+validator rejection：0
+```
+
+唯一模型评测差异是“帮我准备一下”返回了非法空 plan，系统安全降级为 unavailable；
+该情况不会执行设备。该 run 表明 Ollama + Qwen3-4B 已具备可展示的受约束语义规划能力，
+但仍需完成完整回归测试后，才能把本轮作为稳定基线提交。
 越界的确定性命令会留在 Fast Path，由 DeviceBackend 拒绝，不会为了追求模型指标而送入
 LLM。
 
