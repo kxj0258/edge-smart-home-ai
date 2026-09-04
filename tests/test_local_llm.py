@@ -14,6 +14,7 @@ from edge_smart_home.agent import (
 from edge_smart_home.agent.contract import default_agent_response_schema
 from edge_smart_home.agent.local_llm import build_agent_prompt
 from edge_smart_home.app import AssistantOrchestrator
+from edge_smart_home.app.cli import serialize_response
 from edge_smart_home.app.pipeline import TextControlPipeline
 from edge_smart_home.common import EventSource, PerceptionEvent
 
@@ -113,6 +114,35 @@ class LocalLlmIntelligentPathTest(unittest.TestCase):
         self.assertEqual(result.kind, IntelligentResultKind.UNAVAILABLE)
         self.assertEqual(result.commands, ())
 
+    def test_media_single_action_guard_rejects_extra_commands(self) -> None:
+        transport = FakeTransport(
+            {
+                "response": json.dumps(
+                    {
+                        "kind": "plan",
+                        "message": "切换到下一集",
+                        "commands": [
+                            {
+                                "device_id": "living_room_tv",
+                                "action": "turn_off",
+                                "arguments": {},
+                            },
+                            {
+                                "device_id": "living_room_set_top_box",
+                                "action": "next",
+                                "arguments": {},
+                            },
+                        ],
+                    }
+                )
+            }
+        )
+        result = make_path(transport).route(
+            PerceptionEvent(source=EventSource.TEXT, label="我想看下一集电视")
+        )
+        self.assertEqual(result.kind, IntelligentResultKind.REJECTED)
+        self.assertEqual(result.commands, ())
+
     def test_unknown_device_request_is_rejected_even_if_model_clarifies(self) -> None:
         transport = FakeTransport(
             {
@@ -151,7 +181,13 @@ class LocalLlmIntelligentPathTest(unittest.TestCase):
         )
         response = orchestrator.handle_text("打开电视")
         self.assertEqual(response.status, "executed")
+        self.assertEqual(response.path, "fast_path")
+        self.assertIsNone(response.provider)
+        self.assertEqual(response.llm_calls, 0)
         self.assertEqual(transport.calls, [])
+        payload = serialize_response(response)
+        self.assertEqual(payload["path"], "fast_path")
+        self.assertEqual(payload["llm_calls"], 0)
 
     def test_valid_plan_is_validated_and_executed(self) -> None:
         transport = FakeTransport(
@@ -186,6 +222,10 @@ class LocalLlmIntelligentPathTest(unittest.TestCase):
         self.assertEqual(response.status, "executed")
         self.assertEqual(response.intelligent_result.kind, IntelligentResultKind.PLAN)
         self.assertEqual(len(transport.calls), 1)
+        self.assertEqual(response.path, "intelligent_path")
+        self.assertEqual(response.provider, "ollama")
+        self.assertEqual(response.llm_calls, 1)
+        self.assertIsNotNone(response.llm_latency_ms)
         self.assertEqual(transport.calls[0][1]["stream"], False)
         self.assertEqual(transport.calls[0][1]["options"]["temperature"], 0.0)
 

@@ -10,6 +10,18 @@
 6. 先完成当前阶段的最小演示闭环，再讨论优化；不提前实现下一候选。
 7. 只为核心接口、安全边界和已发生故障增加必要验证，不扩张冗余测试矩阵。
 
+## 2026-09-04 Agent 与实时联动阶段记录
+
+Ollama + Qwen3-4B 已完成 38 条固定 Agent 评测：路径准确率 100%，IntelligentPath kind
+和结构化精确匹配均为 95.24%，Fast Path LLM 调用为 0。随后完成真实实时 Voice/Gesture
+媒体控制回归：下一集、上一集、暂停和继续播放均正确进入机顶盒 Fast Path；TTS 反馈和
+0.5 秒回声保护通过用户现场确认。
+
+当前已发生但尚未解决的性能问题是 PortAudio input overflow（一次 targeted voice session
+记录 6 次，queue drop 为 0）。另有一次 ASR 将“继续放”识别为不完整短语并触发 clarification。
+因此下一轮只优先处理 ASR/音频稳定性和单轮对话评测，不增加 ReAct、记忆、RAG、MCP 或新的
+模型 provider。
+
 ## P0：固定已完成系统基线
 
 - 62项测试已由用户手动验证；
@@ -69,16 +81,20 @@ trigger、neutral false triggers/min 和 trigger latency。只有完成 Ground T
 不同语速。每条保留 WAV、reference、设备、距离、噪声类型、模型和配置。
 
 指标：Exact/CER、Router Accuracy、route coverage、parameter/opposite-action mismatch、
-endpoint 延迟、RTF、overflow/drop 和实时 E2E。
+endpoint 延迟、RTF、overflow/drop 和实时 E2E。当前 targeted voice session 的真实记录为
+Mean RTF 0.15946、overflow 6、queue drop 0；该数据只代表一次开发机联动会话。
 
 优化顺序：音频质量 → endpoint → 模型尺寸/精度 → 热词 → 基于真实 confusion 的安全
 Router 容错 → 必要时单独评估降噪/AEC。
 
-## P3：Router 与 Agent
+## P3：Router、Agent 与受约束对话
 
 - 仅对唯一语义、有真实收益的高频 ASR confusion 做 deterministic correction；
 - 相反动作不自动纠正，优先澄清或拒绝；
 - 本地 LLM 使用固定 JSON schema、超时、可观测性和 adversarial plan 测试；
+- 为 response、clarification、rejected、unavailable 建立单轮固定评测集；
+- 只补充真实 ASR 混淆中语义明确且安全的同义表达，例如“继续放”；
+- 对开放域聊天不承诺质量，保持无长期记忆、无 RAG、无任意工具调用；
 - 保留 Fast Path 优先原则。
 
 ## P4：系统性能
@@ -88,6 +104,13 @@ Router 容错 → 必要时单独评估降噪/AEC。
 - backend 超时、失败和恢复；
 - 跨层 session/trace ID；
 - HA 最终一致性等待，而不仅一次 read-after-write。
+
+## P5：Demo 展示质量
+
+- 实时窗口增加收到指令、路径、LLM 调用数、安全结果和设备状态的事件时间线；
+- TTS 继续采用异步反馈和回声保护，播报失败降级为文字；
+- 现场预热 Ollama、固定测试口令和固定退出流程，但不把预热时间或 Mock 延迟宣传为设备指标；
+- 只有当前端到端证据稳定后，才考虑真实 Home Assistant 联调和后续硬件适配。
 
 ## 每次优化验收
 

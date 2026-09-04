@@ -8,6 +8,7 @@ from time import monotonic, monotonic_ns, perf_counter
 
 from edge_smart_home.app import AssistantOrchestrator
 from edge_smart_home.app.cli import serialize_response
+from edge_smart_home.audio.feedback import create_feedback
 from edge_smart_home.app.pipeline import _load_json
 from edge_smart_home.benchmark.gesture_guided import GuidedGestureProtocol
 from edge_smart_home.vision import (
@@ -38,6 +39,16 @@ def main() -> None:
         action="store_true",
         help="Run the fixed six-gesture Ground Truth capture protocol",
     )
+    parser.add_argument(
+        "--feedback",
+        choices=("none", "console", "tts"),
+        default="console",
+        help="Acknowledge and report triggered gestures through console or offline TTS",
+    )
+    parser.add_argument("--tts-model-dir", type=Path)
+    parser.add_argument("--tts-speaker-id", type=int, default=0)
+    parser.add_argument("--tts-speed", type=float, default=1.0)
+    parser.add_argument("--tts-audio-device", type=int)
     args = parser.parse_args()
     if args.guided_capture and not args.diagnostics_dir:
         parser.error("--guided-capture requires --diagnostics-dir")
@@ -53,6 +64,13 @@ def main() -> None:
         vision_config["score_threshold"] = args.score_threshold
     mappings = _load_json(args.config_dir / "gestures.json")
     control = AssistantOrchestrator.from_config_dir(args.config_dir)
+    feedback = create_feedback(
+        args.feedback,
+        tts_model_dir=args.tts_model_dir,
+        speaker_id=args.tts_speaker_id,
+        speed=args.tts_speed,
+        audio_device=args.tts_audio_device,
+    )
     temporal_filter = GestureTemporalFilter(
         vision_config["score_threshold"],
         vision_config["min_consecutive_frames"],
@@ -108,7 +126,7 @@ def main() -> None:
     try:
         with MediaPipeGestureRecognizer(args.model, vision_config) as recognizer:
             pipeline = GestureControlPipeline(
-                recognizer, temporal_filter, mappings, control
+                recognizer, temporal_filter, mappings, control, feedback
             )
             while True:
                 success, frame = camera.read()

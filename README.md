@@ -45,10 +45,11 @@ DeviceState / SceneExecutionResult
 AssistantResponse → Diagnostics / Benchmark
 ```
 
-简单命令不调用 LLM。默认配置仍使用 rule-based planner；Ollama + Qwen3-4B 已通过本地
-HTTP 和固定 JSON Schema 完成真实验证：38 条固定样例路径准确率 100%，IntelligentPath
-kind 与结构化精确匹配均为 95.24%，Fast Path 17 条样例的 LLM 调用为 0。该结果来自
-2026-09-04 用户在本地环境的真实运行，不代表目标硬件或真实 Home Assistant 延迟。
+简单命令不调用 LLM。项目保留 rule-based planner 作为无模型降级路径；本次用户在本地手动
+启用 Ollama + Qwen3-4B，并通过本地 HTTP 和固定 JSON Schema 完成真实验证：38 条固定样例
+路径准确率 100%，IntelligentPath kind 与结构化精确匹配均为 95.24%，Fast Path 17 条样例
+的 LLM 调用为 0。实时语音/手势媒体回归也确认下一集、上一集、暂停和继续播放均保持 Fast
+Path。上述结果来自 2026-09-04 用户本地运行，不代表目标硬件或真实 Home Assistant 延迟。
 
 ## 设备与场景
 
@@ -153,7 +154,8 @@ Synthetic TTS 不代表远场、噪声或真实麦克风表现。
 ## 当前边界
 
 - Home Assistant adapter 已实现，但未与真实 HA 实例联调；
-- Intelligent Path 当前是 rule-based planner，不是本地 LLM；
+- Intelligent Path 同时支持 rule-based 降级路径和 Ollama + Qwen3-4B 本地模型路径；模型
+  只输出固定 JSON，不能直接执行设备或工具；
 - 无 Rockchip/Amlogic 实机，未声称完成 NPU 部署；
 - 没有 Android 应用或智慧中屏 UI；
 - Gesture 误触发率缺少人工标注 Ground Truth，不填写估计值；
@@ -161,12 +163,13 @@ Synthetic TTS 不代表远场、噪声或真实麦克风表现。
 
 ## 下一阶段
 
-项目整体 PoC 已贯通。当前推进 Gesture 的可比较 baseline：
+项目整体 PoC 已贯通。当前优先推进已发生的实时音频问题和对话边界：
 
-1. 已完成 HaGRID-derived 固定 manifest 和 120 张 IMAGE smoke；
-2. 从保存结果离线扫描阈值，选择真实摄像头验证候选值；
-3. 完成摄像头 Ground Truth，测量触发精度、召回、误触发和延迟；
-4. 证据仍不足时再开发 Landmarks + 轻量 MLP candidate。
+1. 定位并降低 PortAudio input overflow，保持 queue drop 可观测；
+2. 基于真实 ASR 混淆补充最小安全 Router 词汇；
+3. 建立 response/clarification/rejected/unavailable 单轮对话评测集；
+4. 增强实时窗口的路径、安全和设备状态展示；
+5. 完成 Voice/Gesture soak 和性能记录后，再进行真实 Home Assistant 联调。
 
 坚持先形成基本可展示闭环，再基于真实结果做准确度和性能优化；不提前增加训练器、动态
 模型、硬件转换或冗余测试。详见 [Gesture 技术路线](docs/gesture_technical_route.md)和

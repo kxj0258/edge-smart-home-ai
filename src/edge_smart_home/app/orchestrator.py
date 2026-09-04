@@ -30,6 +30,10 @@ class AssistantResponse:
     error: str | None = None
     processing_ms: float = 0.0
     intelligent_result: IntelligentPathResult | None = None
+    path: str = "fast_path"
+    provider: str | None = None
+    llm_calls: int = 0
+    llm_latency_ms: float | None = None
 
 
 class AssistantOrchestrator:
@@ -166,6 +170,10 @@ class AssistantOrchestrator:
                 outcome=outcome,
                 processing_ms=round((perf_counter() - started) * 1000, 3),
                 intelligent_result=result,
+                path="intelligent_path",
+                provider=self._provider_name(),
+                llm_calls=self._llm_calls(),
+                llm_latency_ms=self._llm_latency_ms(),
             )
         statuses = {
             IntelligentResultKind.RESPONSE: "responded",
@@ -181,8 +189,8 @@ class AssistantOrchestrator:
             result.reason,
         )
 
-    @staticmethod
     def _intelligent_response(
+        self,
         event: PerceptionEvent,
         status: str,
         result: IntelligentPathResult,
@@ -195,7 +203,30 @@ class AssistantOrchestrator:
             error=error,
             processing_ms=round((perf_counter() - started) * 1000, 3),
             intelligent_result=result,
+            path="intelligent_path",
+            provider=self._provider_name(),
+            llm_calls=self._llm_calls(),
+            llm_latency_ms=self._llm_latency_ms(),
         )
+
+    def _provider_name(self) -> str | None:
+        if self.intelligent_path is None:
+            return None
+        return getattr(
+            self.intelligent_path,
+            "provider_name",
+            type(self.intelligent_path).__name__,
+        )
+
+    def _llm_calls(self) -> int:
+        if self.intelligent_path is None:
+            return 0
+        return int(getattr(self.intelligent_path, "last_call_count", 0))
+
+    def _llm_latency_ms(self) -> float | None:
+        if self.intelligent_path is None:
+            return None
+        return getattr(self.intelligent_path, "last_llm_latency_ms", None)
 
     @staticmethod
     def _error_response(

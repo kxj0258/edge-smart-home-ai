@@ -53,6 +53,20 @@ def main() -> None:
             forwarded.extend(["--score-threshold", str(args.score_threshold)])
         if args.guided_capture:
             forwarded.append("--guided-capture")
+        forwarded.extend(
+            [
+                "--feedback",
+                args.feedback,
+                "--tts-speaker-id",
+                str(args.tts_speaker_id),
+                "--tts-speed",
+                str(args.tts_speed),
+            ]
+        )
+        if args.tts_audio_device is not None:
+            forwarded.extend(["--tts-audio-device", str(args.tts_audio_device)])
+        if args.tts_model_dir:
+            forwarded.extend(["--tts-model-dir", str(args.tts_model_dir)])
         _launch(run, forwarded)
     elif args.mode == "voice":
         from run_voice_demo import main as run
@@ -76,6 +90,20 @@ def main() -> None:
             forwarded.extend(["--hotwords", str(args.hotwords)])
         if args.diagnostics_dir:
             forwarded.extend(["--diagnostics-dir", str(args.diagnostics_dir)])
+        forwarded.extend(
+            [
+                "--feedback",
+                args.feedback,
+                "--tts-speaker-id",
+                str(args.tts_speaker_id),
+                "--tts-speed",
+                str(args.tts_speed),
+            ]
+        )
+        if args.tts_audio_device is not None:
+            forwarded.extend(["--tts-audio-device", str(args.tts_audio_device)])
+        if args.tts_model_dir:
+            forwarded.extend(["--tts-model-dir", str(args.tts_model_dir)])
         _launch(run, forwarded)
     else:  # pragma: no cover - argparse enforces the subcommands
         parser.error(f"unsupported mode: {args.mode}")
@@ -114,6 +142,7 @@ def _build_parser() -> argparse.ArgumentParser:
         help="Override the configured Gesture threshold for this run only",
     )
     gesture.add_argument("--guided-capture", action="store_true")
+    _add_feedback_args(gesture)
 
     voice = subparsers.add_parser("voice", help="Real sherpa-onnx microphone control")
     voice.add_argument("--tokens", type=Path, required=True)
@@ -124,7 +153,20 @@ def _build_parser() -> argparse.ArgumentParser:
     voice.add_argument("--mic-sample-rate", type=int)
     voice.add_argument("--hotwords", type=Path)
     voice.add_argument("--diagnostics-dir", type=Path)
+    _add_feedback_args(voice)
     return parser
+
+
+def _add_feedback_args(parser: argparse.ArgumentParser) -> None:
+    parser.add_argument(
+        "--feedback",
+        choices=("none", "console", "tts"),
+        default="console",
+    )
+    parser.add_argument("--tts-model-dir", type=Path)
+    parser.add_argument("--tts-speaker-id", type=int, default=0)
+    parser.add_argument("--tts-speed", type=float, default=1.0)
+    parser.add_argument("--tts-audio-device", type=int)
 
 
 def _launch(entrypoint: Callable[[], None], argv: list[str]) -> None:

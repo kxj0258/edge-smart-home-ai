@@ -15,6 +15,8 @@ from .interfaces import (
 class RuleBasedIntelligentPath:
     """Reproducible planner used to validate the Agent execution boundary."""
 
+    provider_name = "rule_based"
+
     def __init__(self, rules: list[Mapping[str, Any]]) -> None:
         self.rules = tuple(dict(rule) for rule in rules)
 

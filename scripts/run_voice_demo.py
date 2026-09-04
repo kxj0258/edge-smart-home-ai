@@ -9,6 +9,7 @@ from edge_smart_home.app.pipeline import _load_json
 from edge_smart_home.common import DeviceState
 from edge_smart_home.audio.microphone import SoundDeviceMicrophone
 from edge_smart_home.audio.diagnostics import AudioDiagnosticRecorder
+from edge_smart_home.audio.feedback import create_feedback
 from edge_smart_home.audio.pipeline import VoiceControlPipeline
 from edge_smart_home.audio.sherpa_onnx_adapters import SherpaOnnxStreamingAsr
 
@@ -36,6 +37,16 @@ def main() -> None:
         type=Path,
         help="Save raw microphone WAV, session metadata, and recognition JSONL",
     )
+    parser.add_argument(
+        "--feedback",
+        choices=("none", "console", "tts"),
+        default="console",
+        help="Acknowledge and report command results through console or offline TTS",
+    )
+    parser.add_argument("--tts-model-dir", type=Path)
+    parser.add_argument("--tts-speaker-id", type=int, default=0)
+    parser.add_argument("--tts-speed", type=float, default=1.0)
+    parser.add_argument("--tts-audio-device", type=int)
     args = parser.parse_args()
 
     root = Path(__file__).resolve().parents[1]
@@ -81,6 +92,13 @@ def main() -> None:
         recognizer,
         AssistantOrchestrator.from_config_dir(root / "configs"),
         diagnostics,
+        create_feedback(
+            args.feedback,
+            tts_model_dir=args.tts_model_dir,
+            speaker_id=args.tts_speaker_id,
+            speed=args.tts_speed,
+            audio_device=args.tts_audio_device,
+        ),
     )
     print("Voice demo started. Press Ctrl+C to stop.")
     try:
@@ -105,6 +123,10 @@ def _result_payload(result) -> dict:
         "audio_seconds": round(result.audio_seconds, 3),
         "decode_seconds": round(result.decode_seconds, 3),
         "rtf": round(result.rtf, 4) if result.rtf is not None else None,
+        "path": result.path,
+        "provider": result.provider,
+        "llm_calls": result.llm_calls,
+        "llm_latency_ms": result.llm_latency_ms,
     }
     if isinstance(result.state, DeviceState):
         payload.update({

@@ -99,7 +99,7 @@ Camera -> MediaPipe -> Filter -----+         |
 - 早期“音量调高”因没有明确设备而报错，已通过配置默认电视解决。
 - “风速调高”也已支持配置默认风扇。
 - Fast Path 无法解析时进入 Intelligent Path，而不是让普通问候直接报设备缺失。
-- 当前 Intelligent Path 是可复现的 rule-based planner，不是本地 LLM：
+- 当前 Intelligent Path 保留可复现的 rule-based planner，并支持 Ollama + Qwen3-4B 本地模型：
   - “你好”“你是谁”返回本地助手说明；
   - “客厅有点暗，帮我处理一下”生成打开客厅灯的结构化计划；
   - “这里有点暗”要求澄清房间；
@@ -354,7 +354,7 @@ git log --oneline -5
 ## 9. 当前明确边界
 
 - 没有真实 Home Assistant 联调结果；
-- Intelligent Path 不是本地 LLM；
+- Intelligent Path 支持 Ollama + Qwen3-4B，但模型只输出固定 JSON，不能直接执行设备或工具；
 - 未集成 openWakeWord；
 - 没有 Android App/智慧中屏 UI；
 - 没有 Rockchip/Amlogic 实机，不得声称 NPU 部署完成；
@@ -547,3 +547,27 @@ Router/Agent、系统性能。请先等待我发送新的运行结果或明确�
     处理帧估算名义FPS；无论播放器速度如何，权威同步始终是`video_frame_index + timestamp_ms`。
 11. 用户明确不需要为播放器速度重复录制；已有左右手数据保留为真实验证集。62项测试通过
     后创建`a83c176`里程碑，工作区clean。
+
+## 15. 2026-09-04 Ollama 与实时多模态阶段归档
+
+用户在 `edge_ai` 环境中手动完成了 Ollama `qwen3:4b`、TTS 和实时摄像头/麦克风 Demo 验证。
+Ollama 固定 38 条 Agent 评测结果为：路径准确率 100%，IntelligentPath kind 与结构化精确
+匹配均为 95.24%，Fast Path LLM 调用 0 次。该结果证明 Ollama + Qwen3-4B 具备可展示的
+受约束语义规划收益，因此当前不增加 `llama.cpp` provider。
+
+最终媒体回归诊断目录：
+`evaluation/live_voice_sessions/20260904T145944.361342Z`。
+
+该会话确认：
+
+- “我想看下一集电视”“上一集”“暂停播放”“继续播放”均正确路由到机顶盒 Fast Path；
+- TTS 反馈、0.5 秒 echo guard 和多模态共享编排器可用，未观察到反馈语音自触发；
+- targeted voice session：Mean RTF 0.15946、PortAudio overflow 6、queue drop 0；
+- “继续放”被 ASR 识别为不完整短语并澄清，重复“继续播放”后成功；
+- 同次终端记录的 5 个 Gesture 事件均执行成功，但没有独立 Ground Truth，因此不把它们
+  记为手势准确率。
+
+当前下一阶段：先定位实时音频 overflow，补充真实 ASR 混淆的最小安全词汇，再建立单轮
+Agent 对话评测集和实时 Demo 状态时间线。Qwen3-4B 可以做简单 response/clarification，
+但当前没有多轮记忆、RAG、开放域闲聊或任意工具调用。下一次开发前仍需用户确认新的优化
+阶段；模型、音频设备和真实 Home Assistant 仍由用户手动准备和验证。

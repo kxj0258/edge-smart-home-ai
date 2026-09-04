@@ -7,10 +7,10 @@
 | 核心 schema | 已完成 | Event、Command、State、Backend 边界稳定 |
 | Text Fast Path | 已完成 | 42 条固定命令全部执行成功 |
 | 设备与场景 | 已完成 | 13 个逻辑设备、4 个家庭场景 |
-| Voice | 已完成基线 | 麦克风、streaming ASR、诊断和离线评测 |
+| Voice | 已完成实时联动验证 | 麦克风、streaming ASR、TTS反馈、回声保护、诊断和离线评测 |
 | Gesture | 已完成基线 | 真实摄像头、MediaPipe、滤波和诊断 |
 | Orchestrator | 已完成 | Text/Voice/Gesture 共用应用边界 |
-| Intelligent Path | 已完成并验证 | rule-based 默认路径；Ollama + Qwen3-4B 固定 JSON 规划已完成真实评测 |
+| Intelligent Path | 已完成并验证 | Fast Path 优先；Ollama + Qwen3-4B 固定 JSON 规划、Validator 和 Safety 已完成真实评测 |
 | Mock Backend | 已完成 | 内存状态机和 capability 校验 |
 | Home Assistant | adapter 已完成 | mock HTTP 测试完成，未真实联调 |
 | Benchmark | 已完成第一版 | ASR、Text E2E、Gesture、多模态和 HaGRID IMAGE smoke |
@@ -35,6 +35,12 @@
 - 本地 Agent：38 条固定样例路径准确率 100%；IntelligentPath kind 与结构化精确匹配均为
   95.24%；Fast Path 17 条样例 LLM 调用为 0。运行记录：
   `evaluation/agent_runs/qwen3_4b_guarded_v3.json`。
+- 实时媒体语音回归：`evaluation/live_voice_sessions/20260904T145944.361342Z`；下一集、上一集、
+  暂停、继续播放均正确路由到机顶盒并保持 Fast Path、LLM 0 次；voice endpoint 5 条中
+  4 条执行、1 条因 ASR 输出“继续放”进入澄清；Mean RTF 0.15946，PortAudio overflow 6，
+  queue drop 0。
+- 同次实时终端记录的 5 个 Gesture 事件均为 Fast Path 执行成功；TTS 反馈与 0.5 秒回声保护
+  经用户现场确认可用。该会话不提供 Gesture 独立准确率 Ground Truth，因此不填写手势准确率。
 
 ## 产物路径（不进 Git）
 
@@ -49,19 +55,22 @@
 ## 待完成/待验证
 
 - 官方HaGRID test baseline和更多人员/距离/光照的Gesture目标域验证；
-- 真人、远场、噪声、混响 ASR 分层数据集；
+- 真人、远场、噪声、混响 ASR 分层数据集，以及实时 PortAudio overflow 根因定位；
+- 基于真实 ASR 混淆的最小 Router 词汇补充；
+- response/clarification/rejected/unavailable 单轮对话固定评测集；
 - 实时 Voice endpoint/E2E、CPU 和内存指标；
 - 真实 Home Assistant 联调；
 - Wake Word、Android 和 Rockchip/Amlogic 实机；`llama.cpp` provider 尚未增加，也没有
   目标硬件性能证据。
 
-## 当前唯一开发阶段
+## 当前下一阶段
 
-HaGRID-derived阈值扫描和左右手引导Ground Truth已完成；`score_threshold=0.60`已升级为
-默认候选。同步数据以 `video_frame_index + timestamp_ms` 为准，播放器速度不作为评测时钟。
-只有固定
-图片和连续视频证据表明 canned model 无法满足基本展示，才讨论 Landmarks + 轻量 MLP。
-详细停止条件见 `docs/gesture_technical_route.md`。
+Gesture 的 HaGRID-derived 阈值扫描和左右手引导 Ground Truth 已完成；同步数据以
+`video_frame_index + timestamp_ms` 为准，播放器速度不作为评测时钟。当前优先处理已发生的
+实时 Voice overflow 和 ASR 领域混淆，再建立单轮 Agent 对话评测集与更清晰的 Demo 状态展示。
+只有固定图片和连续视频证据表明 canned model 无法满足基本展示，才讨论 Landmarks + 轻量 MLP；
+只有真实 Home Assistant 与性能证据齐备后，才讨论更换 Agent 推理后端。详细停止条件见
+`docs/gesture_technical_route.md`。
 
 ## 初步展示 Demo
 

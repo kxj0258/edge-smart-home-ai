@@ -129,6 +129,78 @@ PYTHONPATH=src python3 scripts/evaluate_agent_planning.py \
 PYTHONPATH=src python scripts/run_assistant_demo.py --backend mock text
 ```
 
+## 多模态联动 Demo 与反馈
+
+为了展示同一个设备状态如何被不同输入共同控制，可运行共享一个
+`AssistantOrchestrator` 和 `MockDeviceBackend` 的联动 Demo：
+
+```bash
+PYTHONPATH=src python3 scripts/run_multimodal_demo.py \
+  --backend mock \
+  --feedback console \
+  --scripted
+```
+
+也可以交互输入：
+
+```text
+gesture Victory
+voice 客厅有点暗，帮我处理一下
+voice 这里有点暗，帮我处理一下
+gesture Closed_Fist
+text 播放网络音乐
+text 把电视音量设置为1000
+```
+
+Demo 会明确显示 `path`、`provider`、`llm_calls`、`llm_latency_ms`，并同时显示模型计划
+和最终设备结果。`voice <文本>` 在这个脚本中表示已经由 ASR 识别出的 Voice 事件，真实
+麦克风仍使用现有 Voice Demo。
+
+反馈层先播报“已收到指令”，处理后播报完成、澄清、拒绝、确认或失败结果。默认
+`--feedback console` 不增加依赖；如果操作者已经准备好现有 sherpa-onnx TTS 模型和
+音频输出依赖，可手动使用：
+
+```bash
+PYTHONPATH=src python3 scripts/run_multimodal_demo.py \
+  --backend mock \
+  --feedback tts \
+  --tts-model-dir /实际路径/tts_model \
+  --tts-audio-device 3 \
+  --scripted
+```
+
+项目不会自动安装 TTS 依赖、下载 TTS 模型或启动音频设备。TTS 播放失败时只降级为文字
+反馈；播放器会探测设备支持的采样率并自动重采样，不影响 Validator、SafetyPolicy 或设备执行结果。
+`--tts-audio-device` 可指定 `sounddevice.query_devices()` 中的输出设备编号。实时摄像头 Demo 使用同样的
+`--feedback console|tts` 参数；Gesture 的 TTS 播报是阻塞式的，正式实时演示建议先使用
+控制台反馈，避免播报音频影响摄像头帧循环。
+
+如果需要同时打开真实摄像头和麦克风窗口，可使用实时多模态 Demo。它在主线程显示
+OpenCV 摄像头窗口，在后台运行流式 ASR，并共享同一个编排器、设备后端和反馈队列：
+
+```bash
+PYTHONPATH=src python3 scripts/run_live_multimodal_demo.py \
+  --backend mock \
+  --camera 0 \
+  --mic-device 3 \
+  --mic-sample-rate 48000 \
+  --diagnostics-dir evaluation/live_voice_sessions \
+  --gesture-model models/gesture_recognizer.task \
+  --asr-model-dir models/sherpa-onnx-streaming-zipformer-zh-xlarge-int8-2025-06-30 \
+  --hotwords configs/hotwords_v2.txt \
+  --feedback tts \
+  --tts-model-dir /home/kxj/zte_ws/models/tts/vits-icefall-zh-aishell3 \
+  --tts-audio-device 3 \
+  --tts-speaker-id 13 \
+  --tts-speed 1.0
+```
+
+在窗口中按 `q` 或 `Esc` 退出。语音线程和 TTS 播放队列不会阻塞摄像头刷新；终端会输出
+识别文本、Fast/Intelligent Path、provider、LLM 调用次数和处理时延。首次使用建议保持
+`--backend mock`，验证通过后再切换到 Home Assistant 后端。指定
+`--diagnostics-dir` 后会保存原始麦克风 WAV、逐条识别事件、路径/LLM 指标和输入溢出计数，
+可用于真实语音回归，不把 TTS 回采当作用户输入。
+
 建议至少人工验证：明确 Fast Path、模糊澄清、有效 plan、未知设备/action、越界参数、
 超过最大命令数、高风险重启确认、超时和 Ollama 不可用降级。
 
@@ -149,5 +221,62 @@ Fast Path LLM calls：
 结论：接受 / 拒绝 / 需要复测
 ```
 
-只有操作者提供真实 run 后，才更新 `README.md`、`docs/project_status.md` 和面试 Demo，
-并记录真实结果。未通过 Ollama 语义收益验证前，不增加 `llama.cpp` provider。
+本轮真实 run 已由操作者提供，结果已同步到 `README.md`、`docs/project_status.md` 和本说明；
+面试/PPT文档保持独立维护，避免覆盖用户已有展示稿。未通过 Ollama 语义收益验证前不增加
+`llama.cpp` provider；当前 Ollama 已验证有效，因此下一步仍先优化现有 provider 和实时链路。
+
+## 真实实时语音与手势验证
+
+2026-09-04 用户使用 `run_live_multimodal_demo.py` 完成媒体控制回归。诊断目录为：
+
+```text
+evaluation/live_voice_sessions/20260904T145944.361342Z
+```
+
+该会话真实摘要：
+
+```text
+voice endpoint_count：5
+voice status：executed 4，clarification_required 1
+mean RTF：0.15946041541730255
+total decode seconds：2.89879919699888
+portaudio overflow：6
+queue drop：0
+```
+
+已成功验证：
+
+- “我想看下一集电视” → `living_room_set_top_box.next`，Fast Path，LLM 0 次；
+- “上一集” → `living_room_set_top_box.previous`，Fast Path，LLM 0 次；
+- “暂停播放” → `living_room_set_top_box.pause`，Fast Path，LLM 0 次；
+- “继续播放” → `living_room_set_top_box.resume`，Fast Path，LLM 0 次；
+- 同次终端记录的手势“继续播放、开启观影模式、电视音量调高、电视音量调低、暂停播放”均为
+  Fast Path 执行成功；
+- TTS 反馈和 0.5 秒回声保护经用户现场确认可用，没有观察到反馈语音再次触发指令。
+
+“继续放”被 ASR 识别为不完整短语，系统进入 clarification；随后重复说“继续播放”成功。
+这属于 ASR/热词覆盖问题，不能当作 Agent 或设备执行失败。`portaudio overflow` 仍需单独
+优化；当前 `queue_drop=0`，所以本次会话没有记录到音频队列丢块。
+
+## 当前对话能力边界
+
+Qwen3-4B 可以承担受约束的简单单轮对话：问候、身份说明、能力不可用提示、缺少设备信息时的
+澄清、非法请求拒绝，以及带设备目录和必要状态上下文的短消息生成。所有结果仍固定为
+`response`、`clarification`、`plan`、`rejected` 或 `unavailable`，不直接执行任何工具或设备。
+
+当前不能把它描述为完整聊天机器人：系统没有多轮上下文记忆、长期记忆、RAG、开放域问答或
+复杂任务分解。对话质量还需要单独固定样例集评测，且 Intelligent Path 的真实延迟仍明显
+高于 Fast Path。Demo 中适合展示“收到请求后的解释和澄清”，不适合现场展示开放域闲聊。
+
+## 下一步优化优先级
+
+1. **ASR 音频稳定性**：分离测试摄像头并发、TTS 播放和纯麦克风三种条件，定位 overflow
+   来源，再比较 chunk 时长、PortAudio latency 和设备配置。不能只降低日志噪声来掩盖问题。
+2. **ASR 领域混淆**：基于真实记录补充“继续放”等高频、安全且语义明确的同义表达；相反动作
+   和不确定表达继续澄清，不做激进自动纠正。
+3. **对话评测**：增加固定的 response/clarification/rejected/unavailable 样例，记录 JSON
+   合法率、意图类别、澄清正确率、端到端延迟和越界拒绝，不虚构开放域聊天指标。
+4. **Demo 可视化**：在实时窗口明确显示“已收到 → 路由路径 → LLM/零调用 → 安全结果 →
+   设备状态”，并保留 TTS；这样面试时能同时展示语音交互和系统可观测性。
+5. **系统稳定性与真实后端**：完成 Voice/Gesture soak、CPU/RSS、overflow/drop 和恢复
+   记录后，再进行真实 Home Assistant 联调。当前不增加 llama.cpp provider。

@@ -2,7 +2,8 @@ from __future__ import annotations
 
 import logging
 from queue import Empty, Full, Queue
-from typing import Any, Iterable
+from threading import Event
+from typing import Any, Callable, Iterable
 
 from .interfaces import AudioChunk, AudioSource
 from .sherpa_onnx_adapters import VoiceDependencyError
@@ -17,12 +18,20 @@ class SoundDeviceMicrophone(AudioSource):
         chunk_duration_ms: int,
         device: int | None = None,
         microphone_sample_rate: int | None = None,
+        capture_blocked: Callable[[], bool] | None = None,
     ) -> None:
         self.chunk_duration_ms = chunk_duration_ms
         self.device = device
         self.microphone_sample_rate = microphone_sample_rate
+        self.capture_blocked = capture_blocked
         self.portaudio_overflow_count = 0
         self.queue_drop_count = 0
+        self._stop_event = Event()
+
+    def stop(self) -> None:
+        """Request shutdown of an active microphone stream."""
+
+        self._stop_event.set()
 
     def chunks(self) -> Iterable[AudioChunk]:
         try:
@@ -45,6 +54,8 @@ class SoundDeviceMicrophone(AudioSource):
                 LOGGER.warning("microphone status: %s", status)
                 if getattr(status, "input_overflow", False):
                     self.portaudio_overflow_count += 1
+            if self.capture_blocked and self.capture_blocked():
+                return
             samples = indata[:, 0].copy()
             try:
                 audio_queue.put_nowait(samples)
@@ -71,8 +82,13 @@ class SoundDeviceMicrophone(AudioSource):
                 blocksize=frames_per_chunk,
                 callback=capture_callback,
             ) as stream:
-                while True:
-                    samples = audio_queue.get()
+                while not self._stop_event.is_set():
+                    try:
+                        samples = audio_queue.get(timeout=0.1)
+                    except Empty:
+                        continue
+                    if self.capture_blocked and self.capture_blocked():
+                        continue
                     yield AudioChunk(samples.reshape(-1), input_rate)
         except sd.PortAudioError as error:
             raise VoiceDependencyError(

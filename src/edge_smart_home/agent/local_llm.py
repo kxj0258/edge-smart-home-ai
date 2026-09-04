@@ -5,7 +5,7 @@ import json
 import re
 import socket
 from collections.abc import Callable, Mapping, Sequence
-from time import monotonic
+from time import monotonic, perf_counter
 from typing import Any, Protocol
 from urllib.parse import urlsplit, urlunsplit
 
@@ -123,6 +123,12 @@ class LocalLlmRequestGuard:
         "不存在的燃气阀门",
     )
     _ROOM_MARKERS = ("客厅", "卧室", "门口")
+    _SINGLE_MEDIA_ACTIONS = (
+        ("下一集", "next"),
+        ("下一个", "next"),
+        ("上一集", "previous"),
+        ("上一个", "previous"),
+    )
 
     def __init__(self, devices: Mapping[str, Mapping[str, Any]]) -> None:
         self._devices = devices
@@ -147,6 +153,10 @@ class LocalLlmRequestGuard:
                 kind=IntelligentResultKind.CLARIFICATION,
                 message="请说明具体房间或设备后再生成控制计划。",
             )
+        if result.kind == IntelligentResultKind.PLAN:
+            guarded = self._guard_single_media_action(text, result)
+            if guarded is not None:
+                return guarded
         return result
 
     def _has_unique_target(self, text: str) -> bool:
@@ -159,9 +169,30 @@ class LocalLlmRequestGuard:
             return True
         return any(marker in text for marker in self._ROOM_MARKERS)
 
+    def _guard_single_media_action(
+        self, text: str, result: IntelligentPathResult
+    ) -> IntelligentPathResult | None:
+        for phrase, expected_action in self._SINGLE_MEDIA_ACTIONS:
+            if phrase not in text:
+                continue
+            if (
+                len(result.commands) == 1
+                and result.commands[0].device_id == "living_room_set_top_box"
+                and result.commands[0].action == expected_action
+                and not result.commands[0].arguments
+            ):
+                return None
+            return IntelligentPathResult(
+                kind=IntelligentResultKind.REJECTED,
+                message="媒体单动作计划包含额外或错误命令，已拒绝执行。",
+            )
+        return None
+
 
 class LocalLlmIntelligentPath:
     """Single-turn, JSON-only local model planner with safe degradation."""
+
+    provider_name = "ollama"
 
     def __init__(
         self,
@@ -205,8 +236,12 @@ class LocalLlmIntelligentPath:
         self.state_provider = state_provider
         self.response_schema = dict(response_schema or default_agent_response_schema())
         self.request_guard = LocalLlmRequestGuard(devices)
+        self.last_call_count = 0
+        self.last_llm_latency_ms: float | None = None
 
     def route(self, event: PerceptionEvent) -> IntelligentPathResult:
+        self.last_call_count = 0
+        self.last_llm_latency_ms = None
         try:
             try:
                 states = self._read_states()
@@ -219,23 +254,30 @@ class LocalLlmIntelligentPath:
                 self.response_schema,
                 self.max_commands,
             )
-            response = self.transport.post_json(
-                self.endpoint,
-                {
-                    "model": self.model,
-                    "prompt": prompt,
-                    "format": self.response_schema,
-                    "stream": False,
-                    "think": self.think,
-                    "options": {
-                        "temperature": self.temperature,
-                        "num_predict": self.max_output_tokens,
-                        "seed": self.seed,
+            self.last_call_count = 1
+            llm_started = perf_counter()
+            try:
+                response = self.transport.post_json(
+                    self.endpoint,
+                    {
+                        "model": self.model,
+                        "prompt": prompt,
+                        "format": self.response_schema,
+                        "stream": False,
+                        "think": self.think,
+                        "options": {
+                            "temperature": self.temperature,
+                            "num_predict": self.max_output_tokens,
+                            "seed": self.seed,
+                        },
                     },
-                },
-                connect_timeout_seconds=self.connect_timeout_seconds,
-                total_timeout_seconds=self.total_timeout_seconds,
-            )
+                    connect_timeout_seconds=self.connect_timeout_seconds,
+                    total_timeout_seconds=self.total_timeout_seconds,
+                )
+            finally:
+                self.last_llm_latency_ms = round(
+                    (perf_counter() - llm_started) * 1000, 3
+                )
             if not isinstance(response, Mapping):
                 return self._unavailable("local LLM response must be an object")
             raw_response = response.get("response")
@@ -305,11 +347,13 @@ def build_agent_prompt(
 9. 顶层和每个 command 必须严格遵守给定 JSON Schema，不得增加字段。
 10. 只输出完成用户请求所必需的命令；除非用户明确要求查询，不要添加 query_state 或其他辅助命令。
 11. 参数约束：volume 必须是 0–100 的整数；temperature 必须是 16–30 的整数；set_mode 的 mode 只能是 auto、sleep、turbo，其中“强力模式”对应 turbo。越界时返回 rejected，绝不截断到边界值。
+12. 媒体设备路由必须严格遵守：living_room_tv 只允许开关机和音量操作；播放、暂停、继续播放、下一集、上一集、返回首页和打开应用必须使用 living_room_set_top_box，不得把媒体 action 放到 living_room_tv。
 
 固定判断样例：
 - “这里有点暗，帮我处理一下”没有唯一房间或设备，必须返回 clarification，不能生成开灯计划。
 - “有点热，帮我调一下”缺少房间、目标设备和温度，必须返回 clarification。
 - “准备客厅观影环境”只生成用户请求必需的客厅电视和客厅机顶盒开机命令，不添加音量、频道、灯光或窗帘命令。
+- “我想看下一集电视”只生成 living_room_set_top_box.next，不要附加 living_room_tv.turn_off 或其他无关命令；living_room_tv 没有 play、pause 或 next 能力，不能生成这些 action。
 - “播放网络音乐”返回 unavailable；“请把未知设备 secret_door 打开”返回 rejected。
 
 JSON Schema：

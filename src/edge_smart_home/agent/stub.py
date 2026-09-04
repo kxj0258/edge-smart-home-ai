@@ -8,6 +8,8 @@ from .interfaces import IntelligentPathResult, IntelligentResultKind
 class StubIntelligentPath:
     """Explicit placeholder that never fabricates an LLM answer or command."""
 
+    provider_name = "stub"
+
     def route(self, event: PerceptionEvent) -> IntelligentPathResult:
         return IntelligentPathResult(
             kind=IntelligentResultKind.UNAVAILABLE,

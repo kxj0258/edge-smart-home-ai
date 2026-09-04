@@ -1,6 +1,6 @@
 {
   "enabled": true,
-  "provider": "rule_based",
+  "provider": "ollama",
   "max_commands": 8,
   "ollama": {
     "endpoint": "http://127.0.0.1:11434/api/generate",

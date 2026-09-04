@@ -3,6 +3,7 @@ from __future__ import annotations
 from typing import Any, Mapping
 
 from edge_smart_home.app.orchestrator import AssistantOrchestrator, AssistantResponse
+from edge_smart_home.audio.feedback import AssistantFeedback
 from edge_smart_home.app.pipeline import TextControlPipeline
 from edge_smart_home.common import EventSource, PerceptionEvent
 
@@ -17,6 +18,7 @@ class GestureControlPipeline:
         temporal_filter: GestureTemporalFilter,
         mappings: Mapping[str, str],
         control: TextControlPipeline | AssistantOrchestrator,
+        feedback: AssistantFeedback | None = None,
     ) -> None:
         self.recognizer = recognizer
         self.temporal_filter = temporal_filter
@@ -24,6 +26,7 @@ class GestureControlPipeline:
         self.orchestrator = (
             control if isinstance(control, AssistantOrchestrator) else AssistantOrchestrator(control)
         )
+        self.feedback = feedback
 
     def process_frame(
         self, rgb_frame: Any, timestamp_ms: int
@@ -62,4 +65,9 @@ class GestureControlPipeline:
                 "timestamp_ms": observation.timestamp_ms,
             },
         )
-        return self.orchestrator.handle_event(event)
+        if self.feedback:
+            self.feedback.received(intent_text)
+        response = self.orchestrator.handle_event(event)
+        if self.feedback:
+            self.feedback.response(response)
+        return response

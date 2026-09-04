@@ -29,7 +29,7 @@ class FastPathRouter:
             raise UnsupportedCommandError(
                 "external media capability is unavailable"
             )
-        device_id = self._match_device(text)
+        device_id = self._preferred_media_device(text) or self._match_device(text)
         capabilities = set(self._devices[device_id]["capabilities"])
         if "query_state" in capabilities and any(
             phrase in text for phrase in self._intents.get("query_state", [])
@@ -62,11 +62,15 @@ class FastPathRouter:
     @staticmethod
     def _normalize(text: str) -> str:
         normalized = re.sub(r"[\s，。！？,.!?]", "", text)
-        return re.sub(
-            r"[零〇一二两三四五六七八九十]+",
-            lambda match: str(_parse_chinese_number(match.group())),
-            normalized,
-        )
+
+        def replace_number(match: re.Match[str]) -> str:
+            value = match.group()
+            if _is_numeric_context(normalized, match.start(), match.end(), value):
+                return str(_parse_chinese_number(value))
+            # Do not turn lexical words such as 下一集/上一集 into 下1集/上1集.
+            return value
+
+        return re.sub(r"[零〇一二两三四五六七八九十百千万亿]+", replace_number, normalized)
 
     def _match_device(self, text: str) -> str:
         matched_aliases = {
@@ -142,16 +146,74 @@ class FastPathRouter:
                 return action, {}
         raise UnsupportedCommandError("no deterministic action rule matched")
 
+    def _preferred_media_device(self, text: str) -> str | None:
+        """Route known playback controls to the set-top box before aliases.
+
+        User phrasing such as “我想看下一集电视” contains the TV alias, but
+        the requested action belongs to the set-top box.  Resolving this known
+        capability deterministically also prevents a model from adding an
+        unrelated TV power command.
+        """
+        media_actions = ("play", "pause", "resume", "next", "previous", "home", "open_app")
+        matches = []
+        for device_id, config in self._devices.items():
+            capabilities = set(config.get("capabilities", []))
+            if not capabilities.intersection(media_actions):
+                continue
+            if any(
+                action in capabilities
+                and any(phrase in text for phrase in self._intents.get(action, []))
+                for action in media_actions
+            ):
+                matches.append(device_id)
+        return matches[0] if len(matches) == 1 else None
+
 
 def _parse_chinese_number(value: str) -> int:
-    digits = {"零": 0, "〇": 0, "一": 1, "二": 2, "两": 2, "三": 3,
-              "四": 4, "五": 5, "六": 6, "七": 7, "八": 8, "九": 9}
-    if "十" in value:
-        left, right = value.split("十", 1)
-        tens = digits[left] if left else 1
-        ones = digits[right] if right else 0
-        return tens * 10 + ones
-    result = 0
+    """Convert common Chinese integer forms without truncating unit words.
+
+    This is intentionally a small parser for command arguments, not a general
+    natural-language number parser.  Supporting 万/亿 as section units keeps
+    malformed or out-of-range device parameters from being partially matched
+    as a smaller valid prefix (for example, 一千 must never become 1).
+    """
+    digits = {
+        "零": 0, "〇": 0, "一": 1, "二": 2, "两": 2, "三": 3,
+        "四": 4, "五": 5, "六": 6, "七": 7, "八": 8, "九": 9,
+    }
+    units = {"十": 10, "百": 100, "千": 1000, "万": 10_000, "亿": 100_000_000}
+    if not value:
+        raise ValueError("Chinese number cannot be empty")
+
+    total = 0
+    section = 0
+    number = 0
     for character in value:
-        result = result * 10 + digits[character]
-    return result
+        if character in digits:
+            number = digits[character]
+            continue
+
+        unit = units[character]
+        if unit < 10_000:
+            section += (number or 1) * unit
+            number = 0
+            continue
+
+        section += number
+        total += (section or 1) * unit
+        section = 0
+        number = 0
+
+    return total + section + number
+
+
+def _is_numeric_context(text: str, start: int, end: int, value: str) -> bool:
+    """Only normalize Chinese digits when they represent a command argument."""
+    if any(unit in value for unit in ("十", "百", "千", "万", "亿")):
+        return True
+    numeric_prefixes = ("设置为", "设置", "设为", "调到", "调至", "调为", "音量")
+    numeric_suffixes = ("度", "℃")
+    return (
+        any(text[:start].endswith(prefix) for prefix in numeric_prefixes)
+        or any(text[end:].startswith(suffix) for suffix in numeric_suffixes)
+    )

@@ -67,6 +67,10 @@ def serialize_response(response: AssistantResponse) -> dict:
         "label": response.event.label,
         "event_id": response.event.event_id,
         "processing_ms": response.processing_ms,
+        "path": response.path,
+        "provider": response.provider,
+        "llm_calls": response.llm_calls,
+        "llm_latency_ms": response.llm_latency_ms,
     }
     if response.outcome is not None:
         payload["result"] = serialize_outcome(response.outcome)

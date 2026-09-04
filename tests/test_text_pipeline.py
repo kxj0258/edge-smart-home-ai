@@ -29,6 +29,10 @@ class TextControlPipelineTest(unittest.TestCase):
         television = self.pipeline.handle_text("电视音量调到三十")
         self.assertEqual(television.attributes["volume"], 30)
 
+    def test_chinese_hundreds_are_not_truncated(self) -> None:
+        television = self.pipeline.handle_text("电视音量设置为一百")
+        self.assertEqual(television.attributes["volume"], 100)
+
     def test_volume_command_uses_configured_default_device(self) -> None:
         state = self.pipeline.handle_text("音量调高")
         self.assertEqual(state.device_id, "living_room_tv")
@@ -52,9 +56,24 @@ class TextControlPipelineTest(unittest.TestCase):
         with self.assertRaises(DeviceBackendError):
             self.pipeline.handle_text("把电视音量设置为1000")
 
+        with self.assertRaises(DeviceBackendError):
+            self.pipeline.handle_text("把电视音量设置为一千")
+
     def test_external_music_does_not_use_default_playback(self) -> None:
         with self.assertRaises(UnsupportedCommandError):
             self.pipeline.handle_text("播放网络音乐")
+
+    def test_media_control_prefers_set_top_box_over_tv_alias(self) -> None:
+        outcome = self.pipeline.handle_text("我想看下一集电视")
+        self.assertEqual(outcome.scene_id, "agent_plan")
+        self.assertEqual(len(outcome.results), 1)
+        self.assertEqual(
+            outcome.results[0].command.device_id, "living_room_set_top_box"
+        )
+        self.assertEqual(outcome.results[0].command.action, "next")
+
+        previous = self.pipeline.handle_text("上一集")
+        self.assertEqual(previous.results[0].command.action, "previous")
 
 
 if __name__ == "__main__":
