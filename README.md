@@ -93,6 +93,7 @@ PYTHONPATH=src python scripts/benchmark_text_e2e.py
 第一版面试展示。推荐的 6–8 分钟流程、真实运行命令、指标讲解、现场故障降级和边界口径见
 [面试展示 Demo 与项目总结](docs/interview_demo.md)。Demo 展示不改变现有产品逻辑，也不把
 Mock、synthetic TTS、derived 图片或单人引导结果宣传为商用指标。
+PPT页数受限时可使用[三页PPT紧凑版](docs/interview_demo_3page.md)，原完整版本继续保留。
 
 ## 真实基线
 
@@ -144,6 +145,7 @@ Synthetic TTS 不代表远场、噪声或真实麦克风表现。
 - [优化与准确度路线](docs/optimization_roadmap.md)
 - [产品决策记录](docs/product_decisions.md)
 - [面试展示 Demo 与项目总结](docs/interview_demo.md)
+- [三页PPT紧凑版](docs/interview_demo_3page.md)
 - [上游项目与版本](docs/upstream_projects.md)
 
 ## 当前边界
