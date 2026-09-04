@@ -82,40 +82,61 @@ class TextControlPipeline:
     def handle_event(
         self, event: PerceptionEvent, confirmed: bool = False
     ) -> ControlOutcome:
+        scene_id, commands = self.resolve_event(event)
+        return self.execute_resolved(
+            event, scene_id, commands, confirmed=confirmed
+        )
+
+    def resolve_event(
+        self, event: PerceptionEvent
+    ) -> tuple[str | None, tuple[DeviceCommand, ...]]:
+        """Resolve an event without validating safety or causing side effects."""
         scene = self.scene_router.match(event)
         if scene:
-            scene_id, commands = scene
-            # Check the complete scene before the first side effect. A high-risk
-            # command late in the scene must not leave a partially applied scene.
-            for command in commands:
-                self.safety.check(command, confirmed=confirmed)
-            results = []
-            for command in commands:
-                try:
-                    self.deduplicator.check(command)
-                    state = self.backend.execute(command)
-                except (
-                    ConfirmationRequiredError,
-                    DeviceBackendError,
-                    DuplicateCommandError,
-                ) as error:
-                    results.append(CommandExecutionResult(command, error=str(error)))
-                else:
-                    results.append(CommandExecutionResult(command, state=state))
-            return SceneExecutionResult(scene_id, tuple(results))
+            return scene
+        return None, (self.router.route(event),)
 
-        command = self.router.route(event)
-        self.safety.check(command, confirmed=confirmed)
-        self.deduplicator.check(command)
-        return self.backend.execute(command)
+    def execute_resolved(
+        self,
+        event: PerceptionEvent,
+        scene_id: str | None,
+        commands: Sequence[DeviceCommand],
+        confirmed: bool = False,
+    ) -> ControlOutcome:
+        """Safety-check and execute a previously resolved command set."""
+        if scene_id is None:
+            if len(commands) != 1:
+                raise ValueError("a direct event must resolve to one command")
+            command = commands[0]
+            self.safety.check(command, confirmed=confirmed)
+            self.deduplicator.check(command)
+            return self.backend.execute(command)
 
-    def execute_agent_plan(
+        # Check the complete scene before the first side effect. A high-risk
+        # command late in the scene must not leave a partially applied scene.
+        for command in commands:
+            self.safety.check(command, confirmed=confirmed)
+        results = []
+        for command in commands:
+            try:
+                self.deduplicator.check(command)
+                state = self.backend.execute(command)
+            except (
+                ConfirmationRequiredError,
+                DeviceBackendError,
+                DuplicateCommandError,
+            ) as error:
+                results.append(CommandExecutionResult(command, error=str(error)))
+            else:
+                results.append(CommandExecutionResult(command, state=state))
+        return SceneExecutionResult(scene_id, tuple(results))
+
+    def build_agent_commands(
         self,
         event: PerceptionEvent,
         planned_commands: Sequence[PlannedDeviceCommand],
-        confirmed: bool = False,
-    ) -> SceneExecutionResult:
-        commands = tuple(
+    ) -> tuple[DeviceCommand, ...]:
+        return tuple(
             DeviceCommand(
                 device_id=item.device_id,
                 action=item.action,
@@ -126,6 +147,14 @@ class TextControlPipeline:
             )
             for item in planned_commands
         )
+
+    def execute_agent_plan(
+        self,
+        event: PerceptionEvent,
+        planned_commands: Sequence[PlannedDeviceCommand],
+        confirmed: bool = False,
+    ) -> SceneExecutionResult:
+        commands = self.build_agent_commands(event, planned_commands)
         # Preflight the complete plan before the first side effect.
         for command in commands:
             self.safety.check(command, confirmed=confirmed)

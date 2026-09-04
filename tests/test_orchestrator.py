@@ -49,6 +49,53 @@ class AssistantOrchestratorTest(unittest.TestCase):
         self.assertIn("入户门锁", message)
         self.assertIn("客厅音箱", message)
 
+    def test_voice_confirmation_executes_saved_security_scene(self) -> None:
+        pending = self.orchestrator.handle_event(
+            PerceptionEvent(source=EventSource.VOICE, label="安防模式")
+        )
+        self.assertEqual(pending.status, "confirmation_required")
+        self.assertIn("入户门锁", pending.confirmation_message)
+        self.assertTrue(
+            self.orchestrator.control.backend.get_state("front_door_lock").attributes[
+                "locked"
+            ]
+        )
+
+        confirmed = self.orchestrator.handle_event(
+            PerceptionEvent(source=EventSource.VOICE, label="确认")
+        )
+        self.assertEqual(confirmed.status, "executed")
+        self.assertEqual(confirmed.path, "fast_path")
+        self.assertEqual(confirmed.llm_calls, 0)
+        self.assertTrue(
+            self.orchestrator.control.backend.get_state("front_door_lock").attributes[
+                "locked"
+            ]
+        )
+
+    def test_voice_confirmation_requires_exact_word_and_supports_cancel(self) -> None:
+        pending = self.orchestrator.handle_text("安防模式")
+        self.assertEqual(pending.status, "confirmation_required")
+        unclear = self.orchestrator.handle_event(
+            PerceptionEvent(source=EventSource.VOICE, label="确认一下")
+        )
+        self.assertEqual(unclear.status, "clarification_required")
+        self.assertTrue(
+            self.orchestrator.control.backend.get_state("front_door_lock").attributes[
+                "locked"
+            ]
+        )
+        cancelled = self.orchestrator.handle_event(
+            PerceptionEvent(source=EventSource.VOICE, label="取消")
+        )
+        self.assertEqual(cancelled.status, "responded")
+        self.assertIn("取消", cancelled.intelligent_result.message)
+        self.assertTrue(
+            self.orchestrator.control.backend.get_state("front_door_lock").attributes[
+                "locked"
+            ]
+        )
+
 
 if __name__ == "__main__":
     unittest.main()

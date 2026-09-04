@@ -69,7 +69,7 @@ class VoicePipelineTest(unittest.TestCase):
     def test_dialogue_message_is_exposed_to_voice_result(self) -> None:
         class DialogueAsr(StreamingSpeechRecognizer):
             def accept(self, chunk):
-                return (StreamingRecognition("你好", 1.0, 0.1),)
+                return (StreamingRecognition("介绍一下", 1.0, 0.1),)
 
             def finish(self):
                 return ()
@@ -92,6 +92,40 @@ class VoicePipelineTest(unittest.TestCase):
         self.assertEqual(result.status, "responded")
         self.assertEqual(result.message, "你好，我可以帮你控制家庭设备。")
         self.assertIsNone(result.state)
+
+    def test_asr_consumption_can_be_separated_from_command_processing(self) -> None:
+        root = Path(__file__).resolve().parents[1]
+        control = TextControlPipeline.from_config_dir(root / "configs")
+        pipeline = VoiceControlPipeline(FakeSource(), FakeAsr(), control)
+        recognitions = tuple(pipeline.iter_recognitions())
+        self.assertEqual(len(recognitions), 1)
+        result = pipeline.process_recognition(recognitions[0])
+        self.assertEqual(result.status, "executed")
+
+    def test_voice_confirmation_message_and_saved_plan(self) -> None:
+        root = Path(__file__).resolve().parents[1]
+        orchestrator = AssistantOrchestrator.from_config_dir(root / "configs")
+        pipeline = VoiceControlPipeline(FakeSource(), FakeAsr(), orchestrator)
+        pending = pipeline.process_recognition(
+            StreamingRecognition("安防模式", 1.0, 0.1)
+        )
+        self.assertEqual(pending.status, "confirmation_required")
+        self.assertIn("确认或取消", pending.message)
+        confirmed = pipeline.process_recognition(
+            StreamingRecognition("确认", 1.0, 0.1)
+        )
+        self.assertEqual(confirmed.status, "executed")
+        self.assertTrue(confirmed.state.succeeded)
+
+    def test_conservative_asr_prefix_cleanup_keeps_sleep_scene(self) -> None:
+        root = Path(__file__).resolve().parents[1]
+        orchestrator = AssistantOrchestrator.from_config_dir(root / "configs")
+        pipeline = VoiceControlPipeline(FakeSource(), FakeAsr(), orchestrator)
+        result = pipeline.process_recognition(
+            StreamingRecognition("我我想睡觉了", 1.0, 0.1)
+        )
+        self.assertEqual(result.status, "executed")
+        self.assertEqual(result.state.scene_id, "sleep")
 
 
 if __name__ == "__main__":

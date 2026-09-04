@@ -4,7 +4,7 @@ import argparse
 from collections import deque
 import json
 from pathlib import Path
-from queue import Empty, Queue
+from queue import Empty, Full, Queue
 from threading import Event, Thread
 from time import monotonic_ns, sleep
 
@@ -112,28 +112,55 @@ def main() -> None:
         feedback=feedback,
     )
     voice_results: Queue[VoiceControlResult] = Queue()
+    recognition_queue: Queue = Queue(maxsize=16)
     voice_errors: Queue[Exception] = Queue()
+    recognition_queue_drop_count = 0
 
-    def run_voice() -> None:
+    def run_asr() -> None:
+        nonlocal recognition_queue_drop_count
         try:
-            for result in voice_pipeline.run():
-                voice_results.put(result)
+            for recognition in voice_pipeline.iter_recognitions():
+                try:
+                    recognition_queue.put(recognition, timeout=0.5)
+                except Full:
+                    recognition_queue_drop_count += 1
+                    if recognition_queue_drop_count == 1 or recognition_queue_drop_count % 10 == 0:
+                        print(
+                            "voice recognition queue is behind; dropped "
+                            f"{recognition_queue_drop_count} endpoint(s)",
+                            flush=True,
+                        )
         except Exception as error:  # keep the camera window usable for diagnosis
             voice_errors.put(error)
+        finally:
+            recognition_queue.put(None)
 
-    voice_thread = Thread(target=run_voice, name="live-voice-control", daemon=True)
-    voice_thread.start()
+    def run_commands() -> None:
+        while True:
+            recognition = recognition_queue.get()
+            if recognition is None:
+                return
+            result = voice_pipeline.process_recognition(recognition)
+            if result:
+                voice_results.put(result)
+
+    asr_thread = Thread(target=run_asr, name="live-asr-consumer", daemon=True)
+    command_thread = Thread(target=run_commands, name="live-command-worker", daemon=True)
+    command_thread.start()
+    asr_thread.start()
 
     camera = cv2.VideoCapture(args.camera)
     if not camera.isOpened():
         microphone.stop()
-        voice_thread.join(timeout=1.0)
+        asr_thread.join(timeout=1.0)
+        command_thread.join(timeout=1.0)
         if feedback:
             feedback.close()
         if diagnostics:
             diagnostics.update_summary({
                 "portaudio_overflow_count": microphone.portaudio_overflow_count,
                 "queue_drop_count": microphone.queue_drop_count,
+                "recognition_queue_drop_count": recognition_queue_drop_count,
             })
             diagnostics.close()
         raise RuntimeError(f"unable to open camera {args.camera}")
@@ -246,13 +273,15 @@ def main() -> None:
         camera.release()
         cv2.destroyAllWindows()
         microphone.stop()
-        voice_thread.join(timeout=2.0)
+        asr_thread.join(timeout=2.0)
+        command_thread.join(timeout=2.0)
         if feedback:
             feedback.close()
         if diagnostics:
             diagnostics.update_summary({
                 "portaudio_overflow_count": microphone.portaudio_overflow_count,
                 "queue_drop_count": microphone.queue_drop_count,
+                "recognition_queue_drop_count": recognition_queue_drop_count,
             })
             diagnostics.close()
 

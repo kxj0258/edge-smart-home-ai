@@ -175,7 +175,10 @@ class AssistantFeedback:
         if status == "executed":
             self.speaker.speak(self._completed_text(assistant_response))
         elif status == "confirmation_required":
-            self.speaker.speak("这是高风险操作，需要确认后才能执行。")
+            self.speaker.speak(
+                getattr(assistant_response, "confirmation_message", None)
+                or "这是高风险操作，请说确认或取消。"
+            )
         elif status == "clarification_required":
             message = self._result_message(assistant_response) or "请补充房间或设备信息。"
             self.speaker.speak(f"需要补充信息：{message}")
@@ -254,6 +257,8 @@ def _describe_command(device_id: str, action: str) -> str:
         "query_state": "查询状态",
         "enable_privacy": "开启隐私模式",
         "disable_privacy": "关闭隐私模式",
+        "start_recording": "开始录像",
+        "stop_recording": "停止录像",
         "lock": "锁上",
         "unlock": "解锁",
     }

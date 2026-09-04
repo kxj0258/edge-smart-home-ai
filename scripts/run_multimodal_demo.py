@@ -105,13 +105,16 @@ def _preload_model(orchestrator: AssistantOrchestrator) -> None:
 
 
 def _run_scripted(orchestrator, gesture_pipeline, feedback) -> None:
-    print("开始固定联动流程：Gesture → Dialogue → Voice → Voice → Gesture → Text")
+    print("开始固定联动流程：Gesture → Dialogue → Voice → Confirmation → Gesture → Text")
     scripted_events = (
         ("gesture", "Victory"),
         ("text", "你好"),
         ("text", "你能控制哪些设备"),
         ("voice", "客厅有点暗，帮我处理一下"),
         ("voice", "这里有点暗，帮我处理一下"),
+        ("voice", "我想听歌"),
+        ("voice", "安防模式"),
+        ("voice", "确认"),
         ("gesture", "Closed_Fist"),
         ("text", "播放网络音乐"),
         ("text", "把电视音量设置为1000"),

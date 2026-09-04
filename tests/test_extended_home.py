@@ -2,7 +2,7 @@ from pathlib import Path
 import unittest
 
 from edge_smart_home.app.pipeline import TextControlPipeline
-from edge_smart_home.common import DeviceState, SceneExecutionResult
+from edge_smart_home.common import DeviceState, EventSource, PerceptionEvent, SceneExecutionResult
 from edge_smart_home.device import ConfirmationRequiredError
 
 
@@ -92,6 +92,25 @@ class ExtendedHomeTest(unittest.TestCase):
         music = self.pipeline.handle_text("音箱播放音乐")
         self.assertEqual(music.device_id, "living_room_speaker")
         self.assertEqual(music.attributes["playback"], "playing")
+
+    def test_generic_music_defaults_to_living_room_speaker(self) -> None:
+        music = self.pipeline.handle_text("我想听歌")
+        self.assertEqual(music.device_id, "living_room_speaker")
+        self.assertTrue(music.attributes["power"])
+        self.assertEqual(music.attributes["playback"], "playing")
+
+    def test_generic_tv_media_controls_stay_on_set_top_box(self) -> None:
+        for phrase, action in (
+            ("暂停播放", "pause"),
+            ("继续播放", "resume"),
+            ("播放下一集", "next"),
+        ):
+            with self.subTest(phrase=phrase):
+                command = self.pipeline.router.route(
+                    PerceptionEvent(source=EventSource.TEXT, label=phrase)
+                )
+                self.assertEqual(command.device_id, "living_room_set_top_box")
+                self.assertEqual(command.action, action)
 
     def test_security_scene_preflights_lock_before_side_effects(self) -> None:
         with self.assertRaises(ConfirmationRequiredError):

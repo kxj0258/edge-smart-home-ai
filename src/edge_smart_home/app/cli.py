@@ -79,6 +79,8 @@ def serialize_response(response: AssistantResponse) -> dict:
         "llm_calls": response.llm_calls,
         "llm_latency_ms": response.llm_latency_ms,
     }
+    if response.confirmation_message is not None:
+        payload["confirmation_message"] = response.confirmation_message
     if response.outcome is not None:
         payload["result"] = serialize_outcome(response.outcome)
     if response.error is not None:

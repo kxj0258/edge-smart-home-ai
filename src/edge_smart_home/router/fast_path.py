@@ -95,10 +95,20 @@ class FastPathRouter:
         if len(matches) > 1:
             raise UnsupportedCommandError("command identifies more than one device")
 
+        media_action = self._media_action_hint(text)
+        if media_action:
+            default_device = self._default_devices.get(media_action)
+            if default_device and media_action in self._devices[default_device]["capabilities"]:
+                return default_device
+
         default_matches = {
             device_id
             for action, device_id in self._default_devices.items()
             if any(phrase in text for phrase in self._intents.get(action, []))
+            and not (
+                action == "play"
+                and not self._media_action_hint(text)
+            )
         }
         if len(default_matches) == 1:
             return default_matches.pop()
@@ -136,12 +146,14 @@ class FastPathRouter:
 
         if "set_channel" in capabilities:
             match = re.search(
-                r"(?:切换到|换到|播放)(?:CCTV-?(\d+)|中央(\d+)台)",
+                r"(?:切换到|换到|播放)(?:CCTV-?(\d+)|中央(\d+|[零〇一二两三四五六七八九十百千万亿]+)台)",
                 text,
                 re.IGNORECASE,
             )
             if match:
                 channel_number = match.group(1) or match.group(2)
+                if not channel_number.isdigit():
+                    channel_number = str(_parse_chinese_number(channel_number))
                 return "set_channel", {"channel": f"CCTV-{channel_number}"}
 
         if "set_mode" in capabilities:
@@ -195,6 +207,20 @@ class FastPathRouter:
         unrelated TV power command.
         """
         media_actions = ("play", "pause", "resume", "next", "previous", "home", "open_app")
+        media_action = self._media_action_hint(text)
+        if media_action:
+            explicit = [
+                device_id
+                for device_id, config in self._devices.items()
+                if any(self._normalize(alias) in text for alias in config.get("aliases", []))
+                and media_action in config.get("capabilities", [])
+            ]
+            if len(explicit) == 1:
+                return explicit[0]
+            default_device = self._default_devices.get(media_action)
+            if default_device and media_action in self._devices[default_device]["capabilities"]:
+                return default_device
+
         explicit = [
             device_id
             for device_id, config in self._devices.items()
@@ -215,6 +241,35 @@ class FastPathRouter:
             ):
                 matches.append(device_id)
         return matches[0] if len(matches) == 1 else None
+
+    def _media_action_hint(self, text: str) -> str | None:
+        """Choose a media action before selecting a device.
+
+        Media devices share verbs such as ``播放`` and ``暂停``. Composite
+        phrases and the longest specific intent prevent a speaker added for
+        music from making TV gestures ambiguous.
+        """
+        composite = (
+            ("播放下一集", "next"),
+            ("播放上一集", "previous"),
+            ("暂停播放", "pause"),
+            ("继续播放", "resume"),
+        )
+        for phrase, action in composite:
+            if phrase in text:
+                return action
+        matches = [
+            (len(phrase), action)
+            for action in ("play", "pause", "resume", "next", "previous", "home", "open_app")
+            for phrase in self._intents.get(action, [])
+            if phrase in text
+            and not (action == "play" and phrase == "播放")
+        ]
+        if not matches:
+            return None
+        longest = max(length for length, _ in matches)
+        actions = {action for length, action in matches if length == longest}
+        return actions.pop() if len(actions) == 1 else None
 
 
 def _parse_chinese_number(value: str) -> int:

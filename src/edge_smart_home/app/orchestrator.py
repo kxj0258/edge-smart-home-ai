@@ -3,7 +3,8 @@ from __future__ import annotations
 from dataclasses import dataclass
 from pathlib import Path
 import re
-from time import perf_counter
+from threading import Lock
+from time import monotonic, perf_counter
 
 from edge_smart_home.agent import (
     AgentPlanValidationError,
@@ -16,7 +17,7 @@ from edge_smart_home.agent import (
     StubIntelligentPath,
     UrllibJsonTransport,
 )
-from edge_smart_home.common import EventSource, PerceptionEvent
+from edge_smart_home.common import DeviceCommand, EventSource, PerceptionEvent
 from edge_smart_home.device import ConfirmationRequiredError, DeviceBackendError
 from edge_smart_home.router import DuplicateCommandError, UnsupportedCommandError
 
@@ -35,6 +36,18 @@ class AssistantResponse:
     provider: str | None = None
     llm_calls: int = 0
     llm_latency_ms: float | None = None
+    confirmation_message: str | None = None
+
+
+@dataclass(frozen=True, slots=True)
+class PendingConfirmation:
+    event: PerceptionEvent
+    commands: tuple[DeviceCommand, ...]
+    scene_id: str | None
+    path: str
+    provider: str | None
+    intelligent_result: IntelligentPathResult | None
+    created_at: float
 
 
 class AssistantOrchestrator:
@@ -49,6 +62,10 @@ class AssistantOrchestrator:
         self.control = control
         self.intelligent_path = intelligent_path
         self.plan_validator = plan_validator
+        self._confirmation_lock = Lock()
+        self._event_lock = Lock()
+        self._pending_confirmation: PendingConfirmation | None = None
+        self.confirmation_timeout_seconds = 15.0
 
     @classmethod
     def from_config_dir(cls, config_dir: Path) -> "AssistantOrchestrator":
@@ -115,14 +132,45 @@ class AssistantOrchestrator:
     def handle_event(
         self, event: PerceptionEvent, confirmed: bool = False
     ) -> AssistantResponse:
+        # Camera and command-worker threads share one backend and one local
+        # model provider. Serialize event handling to keep state transitions
+        # and model requests deterministic.
+        with self._event_lock:
+            return self._handle_event(event, confirmed=confirmed)
+
+    def _handle_event(
+        self, event: PerceptionEvent, confirmed: bool = False
+    ) -> AssistantResponse:
         started = perf_counter()
+        if confirmed:
+            with self._confirmation_lock:
+                self._pending_confirmation = None
+        else:
+            confirmation_response = self.confirm_pending(event)
+            if confirmation_response is not None:
+                return confirmation_response
         local_dialogue = self._local_dialogue_response(event, started)
         if local_dialogue is not None:
             return local_dialogue
         try:
             outcome = self.control.handle_event(event, confirmed=confirmed)
         except ConfirmationRequiredError as error:
-            return self._error_response(event, "confirmation_required", error, started)
+            scene_id, commands = self.control.resolve_event(event)
+            self._store_pending(
+                event,
+                commands,
+                scene_id,
+                path="fast_path",
+                provider=None,
+                intelligent_result=None,
+            )
+            return self._error_response(
+                event,
+                "confirmation_required",
+                error,
+                started,
+                confirmation_message=self._confirmation_message(commands),
+            )
         except DuplicateCommandError as error:
             return self._error_response(event, "duplicate_suppressed", error, started)
         except UnsupportedCommandError as error:
@@ -168,8 +216,22 @@ class AssistantOrchestrator:
                     event, "plan_rejected", result, started, str(error)
                 )
             except ConfirmationRequiredError as error:
+                commands = self.control.build_agent_commands(event, result.commands)
+                self._store_pending(
+                    event,
+                    commands,
+                    "agent_plan",
+                    path="intelligent_path",
+                    provider=self._provider_name(),
+                    intelligent_result=result,
+                )
                 return self._intelligent_response(
-                    event, "confirmation_required", result, started, str(error)
+                    event,
+                    "confirmation_required",
+                    result,
+                    started,
+                    str(error),
+                    confirmation_message=self._confirmation_message(commands),
                 )
             except DeviceBackendError as error:
                 return self._intelligent_response(
@@ -208,6 +270,7 @@ class AssistantOrchestrator:
         result: IntelligentPathResult,
         started: float,
         error: str | None = None,
+        confirmation_message: str | None = None,
     ) -> AssistantResponse:
         return AssistantResponse(
             event=event,
@@ -219,6 +282,152 @@ class AssistantOrchestrator:
             provider=self._provider_name(),
             llm_calls=self._llm_calls(),
             llm_latency_ms=self._llm_latency_ms(),
+            confirmation_message=confirmation_message,
+        )
+
+    def confirm_pending(self, event: PerceptionEvent) -> AssistantResponse | None:
+        """Handle an exact voice/text confirmation for one saved safe plan.
+
+        A confirmation executes the already validated command set. It never
+        re-routes the confirmation text through the LLM and never asks the
+        model to generate a second plan.
+        """
+        if event.source not in {EventSource.TEXT, EventSource.VOICE}:
+            return None
+        decision = self._confirmation_decision(event.label)
+        with self._confirmation_lock:
+            pending = self._pending_confirmation
+            if pending and monotonic() - pending.created_at > self.confirmation_timeout_seconds:
+                self._pending_confirmation = None
+                pending = None
+
+        if pending is None:
+            if decision is None:
+                return None
+            return self._confirmation_message_response(
+                event, "当前没有待确认的操作。"
+            )
+
+        started = perf_counter()
+        if decision is None:
+            return self._confirmation_message_response(
+                event, "刚才的操作需要确认，请说“确认”或“取消”。",
+                status="clarification_required",
+            )
+        with self._confirmation_lock:
+            self._pending_confirmation = None
+        if decision == "cancel":
+            return self._confirmation_message_response(event, "已取消。")
+
+        try:
+            outcome = self.control.execute_resolved(
+                pending.event,
+                pending.scene_id,
+                pending.commands,
+                confirmed=True,
+            )
+        except (ConfirmationRequiredError, DeviceBackendError, DuplicateCommandError) as error:
+            return AssistantResponse(
+                event=event,
+                status="device_error",
+                error=str(error),
+                processing_ms=round((perf_counter() - started) * 1000, 3),
+                path=pending.path,
+                provider=pending.provider,
+                intelligent_result=pending.intelligent_result,
+                llm_calls=0,
+                llm_latency_ms=None,
+            )
+        succeeded = (
+            not hasattr(outcome, "succeeded") or bool(outcome.succeeded)
+        )
+        return AssistantResponse(
+            event=event,
+            status="executed" if succeeded else "partial_failure",
+            outcome=outcome,
+            processing_ms=round((perf_counter() - started) * 1000, 3),
+            path=pending.path,
+            provider=pending.provider,
+            intelligent_result=pending.intelligent_result,
+            llm_calls=0,
+            llm_latency_ms=None,
+        )
+
+    def _store_pending(
+        self,
+        event: PerceptionEvent,
+        commands: tuple[DeviceCommand, ...],
+        scene_id: str | None,
+        *,
+        path: str,
+        provider: str | None,
+        intelligent_result: IntelligentPathResult | None,
+    ) -> None:
+        with self._confirmation_lock:
+            self._pending_confirmation = PendingConfirmation(
+                event=event,
+                commands=commands,
+                scene_id=scene_id,
+                path=path,
+                provider=provider,
+                intelligent_result=intelligent_result,
+                created_at=monotonic(),
+            )
+
+    @staticmethod
+    def _confirmation_decision(text: str) -> str | None:
+        normalized = re.sub(r"[\s，。！？,.!?]", "", text).lower()
+        if normalized in {"确认", "确认执行", "执行", "可以", "好的", "好", "是的"}:
+            return "confirm"
+        if normalized in {"取消", "不要", "算了", "不用", "不用执行", "不执行"}:
+            return "cancel"
+        return None
+
+    def _confirmation_message(self, commands: tuple[DeviceCommand, ...]) -> str:
+        names = []
+        action_names = {
+            "lock": "锁上",
+            "unlock": "解锁",
+            "start_recording": "开始录像",
+            "disable_privacy": "关闭隐私模式",
+            "restart": "重启",
+        }
+        for command in commands:
+            device = self.control.router.devices.get(command.device_id, {})
+            device_name = device.get("display_name", command.device_id)
+            if command.action == "disable_privacy":
+                names.append(f"关闭{device_name}的隐私模式")
+            elif command.action == "start_recording":
+                names.append(f"开始{device_name}录像")
+            else:
+                names.append(f"{action_names.get(command.action, '执行')}{device_name}")
+        details = "、".join(names) if names else "这项操作"
+        return f"即将{details}，这是高风险操作，请说确认或取消。"
+
+    def _confirmation_message_response(
+        self,
+        event: PerceptionEvent,
+        message: str,
+        *,
+        status: str = "responded",
+    ) -> AssistantResponse:
+        started = perf_counter()
+        return AssistantResponse(
+            event=event,
+            status=status,
+            processing_ms=round((perf_counter() - started) * 1000, 3),
+            intelligent_result=IntelligentPathResult(
+                kind=(
+                    IntelligentResultKind.RESPONSE
+                    if status == "responded"
+                    else IntelligentResultKind.CLARIFICATION
+                ),
+                message=message,
+            ),
+            path="fast_path",
+            provider=None,
+            llm_calls=0,
+            llm_latency_ms=None,
         )
 
     def _local_dialogue_response(
@@ -227,14 +436,17 @@ class AssistantOrchestrator:
         if event.source not in {EventSource.TEXT, EventSource.VOICE}:
             return None
         text = re.sub(r"[\s，。！？,.!?]", "", event.label).lower()
-        if text in {"你好", "嗨", "小兴你好", "你好小兴", "hello"}:
+        if text in {"你好", "嗨", "小兴你好", "你好小兴", "晚上好", "早上好", "hello"}:
             message = "你好，我是小兴，可以帮你控制家里的设备。"
         elif text in {"你是谁", "你叫什么", "你叫什么名字"}:
             message = "我是小兴，负责理解你的家庭设备指令，并在安全校验后执行。"
         elif text in {
             "你能控制哪些设备",
+            "你能控制什么设备",
             "你支持哪些设备",
             "你能控制什么",
+            "可以控制哪些设备",
+            "能控制哪些设备",
             "你会什么",
             "请介绍你能做什么",
             "怎么使用你",
@@ -287,11 +499,16 @@ class AssistantOrchestrator:
 
     @staticmethod
     def _error_response(
-        event: PerceptionEvent, status: str, error: Exception, started: float
+        event: PerceptionEvent,
+        status: str,
+        error: Exception,
+        started: float,
+        confirmation_message: str | None = None,
     ) -> AssistantResponse:
         return AssistantResponse(
             event=event,
             status=status,
             error=str(error),
             processing_ms=round((perf_counter() - started) * 1000, 3),
+            confirmation_message=confirmation_message,
         )
