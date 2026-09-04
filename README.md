@@ -87,6 +87,13 @@ PYTHONPATH=src python -m unittest discover -s tests -v
 PYTHONPATH=src python scripts/benchmark_text_e2e.py
 ```
 
+## 面试展示 Demo
+
+当前 Text、实时 Voice、在线 Gesture、Agent 计划、安全确认和 Mock 设备闭环已经足以组成
+第一版面试展示。推荐的 6–8 分钟流程、真实运行命令、指标讲解、现场故障降级和边界口径见
+[面试展示 Demo 与项目总结](docs/interview_demo.md)。Demo 展示不改变现有产品逻辑，也不把
+Mock、synthetic TTS、derived 图片或单人引导结果宣传为商用指标。
+
 ## 真实基线
 
 ### Text + Mock
@@ -136,6 +143,7 @@ Synthetic TTS 不代表远场、噪声或真实麦克风表现。
 - [Gesture 端侧技术决策与实施路线](docs/gesture_technical_route.md)
 - [优化与准确度路线](docs/optimization_roadmap.md)
 - [产品决策记录](docs/product_decisions.md)
+- [面试展示 Demo 与项目总结](docs/interview_demo.md)
 - [上游项目与版本](docs/upstream_projects.md)
 
 ## 当前边界

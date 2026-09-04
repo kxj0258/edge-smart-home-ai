@@ -1,9 +1,10 @@
 # Edge AI Smart Home Assistant 对话与项目交接总结
 
-更新时间：2026-09-02  
-仓库：`/home/kxj/zte_ws/edge-smart-home-ai`  
-当前分支：`main`  
-当前里程碑提交：`a83c176 feat: establish reproducible gesture evaluation baseline`
+更新时间：2026-09-04
+仓库：`/home/kxj/zte_ws/edge-smart-home-ai`
+当前分支：`main`
+当前代码与评测基线：`a83c176 feat: establish reproducible gesture evaluation baseline`
+最近交接刷新：`8864f85 docs: refresh project handoff after gesture milestone`
 
 ## 1. 本文用途与信息边界
 
@@ -396,6 +397,22 @@ Gesture可复现baseline里程碑已经完成并提交为`a83c176`：
 2. 若Gesture展示已足够：转入ASR真人近场/远场/噪声分层基线；
 3. 不要因单次24/24就宣称产品准确率100%，也不要重复采集相同人/相同环境的同质数据；
 4. `evaluation/`与下载数据继续不进Git，每个新阶段验证后形成独立聚焦提交。
+
+### 初步面试 Demo 整理
+
+用户于2026-09-02确认先将现有能力整理为初步展示 Demo，再进入准确度优化。
+`docs/interview_demo.md` 已形成第一版方案，包含：
+
+- 6–8分钟的 Text、实时Voice、在线Gesture、Agent和安全演示顺序；
+- 与当前实现一致的启动命令、展示输入、预期观察点和结束方式；
+- Text、ASR、HaGRID-derived和Gesture Ground Truth真实基线及适用边界；
+- 麦克风/摄像头现场故障时的诚实降级方案；
+- 面向中兴智慧中屏、家庭网关和端侧AI岗位的项目总结口径；
+- Demo固定后的Gesture泛化、真人ASR、Router/Agent和系统性能优化顺序。
+
+本轮只修改文档，没有运行测试、模型、摄像头或benchmark。用户于2026-09-04要求将当前
+总结形成聚焦文档提交并推送远程仓库；该提交只表示展示材料已经整理，不表示Demo已在实际
+面试设备上完成现场预演。预演通过前仍不得标记为“现场已验证”。
 
 ### 后续 Gesture 目标域准确度
 

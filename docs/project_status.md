@@ -15,6 +15,7 @@
 | Home Assistant | adapter 已完成 | mock HTTP 测试完成，未真实联调 |
 | Benchmark | 已完成第一版 | ASR、Text E2E、Gesture、多模态和 HaGRID IMAGE smoke |
 | 统一入口 | 已完成并验证 | Text/Voice/Gesture/benchmark入口已贯通 |
+| 面试 Demo | 初步方案已整理 | 三模态、Agent、安全、指标与现场降级流程；尚待按指南人工预演 |
 
 ## 已验证基线
 
@@ -57,6 +58,13 @@ HaGRID-derived阈值扫描和左右手引导Ground Truth已完成；`score_thres
 只有固定
 图片和连续视频证据表明 canned model 无法满足基本展示，才讨论 Landmarks + 轻量 MLP。
 详细停止条件见 `docs/gesture_technical_route.md`。
+
+## 初步展示 Demo
+
+`docs/interview_demo.md` 已整理第一版 6–8 分钟面试演示方案，覆盖 Text Fast Path、实时
+Voice、在线 Gesture、Intelligent Path、安全确认、真实基线和典型问题分析。该工作只整理
+现有已实现能力，未新增运行逻辑；正式使用前仍需在实际面试设备上人工确认麦克风、摄像头、
+模型路径并完成一次全流程预演。
 
 ## 边界
 
