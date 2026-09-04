@@ -110,6 +110,7 @@ Camera → MediaPipe → Temporal Filter┘
 | HaGRID-derived | Accuracy 75.00%，Macro-F1 76.59% | 非官方test |
 | Gesture引导 | 24/24，neutral 237秒零误触发 | 单人单环境 |
 | Gesture性能 | 18.710 FPS，P95 7.983 ms | 开发机摄像头 |
+| Ollama Agent | 路径 100%，IntelligentPath 精确匹配 95.24%，Fast Path LLM 0 次 | Qwen3-4B，本地真实 run |
 
 ### 页脚：下一步
 
@@ -123,10 +124,12 @@ Gesture官方test/跨环境泛化
 
 ### 讲解词（约90秒）
 
-> 当前已经具备文本、实时语音、在线手势、Agent和安全控制的可运行Demo。所有数字都保留
+> 当前已经具备文本、实时语音、在线手势、Ollama Agent和安全控制的可运行Demo。所有数字都保留
 > 适用边界：Mock延迟不代表真实设备，TTS不代表真人远场，24/24只代表单人提示驱动会话，
-> 也没有声称完成Home Assistant或目标芯片部署。下一步先补Gesture和ASR泛化证据，再基于
-> 真实失败做最小优化，最后进入系统性能和硬件适配。
+> 也没有声称完成Home Assistant或目标芯片部署。Ollama Agent 的 38 条固定评测路径为
+> 100%，IntelligentPath 精确匹配为 95.24%，Fast Path 未调用 LLM；这不是目标硬件性能
+> 指标。下一步先补 Gesture 和 ASR 泛化证据，再基于真实失败做最小优化，最后进入系统
+> 性能和硬件适配。
 
 ## 展示编排
 

@@ -10,7 +10,7 @@
 | Voice | 已完成基线 | 麦克风、streaming ASR、诊断和离线评测 |
 | Gesture | 已完成基线 | 真实摄像头、MediaPipe、滤波和诊断 |
 | Orchestrator | 已完成 | Text/Voice/Gesture 共用应用边界 |
-| Intelligent Path | 已完成安全骨架 | rule-based planner，未接本地 LLM |
+| Intelligent Path | 已完成并验证 | rule-based 默认路径；Ollama + Qwen3-4B 固定 JSON 规划已完成真实评测 |
 | Mock Backend | 已完成 | 内存状态机和 capability 校验 |
 | Home Assistant | adapter 已完成 | mock HTTP 测试完成，未真实联调 |
 | Benchmark | 已完成第一版 | ASR、Text E2E、Gesture、多模态和 HaGRID IMAGE smoke |
@@ -32,6 +32,9 @@
 - 左右手引导会话：24/24匹配，Trigger Precision/Recall 100%，237秒neutral零误触发，
   左右手各12/12；6716帧，18.710 FPS，Mean 7.423 ms，P95 7.983 ms。
 - 多模态报告已正确区分 Text/Gesture 设备执行和 Voice 离线路由评测。
+- 本地 Agent：38 条固定样例路径准确率 100%；IntelligentPath kind 与结构化精确匹配均为
+  95.24%；Fast Path 17 条样例 LLM 调用为 0。运行记录：
+  `evaluation/agent_runs/qwen3_4b_guarded_v3.json`。
 
 ## 产物路径（不进 Git）
 
@@ -49,7 +52,8 @@
 - 真人、远场、噪声、混响 ASR 分层数据集；
 - 实时 Voice endpoint/E2E、CPU 和内存指标；
 - 真实 Home Assistant 联调；
-- 本地 LLM、Wake Word、Android 和 Rockchip/Amlogic 实机。
+- Wake Word、Android 和 Rockchip/Amlogic 实机；`llama.cpp` provider 尚未增加，也没有
+  目标硬件性能证据。
 
 ## 当前唯一开发阶段
 

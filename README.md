@@ -10,7 +10,7 @@
 - sherpa-onnx streaming ASR、endpoint、原生重采样、热词和音频诊断；
 - MediaPipe Gesture Recognizer、temporal filter、latch、release 和 cooldown；
 - Text/Voice/Gesture 共用 `PerceptionEvent` 和 `AssistantOrchestrator`；
-- Fast Path 失败后的 Intelligent Path 与可复现 rule-based planner；
+- Fast Path 失败后的 Intelligent Path、可复现 rule-based planner 和 Ollama 本地模型 provider；
 - Agent plan allowlist、参数校验、高风险确认和执行前预检；
 - Mock backend 和 Home Assistant REST adapter；
 - ASR/TTS、Text E2E、Gesture 和统一多模态 benchmark；
@@ -45,8 +45,10 @@ DeviceState / SceneExecutionResult
 AssistantResponse → Diagnostics / Benchmark
 ```
 
-简单命令不调用 LLM。当前 Intelligent Path 使用 rule-based planner 验证 Agent
-安全闭环，尚未下载或运行本地 LLM。
+简单命令不调用 LLM。默认配置仍使用 rule-based planner；Ollama + Qwen3-4B 已通过本地
+HTTP 和固定 JSON Schema 完成真实验证：38 条固定样例路径准确率 100%，IntelligentPath
+kind 与结构化精确匹配均为 95.24%，Fast Path 17 条样例的 LLM 调用为 0。该结果来自
+2026-09-04 用户在本地环境的真实运行，不代表目标硬件或真实 Home Assistant 延迟。
 
 ## 设备与场景
 

@@ -134,12 +134,16 @@ score、实际 FPS、inference latency 和最后一次触发，以及终端中�
 
 预期展示：
 
-- 第一条 Fast Path 不支持，rule-based Intelligent Path 生成打开客厅灯的结构化计划；
+- 第一条 Fast Path 不支持，Intelligent Path 生成打开客厅灯的结构化计划；当前可用
+  Ollama + Qwen3-4B 进行本地语义规划，结果仍须经过固定 JSON、AgentPlanValidator 和
+  SafetyPolicy；
 - 第二条缺少房间，返回澄清而不是猜测；
 - 第三条属于高风险操作，未确认时不执行。
 
-当前 Intelligent Path 不是本地 LLM。其价值是验证“结构化计划 → 校验 → Safety → 执行”
-边界；未来接入 LLM 也不能绕过该边界。
+本地模型只负责输出 `response`、`clarification`、`plan`、`rejected` 或 `unavailable`；
+不能执行设备、Shell、Python、网络或 Home Assistant 请求。2026-09-04 的 38 条固定评测
+中，路径准确率为 100%，IntelligentPath kind 和结构化精确匹配均为 95.24%，Fast Path
+LLM 调用为 0。该指标来自一次本地真实运行，不代表目标硬件性能。
 
 ### 3.6 指标和问题分析（约 90 秒）
 
@@ -152,6 +156,7 @@ score、实际 FPS、inference latency 和最后一次触发，以及终端中�
 | HaGRID-derived 0.65 | 120 张；Accuracy 75.00%，Macro-F1 76.59% | derived train smoke，不是官方 test |
 | Gesture 0.60 引导 | 24/24；Precision/Recall 100%；neutral 237 s 零误触发 | 单人、单环境、提示驱动 |
 | Gesture 性能 | 18.710 FPS；Mean 7.423 ms，P95 7.983 ms | 开发机摄像头，不是目标 SoC |
+| Ollama Agent | 38 条；路径 100%，IntelligentPath 精确匹配 95.24%，Fast Path LLM 0 次 | Qwen3-4B，本地真实 run，不代表目标硬件 |
 
 推荐讲解阈值案例：0.65 的手势召回率为 70%；离线扫描中 0.55 达到 93%，但 neutral
 产生 3/20 误触发，因此拒绝；0.60 达到 86% 且 neutral 为 0/20，随后进入连续摄像头
