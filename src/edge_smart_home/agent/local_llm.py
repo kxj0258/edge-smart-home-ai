@@ -112,17 +112,69 @@ class LocalLlmRequestGuard:
     """Apply narrow request-level safety semantics after JSON parsing."""
 
     _UNAVAILABLE_PHRASES = (
+        "天气",
+        "新闻",
         "网络音乐",
         "在线音乐",
         "网络歌曲",
         "网络电台",
+        "外卖",
+        "路线",
+        "导航",
+        "网购",
+        "购物",
     )
     _UNKNOWN_REQUEST_MARKERS = (
         "未知设备",
         "不存在的设备",
         "不存在的燃气阀门",
+        "secret_door",
+        "erase_all",
+        "shell命令",
+        "执行python",
+        "删除所有家庭设备",
+        "忽略安全规则",
+        "绕过安全",
     )
     _ROOM_MARKERS = ("客厅", "卧室", "门口")
+    _DIALOGUE_REQUEST_MARKERS = (
+        "你好",
+        "嗨",
+        "hello",
+        "你是谁",
+        "你能做什么",
+        "能做什么",
+        "可以做什么",
+        "你能控制哪些设备",
+        "能控制哪些设备",
+        "请介绍你能做什么",
+        "怎么使用你",
+        "我应该怎么使用你",
+        "你会把我的话直接执行吗",
+        "谢谢",
+        "感谢",
+        "为什么",
+    )
+    _EXECUTION_CLAIM_MARKERS = (
+        "已执行",
+        "已经执行",
+        "执行成功",
+        "已打开",
+        "已经打开",
+        "已关闭",
+        "已经关闭",
+        "已完成",
+        "已经完成",
+    )
+    _AMBIGUOUS_CONTROL_MARKERS = ("处理一下", "处理", "弄一下", "弄好", "搞一下")
+    _CONTEXTUAL_CONTROL_MARKERS = ("暗", "光线")
+    _EXPLICIT_ACTION_MARKERS = (
+        "打开", "开启", "关闭", "关掉", "重启", "播放", "暂停", "继续",
+        "调高", "调低", "设置", "调到", "上一集", "下一集", "查询", "查看",
+    )
+    _GENERIC_DEVICE_ALIASES = frozenset(
+        {"灯", "电视", "空调", "窗帘", "摄像头", "风扇", "净化器", "插座", "网络"}
+    )
     _SINGLE_MEDIA_ACTIONS = (
         ("下一集", "next"),
         ("下一个", "next"),
@@ -137,17 +189,34 @@ class LocalLlmRequestGuard:
         self, event: PerceptionEvent, result: IntelligentPathResult
     ) -> IntelligentPathResult:
         text = _normalize_request(event.label)
+        if any(marker in text for marker in self._UNKNOWN_REQUEST_MARKERS):
+            return IntelligentPathResult(
+                kind=IntelligentResultKind.REJECTED,
+                message="请求包含未授权或不安全内容，已拒绝。",
+            )
         if any(phrase in text for phrase in self._UNAVAILABLE_PHRASES):
             return IntelligentPathResult(
                 kind=IntelligentResultKind.UNAVAILABLE,
                 reason="requested capability is not available locally",
             )
-        if any(marker in text for marker in self._UNKNOWN_REQUEST_MARKERS):
-            if result.kind != IntelligentResultKind.REJECTED:
-                return IntelligentPathResult(
-                    kind=IntelligentResultKind.REJECTED,
-                    message="请求包含设备目录中不存在的设备，已拒绝。",
-                )
+        if result.kind == IntelligentResultKind.PLAN and self._is_dialogue_request(text):
+            return IntelligentPathResult(
+                kind=IntelligentResultKind.REJECTED,
+                message="对话请求不应生成设备计划，已拒绝执行。",
+            )
+        if (
+            result.kind == IntelligentResultKind.RESPONSE
+            and any(marker in (result.message or "") for marker in self._EXECUTION_CLAIM_MARKERS)
+        ):
+            return IntelligentPathResult(
+                kind=IntelligentResultKind.RESPONSE,
+                message="我不能把未执行的操作描述为已完成。",
+            )
+        if result.kind == IntelligentResultKind.PLAN and self._is_ambiguous_control(text):
+            return IntelligentPathResult(
+                kind=IntelligentResultKind.CLARIFICATION,
+                message="请明确要对设备执行的具体操作。",
+            )
         if result.kind == IntelligentResultKind.PLAN and not self._has_unique_target(text):
             return IntelligentPathResult(
                 kind=IntelligentResultKind.CLARIFICATION,
@@ -168,6 +237,23 @@ class LocalLlmRequestGuard:
         if len(matched_devices) == 1:
             return True
         return any(marker in text for marker in self._ROOM_MARKERS)
+
+    def _is_dialogue_request(self, text: str) -> bool:
+        return any(marker in text for marker in self._DIALOGUE_REQUEST_MARKERS)
+
+    def _is_ambiguous_control(self, text: str) -> bool:
+        if not any(marker in text for marker in self._AMBIGUOUS_CONTROL_MARKERS):
+            return False
+        if any(marker in text for marker in self._CONTEXTUAL_CONTROL_MARKERS):
+            return False
+        if any(marker in text for marker in self._EXPLICIT_ACTION_MARKERS):
+            return False
+        return any(
+            _normalize_request(alias) in text
+            for config in self._devices.values()
+            for alias in config.get("aliases", [])
+            if _normalize_request(alias) in self._GENERIC_DEVICE_ALIASES
+        )
 
     def _guard_single_media_action(
         self, text: str, result: IntelligentPathResult
@@ -348,6 +434,9 @@ def build_agent_prompt(
 10. 只输出完成用户请求所必需的命令；除非用户明确要求查询，不要添加 query_state 或其他辅助命令。
 11. 参数约束：volume 必须是 0–100 的整数；temperature 必须是 16–30 的整数；set_mode 的 mode 只能是 auto、sleep、turbo，其中“强力模式”对应 turbo。越界时返回 rejected，绝不截断到边界值。
 12. 媒体设备路由必须严格遵守：living_room_tv 只允许开关机和音量操作；播放、暂停、继续播放、下一集、上一集、返回首页和打开应用必须使用 living_room_set_top_box，不得把媒体 action 放到 living_room_tv。
+13. 对话分类必须严格区分：问候、身份、能力介绍和感谢返回 response；缺少必要目标或参数返回 clarification；未知、危险或未授权请求返回 rejected；天气、新闻、外卖、网络音乐等本地没有能力的请求返回 unavailable。以上四类的 commands 必须为空数组。
+14. response 只能回答当前请求和提供的设备目录/只读状态，不能编造外部事实、设备执行结果或不存在的功能；不能把“准备执行”或模型自述当作“已经执行”。
+15. 只有用户明确要求控制已知设备，并且目标、action 和参数完整合法时，才返回 plan。普通聊天、解释原因、询问能力或请求帮助不得生成 plan。
 
 固定判断样例：
 - “这里有点暗，帮我处理一下”没有唯一房间或设备，必须返回 clarification，不能生成开灯计划。
@@ -355,6 +444,9 @@ def build_agent_prompt(
 - “准备客厅观影环境”只生成用户请求必需的客厅电视和客厅机顶盒开机命令，不添加音量、频道、灯光或窗帘命令。
 - “我想看下一集电视”只生成 living_room_set_top_box.next，不要附加 living_room_tv.turn_off 或其他无关命令；living_room_tv 没有 play、pause 或 next 能力，不能生成这些 action。
 - “播放网络音乐”返回 unavailable；“请把未知设备 secret_door 打开”返回 rejected。
+- “你好”“你是谁”“请介绍你能做什么”返回 response，commands 必须为空。
+- “这里有点暗，帮我处理一下”返回 clarification；不能因为模型知道客厅灯而猜测设备。
+- “请把灯处理一下”没有明确动作，必须返回 clarification，不能猜测为 turn_on。
 
 JSON Schema：
 {schema_text}

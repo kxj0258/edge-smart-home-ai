@@ -11,6 +11,7 @@
 | Gesture | 已完成基线 | 真实摄像头、MediaPipe、滤波和诊断 |
 | Orchestrator | 已完成 | Text/Voice/Gesture 共用应用边界 |
 | Intelligent Path | 已完成并验证 | Fast Path 优先；Ollama + Qwen3-4B 固定 JSON 规划、Validator 和 Safety 已完成真实评测 |
+| 简单单轮对话 | 已完成并验证 | response/clarification/rejected/unavailable 固定 JSON 输出，30 条 Qwen3-4B 真实评测通过，并接入多模态 Demo |
 | Mock Backend | 已完成 | 内存状态机和 capability 校验 |
 | Home Assistant | adapter 已完成 | mock HTTP 测试完成，未真实联调 |
 | Benchmark | 已完成第一版 | ASR、Text E2E、Gesture、多模态和 HaGRID IMAGE smoke |
@@ -35,6 +36,9 @@
 - 本地 Agent：38 条固定样例路径准确率 100%；IntelligentPath kind 与结构化精确匹配均为
   95.24%；Fast Path 17 条样例 LLM 调用为 0。运行记录：
   `evaluation/agent_runs/qwen3_4b_guarded_v3.json`。
+- 本地 Agent 对话：30 条固定样例路径准确率 100%，IntelligentPath kind 准确率 100%，
+  顺序无关结构化匹配 100%，对话误生成 plan 0 条，非空命令 0 条，Fast Path 仍保持 0 次
+  LLM 调用。运行记录：`evaluation/agent_dialogue_runs/qwen3_4b_dialogue_guarded_v2.json`。
 - 实时媒体语音回归：`evaluation/live_voice_sessions/20260904T145944.361342Z`；下一集、上一集、
   暂停、继续播放均正确路由到机顶盒并保持 Fast Path、LLM 0 次；voice endpoint 5 条中
   4 条执行、1 条因 ASR 输出“继续放”进入澄清；Mean RTF 0.15946，PortAudio overflow 6，
@@ -57,7 +61,7 @@
 - 官方HaGRID test baseline和更多人员/距离/光照的Gesture目标域验证；
 - 真人、远场、噪声、混响 ASR 分层数据集，以及实时 PortAudio overflow 根因定位；
 - 基于真实 ASR 混淆的最小 Router 词汇补充；
-- response/clarification/rejected/unavailable 单轮对话固定评测集；
+- 更大规模、多说话人和真实噪声条件下的对话/语音联动评测；
 - 实时 Voice endpoint/E2E、CPU 和内存指标；
 - 真实 Home Assistant 联调；
 - Wake Word、Android 和 Rockchip/Amlogic 实机；`llama.cpp` provider 尚未增加，也没有
@@ -67,7 +71,8 @@
 
 Gesture 的 HaGRID-derived 阈值扫描和左右手引导 Ground Truth 已完成；同步数据以
 `video_frame_index + timestamp_ms` 为准，播放器速度不作为评测时钟。当前优先处理已发生的
-实时 Voice overflow 和 ASR 领域混淆，再建立单轮 Agent 对话评测集与更清晰的 Demo 状态展示。
+实时 Voice overflow 和 ASR 领域混淆，并继续完善实时 Demo 的状态展示。简单单轮对话已经
+接入统一多模态 Demo；当前仍不实现多轮记忆、开放域问答或任意工具调用。
 只有固定图片和连续视频证据表明 canned model 无法满足基本展示，才讨论 Landmarks + 轻量 MLP；
 只有真实 Home Assistant 与性能证据齐备后，才讨论更换 Agent 推理后端。详细停止条件见
 `docs/gesture_technical_route.md`。

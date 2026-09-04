@@ -4,6 +4,11 @@ from pathlib import Path
 import unittest
 
 from edge_smart_home.app.pipeline import TextControlPipeline
+from edge_smart_home.agent.interfaces import (
+    IntelligentPathResult,
+    IntelligentResultKind,
+)
+from edge_smart_home.app import AssistantOrchestrator
 from edge_smart_home.audio.interfaces import (
     AudioChunk,
     AudioSource,
@@ -60,6 +65,33 @@ class VoicePipelineTest(unittest.TestCase):
         second = next(pipeline.run())
         self.assertEqual(first.status, "executed")
         self.assertEqual(second.status, "duplicate_suppressed")
+
+    def test_dialogue_message_is_exposed_to_voice_result(self) -> None:
+        class DialogueAsr(StreamingSpeechRecognizer):
+            def accept(self, chunk):
+                return (StreamingRecognition("你好", 1.0, 0.1),)
+
+            def finish(self):
+                return ()
+
+        class DialoguePath:
+            provider_name = "fake_dialogue"
+
+            def route(self, event):
+                return IntelligentPathResult(
+                    kind=IntelligentResultKind.RESPONSE,
+                    message="你好，我可以帮你控制家庭设备。",
+                )
+
+        root = Path(__file__).resolve().parents[1]
+        control = TextControlPipeline.from_config_dir(root / "configs")
+        orchestrator = AssistantOrchestrator(control, DialoguePath())
+        result = next(
+            VoiceControlPipeline(FakeSource(), DialogueAsr(), orchestrator).run()
+        )
+        self.assertEqual(result.status, "responded")
+        self.assertEqual(result.message, "你好，我可以帮你控制家庭设备。")
+        self.assertIsNone(result.state)
 
 
 if __name__ == "__main__":

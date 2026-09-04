@@ -49,7 +49,8 @@ AssistantResponse → Diagnostics / Benchmark
 启用 Ollama + Qwen3-4B，并通过本地 HTTP 和固定 JSON Schema 完成真实验证：38 条固定样例
 路径准确率 100%，IntelligentPath kind 与结构化精确匹配均为 95.24%，Fast Path 17 条样例
 的 LLM 调用为 0。实时语音/手势媒体回归也确认下一集、上一集、暂停和继续播放均保持 Fast
-Path。上述结果来自 2026-09-04 用户本地运行，不代表目标硬件或真实 Home Assistant 延迟。
+Path；30 条简单单轮对话固定评测中，对话分类准确率 100%，且没有生成设备计划。上述结果
+来自 2026-09-04 用户本地运行，不代表目标硬件或真实 Home Assistant 延迟。
 
 ## 设备与场景
 
@@ -79,7 +80,8 @@ python -m pip install -e '.[voice]'
 python -m pip install -e '.[vision]'
 ```
 
-语音、摄像头、benchmark 和 Home Assistant 命令见 [快速运行指南](docs/quickstart.md)。
+语音、摄像头、benchmark 和 Home Assistant 命令见 [快速运行指南](docs/quickstart.md)。多模态
+联动和简单对话的运行方式见 [本地 Agent 与联动 Demo](docs/local_llm_agent.md)。
 
 ## 验证
 

@@ -15,6 +15,7 @@ from .feedback import AssistantFeedback
 @dataclass(frozen=True, slots=True)
 class VoiceControlResult:
     text: str
+    message: str | None = None
     state: ControlOutcome | None = None
     error: str | None = None
     status: str = "not_routed"
@@ -116,6 +117,11 @@ class VoiceControlPipeline:
         if response.outcome is None:
             result = VoiceControlResult(
                 text=text,
+                message=(
+                    response.intelligent_result.message
+                    if response.intelligent_result
+                    else None
+                ),
                 error=response.error,
                 status=response.status,
                 processing_ms=response.processing_ms,
@@ -130,6 +136,7 @@ class VoiceControlPipeline:
                     text,
                     response.status,
                     {
+                        "message": result.message,
                         "error": response.error,
                         "processing_ms": response.processing_ms,
                         "path": response.path,
@@ -142,6 +149,11 @@ class VoiceControlPipeline:
             return result
         result = VoiceControlResult(
             text=text,
+            message=(
+                response.intelligent_result.message
+                if response.intelligent_result
+                else None
+            ),
             state=response.outcome,
             status=response.status,
             processing_ms=response.processing_ms,
@@ -154,6 +166,7 @@ class VoiceControlPipeline:
         if self.diagnostics:
             detail = {
                 **_diagnostic_detail(response.outcome),
+                "message": result.message,
                 "processing_ms": response.processing_ms,
                 "path": response.path,
                 "provider": response.provider,

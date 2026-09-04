@@ -30,17 +30,21 @@ def main() -> None:
         speed=args.tts_speed,
         audio_device=args.tts_audio_device,
     )
-    gesture_pipeline = _build_gesture_pipeline(
-        config_dir, orchestrator, feedback
-    )
-    print("Edge AI 多模态联动 Demo")
-    print("共享一个 AssistantOrchestrator 和 Mock DeviceBackend。")
-    print("输入格式：text <文本> | voice <ASR文本> | gesture <手势标签> | q")
-    print("语音反馈模式：" + args.feedback)
-    if args.scripted:
-        _run_scripted(orchestrator, gesture_pipeline, feedback)
-        return
-    _run_interactive(orchestrator, gesture_pipeline, feedback)
+    try:
+        gesture_pipeline = _build_gesture_pipeline(
+            config_dir, orchestrator, feedback
+        )
+        print("Edge AI 多模态联动 Demo")
+        print("共享一个 AssistantOrchestrator 和 Mock DeviceBackend。")
+        print("输入格式：text <文本> | voice <ASR文本> | gesture <手势标签> | q")
+        print("支持简单单轮对话：问候、能力询问和一般说明不会执行设备操作。")
+        print("语音反馈模式：" + args.feedback)
+        if args.scripted:
+            _run_scripted(orchestrator, gesture_pipeline, feedback)
+            return
+        _run_interactive(orchestrator, gesture_pipeline, feedback)
+    finally:
+        feedback.close()
 
 
 def _build_parser() -> argparse.ArgumentParser:
@@ -83,9 +87,11 @@ def _build_gesture_pipeline(config_dir, orchestrator, feedback):
 
 
 def _run_scripted(orchestrator, gesture_pipeline, feedback) -> None:
-    print("开始固定联动流程：Gesture → Voice → Voice → Gesture → Text")
+    print("开始固定联动流程：Gesture → Dialogue → Voice → Voice → Gesture → Text")
     scripted_events = (
         ("gesture", "Victory"),
+        ("text", "你好"),
+        ("text", "你能控制哪些设备"),
         ("voice", "客厅有点暗，帮我处理一下"),
         ("voice", "这里有点暗，帮我处理一下"),
         ("gesture", "Closed_Fist"),

@@ -149,6 +149,7 @@ def main() -> None:
     )
     last_voice = "waiting"
     last_voice_result = "-"
+    last_reply = "-"
     last_gesture = "none"
     last_event = "-"
     frame_times: deque[int] = deque(maxlen=30)
@@ -211,6 +212,7 @@ def main() -> None:
                         break
                     last_voice = result.text
                     last_voice_result = f"{result.status} {result.path}"
+                    last_reply = result.message or result.error or "-"
                     last_event = f"voice {result.status} {result.path}"
                     print(_voice_result_payload(result), flush=True)
 
@@ -220,6 +222,7 @@ def main() -> None:
                     error = None
                 if error is not None:
                     last_voice_result = f"error: {type(error).__name__}"
+                    last_reply = "语音处理已停止，请检查终端错误。"
                     print(f"Voice pipeline stopped: {error}", flush=True)
 
                 fps = _fps(frame_times)
@@ -229,6 +232,7 @@ def main() -> None:
                     fps,
                     last_voice,
                     last_voice_result,
+                    last_reply,
                     last_gesture,
                     last_event,
                 )
@@ -309,6 +313,7 @@ def _draw_overlay(
     fps: float,
     last_voice: str,
     last_voice_result: str,
+    last_reply: str,
     last_gesture: str,
     last_event: str,
 ) -> None:
@@ -316,6 +321,7 @@ def _draw_overlay(
         "Edge AI Smart Home Assistant",
         f"FPS: {fps:.1f} | Press Q/ESC to quit",
         f"VOICE: {last_voice_result}",
+        f"REPLY: {last_reply}",
         f"GESTURE: {last_gesture}",
         f"EVENT: {last_event}",
     )
@@ -337,6 +343,7 @@ def _voice_result_payload(result: VoiceControlResult) -> str:
         {
             "source": "voice",
             "text": result.text,
+            "message": result.message,
             "status": result.status,
             "path": result.path,
             "provider": result.provider,

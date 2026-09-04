@@ -65,6 +65,8 @@ class LocalLlmIntelligentPathTest(unittest.TestCase):
         self.assertIn("不能猜测或使用默认设备", prompt)
         self.assertIn("必须返回 clarification", prompt)
         self.assertIn("返回 unavailable", prompt)
+        self.assertIn("普通聊天、解释原因、询问能力或请求帮助不得生成 plan", prompt)
+        self.assertIn("不能猜测为 turn_on", prompt)
 
     def test_ambiguous_model_plan_is_downgraded_to_clarification(self) -> None:
         transport = FakeTransport(
@@ -242,6 +244,72 @@ class LocalLlmIntelligentPathTest(unittest.TestCase):
                 PerceptionEvent(source=EventSource.TEXT, label="请求")
             )
             self.assertEqual(result.kind.value, kind)
+
+    def test_dialogue_request_cannot_become_a_device_plan(self) -> None:
+        transport = FakeTransport(
+            {
+                "response": json.dumps(
+                    {
+                        "kind": "plan",
+                        "message": "你好，我来打开客厅灯。",
+                        "commands": [
+                            {
+                                "device_id": "living_room_light",
+                                "action": "turn_on",
+                                "arguments": {},
+                            }
+                        ],
+                    }
+                )
+            }
+        )
+        result = make_path(transport).route(
+            PerceptionEvent(source=EventSource.TEXT, label="你好")
+        )
+        self.assertEqual(result.kind, IntelligentResultKind.REJECTED)
+        self.assertEqual(result.commands, ())
+
+    def test_ambiguous_generic_device_request_is_clarification(self) -> None:
+        transport = FakeTransport(
+            {
+                "response": json.dumps(
+                    {
+                        "kind": "plan",
+                        "message": "我来处理客厅灯。",
+                        "commands": [
+                            {
+                                "device_id": "living_room_light",
+                                "action": "turn_on",
+                                "arguments": {},
+                            }
+                        ],
+                    }
+                )
+            }
+        )
+        result = make_path(transport).route(
+            PerceptionEvent(source=EventSource.TEXT, label="请把灯处理一下")
+        )
+        self.assertEqual(result.kind, IntelligentResultKind.CLARIFICATION)
+        self.assertEqual(result.commands, ())
+
+    def test_response_cannot_claim_unexecuted_device_success(self) -> None:
+        transport = FakeTransport(
+            {
+                "response": json.dumps(
+                    {
+                        "kind": "response",
+                        "message": "客厅灯已经打开了。",
+                        "commands": [],
+                    }
+                )
+            }
+        )
+        result = make_path(transport).route(
+            PerceptionEvent(source=EventSource.TEXT, label="客厅灯怎么样")
+        )
+        self.assertEqual(result.kind, IntelligentResultKind.RESPONSE)
+        self.assertEqual(result.message, "我不能把未执行的操作描述为已完成。")
 
     def test_transport_and_response_failures_degrade_to_unavailable(self) -> None:
         failures = [

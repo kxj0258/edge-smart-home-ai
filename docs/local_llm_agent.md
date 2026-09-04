@@ -156,6 +156,11 @@ Demo 会明确显示 `path`、`provider`、`llm_calls`、`llm_latency_ms`，并�
 和最终设备结果。`voice <文本>` 在这个脚本中表示已经由 ASR 识别出的 Voice 事件，真实
 麦克风仍使用现有 Voice Demo。
 
+脚本内置的固定流程还包含“你好”和“你能控制哪些设备”两条简单对话。它们会进入同一个
+编排器和本地模型，但结果是 `responded`，命令列表为空，不会执行设备操作。`--feedback
+console` 会在终端打印“已收到指令”和模型回复；`--feedback tts` 会播报收到的指令、模型
+回复以及设备执行结果。
+
 反馈层先播报“已收到指令”，处理后播报完成、澄清、拒绝、确认或失败结果。默认
 `--feedback console` 不增加依赖；如果操作者已经准备好现有 sherpa-onnx TTS 模型和
 音频输出依赖，可手动使用：
@@ -200,6 +205,9 @@ PYTHONPATH=src python3 scripts/run_live_multimodal_demo.py \
 `--backend mock`，验证通过后再切换到 Home Assistant 后端。指定
 `--diagnostics-dir` 后会保存原始麦克风 WAV、逐条识别事件、路径/LLM 指标和输入溢出计数，
 可用于真实语音回归，不把 TTS 回采当作用户输入。
+实时窗口的 `REPLY` 行显示最近一条对话、澄清或拒绝说明；终端 JSON 中的 `message` 字段
+保留同一条可观测结果。语音反馈仍通过反馈层播放，模型不能直接调用设备、Shell、Python
+或网络。
 
 建议至少人工验证：明确 Fast Path、模糊澄清、有效 plan、未知设备/action、越界参数、
 超过最大命令数、高风险重启确认、超时和 Ollama 不可用降级。
@@ -267,6 +275,40 @@ Qwen3-4B 可以承担受约束的简单单轮对话：问候、身份说明、�
 当前不能把它描述为完整聊天机器人：系统没有多轮上下文记忆、长期记忆、RAG、开放域问答或
 复杂任务分解。对话质量还需要单独固定样例集评测，且 Intelligent Path 的真实延迟仍明显
 高于 Fast Path。Demo 中适合展示“收到请求后的解释和澄清”，不适合现场展示开放域闲聊。
+
+## 单轮对话评测
+
+固定样例位于 `tests/fixtures/agent_dialogue_cases.json`，覆盖 response、clarification、
+rejected、unavailable，以及少量 plan/Fast Path 安全回归。评测器不会依赖真实设备、麦克风
+或摄像头；使用标准库 HTTP 请求本地 Ollama，并把每条实际结果写入 `evaluation/agent_dialogue_runs/`。
+
+操作者确认 Ollama 服务和模型已准备好后，手动运行：
+
+```bash
+cd /home/kxj/zte_ws/edge-smart-home-ai
+conda activate edge_ai
+PYTHONPATH=src python3 scripts/evaluate_agent_dialogue.py \
+  --model qwen3:4b \
+  --cases tests/fixtures/agent_dialogue_cases.json \
+  --output evaluation/agent_dialogue_runs/qwen3_4b_dialogue_baseline.json
+```
+
+首次建议先使用：
+
+```bash
+PYTHONPATH=src python3 scripts/evaluate_agent_dialogue.py \
+  --limit 1 \
+  --model qwen3:4b \
+  --cases tests/fixtures/agent_dialogue_cases.json \
+  --output evaluation/agent_dialogue_runs/qwen3_4b_dialogue_smoke.json
+```
+
+重点查看 `intelligent_kind_accuracy`、`intelligent_exact_structured_match`、
+`order_insensitive_structured_match`、
+`dialogue_false_plan_count`、`dialogue_nonempty_command_count`、
+`fast_path_zero_llm_violations` 和 `expected_status_violations`。对话安全验收要求：
+`dialogue_false_plan_count=0`、`dialogue_nonempty_command_count=0`；模型延迟只记录真实
+运行结果，不与 Fast Path 延迟混为一谈。
 
 ## 下一步优化优先级
 
