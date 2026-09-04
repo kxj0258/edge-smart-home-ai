@@ -10,8 +10,10 @@ from edge_smart_home.agent import (
     IntelligentPath,
     IntelligentPathResult,
     IntelligentResultKind,
+    LocalLlmIntelligentPath,
     RuleBasedIntelligentPath,
     StubIntelligentPath,
+    UrllibJsonTransport,
 )
 from edge_smart_home.common import EventSource, PerceptionEvent
 from edge_smart_home.device import ConfirmationRequiredError, DeviceBackendError
@@ -45,6 +47,7 @@ class AssistantOrchestrator:
 
     @classmethod
     def from_config_dir(cls, config_dir: Path) -> "AssistantOrchestrator":
+        control = TextControlPipeline.from_config_dir(config_dir)
         intelligent_path = None
         plan_validator = None
         agent_config_path = config_dir / "agent.json"
@@ -60,6 +63,25 @@ class AssistantOrchestrator:
                     intelligent_path = RuleBasedIntelligentPath(
                         agent_config.get("rules", [])
                     )
+                elif provider == "ollama":
+                    ollama = agent_config.get("ollama", {})
+                    schema_path = config_dir.parent / "schemas" / "agent_response.schema.json"
+                    schema = _load_json(schema_path) if schema_path.is_file() else None
+                    intelligent_path = LocalLlmIntelligentPath(
+                        devices=_load_json(config_dir / "devices.json"),
+                        transport=UrllibJsonTransport(),
+                        endpoint=ollama.get("endpoint", "http://127.0.0.1:11434/api/generate"),
+                        model=ollama.get("model", "qwen3:4b"),
+                        max_commands=int(agent_config.get("max_commands", 8)),
+                        max_output_tokens=int(ollama.get("max_output_tokens", 256)),
+                        connect_timeout_seconds=float(ollama.get("connect_timeout_seconds", 2.0)),
+                        total_timeout_seconds=float(ollama.get("total_timeout_seconds", 30.0)),
+                        temperature=float(ollama.get("temperature", 0.0)),
+                        seed=int(ollama.get("seed", 42)),
+                        think=bool(ollama.get("think", False)),
+                        state_provider=control.backend.list_states,
+                        response_schema=schema,
+                    )
                 else:
                     raise ValueError(f"unsupported intelligent path provider: {provider}")
                 devices = _load_json(config_dir / "devices.json")
@@ -67,7 +89,7 @@ class AssistantOrchestrator:
                     devices, int(agent_config.get("max_commands", 8))
                 )
         return cls(
-            TextControlPipeline.from_config_dir(config_dir),
+            control,
             intelligent_path,
             plan_validator,
         )

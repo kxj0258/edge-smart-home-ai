@@ -2,6 +2,16 @@
   "enabled": true,
   "provider": "rule_based",
   "max_commands": 8,
+  "ollama": {
+    "endpoint": "http://127.0.0.1:11434/api/generate",
+    "model": "qwen3:4b",
+    "connect_timeout_seconds": 2.0,
+    "total_timeout_seconds": 30.0,
+    "max_output_tokens": 256,
+    "temperature": 0.0,
+    "seed": 42,
+    "think": false
+  },
   "rules": [
     {
       "exact": ["你好", "嗨", "hello"],

@@ -23,8 +23,25 @@ class FastPathRouter:
 
     def route(self, event: PerceptionEvent) -> DeviceCommand:
         text = self._normalize(event.label)
+        if any(
+            phrase in text for phrase in ("网络音乐", "在线音乐", "网络歌曲", "网络电台")
+        ):
+            raise UnsupportedCommandError(
+                "external media capability is unavailable"
+            )
         device_id = self._match_device(text)
         capabilities = set(self._devices[device_id]["capabilities"])
+        if "query_state" in capabilities and any(
+            phrase in text for phrase in self._intents.get("query_state", [])
+        ):
+            return DeviceCommand(
+                device_id=device_id,
+                action="query_state",
+                arguments={},
+                source=event.source,
+                confidence=event.confidence,
+                request_id=event.event_id,
+            )
         action_text = self._remove_device_aliases(text, device_id)
         action, arguments = self._match_action(action_text, device_id, capabilities)
         return DeviceCommand(
@@ -83,12 +100,14 @@ class FastPathRouter:
         self, text: str, device_id: str, capabilities: set[str]
     ) -> tuple[str, dict[str, Any]]:
         if "set_temperature" in capabilities:
-            match = re.search(r"(?:设置|调到|调至|空调)?(1[6-9]|2[0-9]|30)(?:度|℃)", text)
+            match = re.search(r"(?:设置|调到|调至|空调)?(\d{1,3})(?:度|℃)", text)
             if match:
                 return "set_temperature", {"temperature": int(match.group(1))}
 
         if "set_volume" in capabilities:
-            match = re.search(r"(?:音量)?(?:设置|调到|调至|调为)(\d{1,3})", text)
+            match = re.search(
+                r"(?:音量)?(?:设置(?:为)?|设为|调到|调至|调为)(\d{1,4})", text
+            )
             if match:
                 return "set_volume", {"volume": int(match.group(1))}
 

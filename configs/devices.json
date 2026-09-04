@@ -57,12 +57,12 @@
     "initial_state": {"online": true, "privacy_mode": true, "motion_detected": false, "recording": false}
   },
   "living_room_sensor": {
-    "aliases": ["客厅传感器", "客厅温度", "客厅湿度", "客厅环境", "客厅有人"],
+    "aliases": ["客厅传感器", "客厅温度", "客厅湿度", "客厅环境", "客厅有人", "客厅现在有人"],
     "capabilities": ["query_state"],
     "initial_state": {"temperature": 27.2, "humidity": 58, "occupancy": true, "ambient_light_lux": 180}
   },
   "bedroom_sensor": {
-    "aliases": ["卧室传感器", "卧室温度", "卧室湿度", "卧室环境", "卧室有人"],
+    "aliases": ["卧室传感器", "卧室温度", "卧室湿度", "卧室环境", "卧室有人", "卧室现在有人"],
     "capabilities": ["query_state"],
     "initial_state": {"temperature": 26.1, "humidity": 55, "occupancy": false, "ambient_light_lux": 40}
   },

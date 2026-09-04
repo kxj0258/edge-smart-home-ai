@@ -1,0 +1,65 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://edge-smart-home-ai.local/schemas/agent-response.schema.json",
+  "title": "Edge Smart Home Agent Response",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["kind", "message", "commands"],
+  "properties": {
+    "kind": {
+      "type": "string",
+      "enum": ["response", "clarification", "plan", "rejected", "unavailable"]
+    },
+    "message": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 512
+    },
+    "commands": {
+      "type": "array",
+      "maxItems": 8,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["device_id", "action", "arguments"],
+        "properties": {
+          "device_id": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 128
+          },
+          "action": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 128
+          },
+          "arguments": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "volume": {"type": "integer", "minimum": 0, "maximum": 100},
+              "temperature": {"type": "integer", "minimum": 16, "maximum": 30},
+              "channel": {"type": "string", "minLength": 1, "maxLength": 128},
+              "app": {"type": "string", "minLength": 1, "maxLength": 128},
+              "mode": {"type": "string", "minLength": 1, "maxLength": 64}
+            }
+          }
+        }
+      }
+    }
+  },
+  "allOf": [
+    {
+      "if": {
+        "properties": {"kind": {"const": "plan"}},
+        "required": ["kind"]
+      },
+      "then": {
+        "properties": {"commands": {"minItems": 1}}
+      },
+      "else": {
+        "properties": {"commands": {"maxItems": 0}}
+      }
+    }
+  ]
+}
