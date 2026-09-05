@@ -19,8 +19,16 @@ from edge_smart_home.vision import (
     DynamicGestureDecoder,
     GestureControlPipeline,
     GestureTemporalFilter,
+    HAND_CONNECTIONS,
     MediaPipeGestureRecognizer,
+    landmark_pixel_points,
+    valid_hand_observations,
 )
+
+
+CAMERA_WINDOW_NAME = "小兴 · Edge AI Smart Home Assistant"
+LANDMARK_WINDOW_NAME = "小兴 · Hand Landmarks & Output"
+WINDOW_GAP = 20
 
 
 def main() -> None:
@@ -191,6 +199,19 @@ def main() -> None:
     camera.set(cv2.CAP_PROP_FRAME_HEIGHT, int(vision_config["camera_height"]))
     camera.set(cv2.CAP_PROP_FPS, int(vision_config["camera_fps"]))
     camera.set(cv2.CAP_PROP_BUFFERSIZE, 1)
+    camera_window_width = round(
+        int(vision_config["camera_width"]) * args.window_scale
+    )
+    camera_window_height = round(
+        int(vision_config["camera_height"]) * args.window_scale
+    )
+    cv2.namedWindow(CAMERA_WINDOW_NAME, cv2.WINDOW_NORMAL)
+    cv2.resizeWindow(CAMERA_WINDOW_NAME, camera_window_width, camera_window_height)
+    cv2.moveWindow(CAMERA_WINDOW_NAME, 0, 0)
+    if args.show_landmarks:
+        cv2.namedWindow(LANDMARK_WINDOW_NAME, cv2.WINDOW_NORMAL)
+        cv2.resizeWindow(LANDMARK_WINDOW_NAME, 960, 720)
+        cv2.moveWindow(LANDMARK_WINDOW_NAME, camera_window_width + WINDOW_GAP, 0)
 
     temporal_filter = GestureTemporalFilter(
         vision_config["score_threshold"],
@@ -221,7 +242,8 @@ def main() -> None:
     print("小兴 · Edge AI Smart Home Assistant - live multimodal window")
     print("Voice: listening in background")
     print("Gesture: camera recognition active")
-    print("Gesture profiles: H=home, M=media; press q or ESC in the camera window to stop.")
+    print("Gesture profiles: H=home, M=media; windows: camera=left, landmarks=right")
+    print("Press q or ESC in either window to stop.")
 
     try:
         with MediaPipeGestureRecognizer(gesture_model, vision_config) as recognizer:
@@ -251,9 +273,11 @@ def main() -> None:
                 last_timestamp_ms = max(last_timestamp_ms + 1, now_ms)
                 frame_times.append(last_timestamp_ms)
 
-                for observation, response in gesture_pipeline.process_frame(
+                frame_observations = gesture_pipeline.process_frame(
                     rgb_frame, last_timestamp_ms
-                ):
+                )
+                observations = tuple(observation for observation, _ in frame_observations)
+                for observation, response in frame_observations:
                     if observation.label:
                         last_gesture = f"{observation.label} {observation.score:.2f}"
                     if dynamic_decoder.last_event is not None:
@@ -321,7 +345,23 @@ def main() -> None:
                     gesture_pipeline.gesture_enabled,
                     last_dynamic,
                 )
-                cv2.imshow("小兴 · Edge AI Smart Home Assistant", frame)
+                cv2.imshow(CAMERA_WINDOW_NAME, frame)
+                if args.show_landmarks:
+                    landmark_window = _draw_landmark_window(
+                        cv2,
+                        frame,
+                        observations,
+                        fps,
+                        last_voice,
+                        last_voice_result,
+                        last_reply,
+                        last_gesture,
+                        last_dynamic,
+                        last_event,
+                        gesture_pipeline.profile,
+                        gesture_pipeline.gesture_enabled,
+                    )
+                    cv2.imshow(LANDMARK_WINDOW_NAME, landmark_window)
                 key = cv2.waitKey(1) & 0xFF
                 if key == ord("m"):
                     gesture_pipeline.set_profile("media")
@@ -404,7 +444,26 @@ def _build_parser() -> argparse.ArgumentParser:
         default=0.4,
         help="Ignore microphone samples briefly after TTS playback",
     )
+    parser.add_argument(
+        "--window-scale",
+        type=_positive_float,
+        default=2.0,
+        help="Scale the camera preview window without changing capture resolution",
+    )
+    parser.add_argument(
+        "--show-landmarks",
+        action=argparse.BooleanOptionalAction,
+        default=True,
+        help="Show the hand-landmark and live-output window",
+    )
     return parser
+
+
+def _positive_float(value: str) -> float:
+    scale = float(value)
+    if scale <= 0.0:
+        raise argparse.ArgumentTypeError("window scale must be greater than 0")
+    return scale
 
 
 def _resolve(root: Path, value: Path) -> Path:
@@ -473,6 +532,96 @@ def _draw_overlay(
             2,
             cv2.LINE_AA,
         )
+
+
+def _draw_landmark_window(
+    cv2,
+    frame,
+    observations,
+    fps: float,
+    last_voice: str,
+    last_voice_result: str,
+    last_reply: str,
+    last_gesture: str,
+    last_dynamic: str,
+    last_event: str,
+    profile: str,
+    gesture_enabled: bool,
+):
+    """Render a diagnostic window without running another vision inference."""
+    canvas = cv2.resize(frame, (960, 720))
+    canvas[:] = (24, 24, 24)
+    skeleton_width = 520
+    hand_observations = valid_hand_observations(observations)
+    for hand_index, observation in enumerate(hand_observations):
+        points = landmark_pixel_points(
+            observation,
+            skeleton_width,
+            680,
+            margin=24,
+        )
+        color = (0, 220, 0) if observation.score >= 0.60 else (0, 190, 255)
+        for start, end in HAND_CONNECTIONS:
+            cv2.line(canvas, points[start], points[end], color, 3, cv2.LINE_AA)
+        for point_index, point in enumerate(points):
+            cv2.circle(canvas, point, 7, (255, 255, 255), -1, cv2.LINE_AA)
+            cv2.putText(
+                canvas,
+                str(point_index),
+                (point[0] + 8, point[1] - 8),
+                cv2.FONT_HERSHEY_SIMPLEX,
+                0.42,
+                (190, 190, 190),
+                1,
+                cv2.LINE_AA,
+            )
+        cv2.putText(
+            canvas,
+            f"HAND {hand_index + 1}: {observation.handedness or 'unknown'}  "
+            f"score={observation.score:.2f}",
+            (18, 705),
+            cv2.FONT_HERSHEY_SIMPLEX,
+            0.65,
+            color,
+            2,
+            cv2.LINE_AA,
+        )
+    if not hand_observations:
+        cv2.putText(
+            canvas,
+            "NO HAND LANDMARKS",
+            (80, 340),
+            cv2.FONT_HERSHEY_SIMPLEX,
+            1.0,
+            (0, 190, 255),
+            2,
+            cv2.LINE_AA,
+        )
+
+    output_lines = (
+        "XIAOXING | LIVE RECOGNITION",
+        f"FPS: {fps:.1f}",
+        f"MODE: {profile} | CONTROL: {'ON' if gesture_enabled else 'HOLD Open_Palm'}",
+        f"GESTURE: {last_gesture}",
+        f"DYNAMIC: {last_dynamic}",
+        f"VOICE: {last_voice}",
+        f"VOICE RESULT: {last_voice_result}",
+        f"REPLY: {last_reply}",
+        f"EVENT: {last_event}",
+        "Q/ESC quit | H home | M media",
+    )
+    for index, line in enumerate(output_lines):
+        cv2.putText(
+            canvas,
+            line[:62],
+            (550, 48 + index * 58),
+            cv2.FONT_HERSHEY_SIMPLEX,
+            0.62,
+            (235, 235, 235) if index else (0, 255, 255),
+            2,
+            cv2.LINE_AA,
+        )
+    return canvas
 
 
 def _voice_result_payload(result: VoiceControlResult) -> str:

@@ -18,6 +18,7 @@
 | Benchmark | 已完成第一版 | ASR、Text E2E、Gesture、多模态和 HaGRID IMAGE smoke |
 | 统一入口 | 已完成并验证 | Text/Voice/Gesture/benchmark入口已贯通 |
 | 面试 Demo | 初步方案已整理 | 三模态、Agent、安全、指标与现场降级流程；尚待按指南人工预演 |
+| 展示窗口与语音反馈 | 已完成第一版 | 主窗口左侧 2 倍显示，关键点/实时输出窗口右侧；TTS 和 VoiceResult 均播报实际完成动作 |
 
 ## 已验证基线
 
@@ -61,6 +62,12 @@
   queue drop 0。
 - 同次实时终端记录的 5 个 Gesture 事件均为 Fast Path 执行成功；TTS 反馈与 0.5 秒回声保护
   经用户现场确认可用。该会话不提供 Gesture 独立准确率 Ground Truth，因此不填写手势准确率。
+- 2026-09-05 完成实时展示层增强：`GestureObservation` 传递 MediaPipe 21 个关键点，新增
+  `Hand Landmarks & Output` 窗口；主摄像头窗口默认 1280×960，两个窗口自动左右排列，
+  不改变 640×480 采集分辨率。
+- 2026-09-05 完成短反馈修复：成功结果统一使用“已完成，具体动作”的格式，例如“已完成，
+  播放下一集。”和“已完成，打开客厅灯。”；场景使用“已完成，开启观影模式。”，不再把
+  Ollama 的意图说明当作完成结果。完整测试已达到 120 项通过。
 
 ## 产物路径（不进 Git）
 
@@ -78,6 +85,7 @@
 - 真人、远场、噪声、混响 ASR 分层数据集，以及实时 PortAudio overflow 根因定位；
 - 基于真实 ASR 混淆的最小 Router 词汇补充；
 - 更大规模、多说话人和真实噪声条件下的对话/语音联动评测；
+- 新反馈文案的真实语音回归，确认智能路径和手势路径均播报实际动作；
 - 实时 Voice endpoint/E2E、CPU 和内存指标；
 - 真实 Home Assistant 联调；
 - Wake Word、Android 和 Rockchip/Amlogic 实机；`llama.cpp` provider 尚未增加，也没有
@@ -86,19 +94,19 @@
 ## 当前下一阶段
 
 Gesture 的 HaGRID-derived 阈值扫描和左右手引导 Ground Truth 已完成；同步数据以
-`video_frame_index + timestamp_ms` 为准，播放器速度不作为评测时钟。当前优先处理已发生的
-实时 Voice overflow 和 ASR 领域混淆，并继续完善实时 Demo 的状态展示。简单单轮对话已经
-接入统一多模态 Demo；当前仍不实现多轮记忆、开放域问答或任意工具调用。
+`video_frame_index + timestamp_ms` 为准，播放器速度不作为评测时钟。当前优先进行短反馈的
+真实语音回归，再处理已发生的实时 Voice overflow 和 ASR 领域混淆。简单单轮对话已经接入
+统一多模态 Demo；当前仍不实现多轮记忆、开放域问答或任意工具调用。
 只有固定图片和连续视频证据表明 canned model 无法满足基本展示，才讨论 Landmarks + 轻量 MLP；
 只有真实 Home Assistant 与性能证据齐备后，才讨论更换 Agent 推理后端。详细停止条件见
 `docs/gesture_technical_route.md`。
 
 ## 初步展示 Demo
 
-`docs/interview_demo.md` 已整理第一版 6–8 分钟面试演示方案，覆盖 Text Fast Path、实时
-Voice、在线 Gesture、Intelligent Path、安全确认、真实基线和典型问题分析。该工作只整理
-现有已实现能力，未新增运行逻辑；正式使用前仍需在实际面试设备上人工确认麦克风、摄像头、
-模型路径并完成一次全流程预演。
+`docs/interview_demo.md` 已整理第一版 6–8 分钟面试演示方案，`docs/quickstart.md` 已补充
+当前双窗口和逐步操作脚本，覆盖 Text Fast Path、实时 Voice、在线 Gesture、Intelligent
+Path、安全确认、真实基线和典型问题分析。正式使用前仍需在实际面试设备上人工确认麦克风、
+摄像头、模型路径，并完成一次全流程预演。
 
 ## 边界
 

@@ -1,12 +1,15 @@
 from __future__ import annotations
 
 from pathlib import Path
+import json
 import unittest
 
 from edge_smart_home.app.pipeline import TextControlPipeline
+from edge_smart_home.agent import AgentPlanValidator
 from edge_smart_home.agent.interfaces import (
     IntelligentPathResult,
     IntelligentResultKind,
+    PlannedDeviceCommand,
 )
 from edge_smart_home.app import AssistantOrchestrator
 from edge_smart_home.audio.interfaces import (
@@ -37,8 +40,48 @@ class VoicePipelineTest(unittest.TestCase):
         control = TextControlPipeline.from_config_dir(root / "configs")
         result = next(VoiceControlPipeline(FakeSource(), FakeAsr(), control).run())
         self.assertEqual(result.text, "打开客厅灯")
+        self.assertEqual(result.message, "已完成，打开客厅灯。")
         self.assertIsNotNone(result.state)
         self.assertTrue(result.state.attributes["power"])
+
+    def test_intelligent_voice_result_message_describes_executed_action(self) -> None:
+        class PlanAsr(StreamingSpeechRecognizer):
+            def accept(self, chunk):
+                return (StreamingRecognition("客厅有点暗，帮我处理一下", 1.0, 0.1),)
+
+            def finish(self):
+                return ()
+
+        class PlanPath:
+            provider_name = "fake_ollama"
+
+            def route(self, event):
+                return IntelligentPathResult(
+                    kind=IntelligentResultKind.PLAN,
+                    message="客厅有点暗，我帮您处理",
+                    commands=(
+                        PlannedDeviceCommand("living_room_light", "turn_on"),
+                    ),
+                )
+
+        root = Path(__file__).resolve().parents[1]
+        control = TextControlPipeline.from_config_dir(root / "configs")
+        devices = json.loads(
+            (root / "configs" / "devices.json").read_text(encoding="utf-8")
+        )
+        result = next(
+            VoiceControlPipeline(
+                FakeSource(),
+                PlanAsr(),
+                AssistantOrchestrator(
+                    control,
+                    PlanPath(),
+                    AgentPlanValidator(devices, 8),
+                ),
+            ).run()
+        )
+        self.assertEqual(result.status, "executed")
+        self.assertEqual(result.message, "已完成，打开客厅灯。")
 
     def test_unroutable_transcript_is_reported_without_crashing(self) -> None:
         class UnroutableAsr(StreamingSpeechRecognizer):

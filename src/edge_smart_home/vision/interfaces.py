@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 from dataclasses import dataclass
+from math import isfinite
 from typing import Any, Protocol, Sequence
 
 
@@ -13,6 +14,7 @@ class GestureObservation:
     wrist_x: float | None = None
     wrist_y: float | None = None
     pinch_distance: float | None = None
+    landmarks: tuple[tuple[float, float, float], ...] = ()
 
     def __post_init__(self) -> None:
         if not 0.0 <= self.score <= 1.0:
@@ -26,6 +28,13 @@ class GestureObservation:
         ):
             if value is not None and not 0.0 <= value <= 1.0:
                 raise ValueError(f"{name} must be between 0 and 1")
+        normalized_landmarks = tuple(
+            (float(x), float(y), float(z)) for x, y, z in self.landmarks
+        )
+        for x, y, z in normalized_landmarks:
+            if not 0.0 <= x <= 1.0 or not 0.0 <= y <= 1.0 or not isfinite(z):
+                raise ValueError("landmark x and y must be between 0 and 1; z must be finite")
+        object.__setattr__(self, "landmarks", normalized_landmarks)
 
 
 class GestureRecognizer(Protocol):

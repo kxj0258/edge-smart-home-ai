@@ -401,8 +401,19 @@ class AssistantOrchestrator:
                 names.append(f"开始{device_name}录像")
             else:
                 names.append(f"{action_names.get(command.action, '执行')}{device_name}")
-        details = "、".join(names) if names else "这项操作"
-        return f"即将{details}，这是高风险操作，请说确认或取消。"
+        actions = {command.action for command in commands}
+        if "lock" in actions:
+            lock_name = "入户门锁"
+            for command in commands:
+                if command.action == "lock":
+                    device = self.control.router.devices.get(command.device_id, {})
+                    lock_name = device.get("display_name", command.device_id)
+                    break
+            return f"即将锁上{lock_name}并执行安防操作，请说确认或取消。"
+        if "restart" in actions:
+            return "即将重启家庭网关，请说确认或取消。"
+        details = names[0] if len(names) == 1 else "多项高风险操作"
+        return f"即将{details}，请说确认或取消。"
 
     def _confirmation_message_response(
         self,
@@ -437,9 +448,9 @@ class AssistantOrchestrator:
             return None
         text = re.sub(r"[\s，。！？,.!?]", "", event.label).lower()
         if text in {"你好", "嗨", "小兴你好", "你好小兴", "晚上好", "早上好", "hello"}:
-            message = "你好，我是小兴，可以帮你控制家里的设备。"
+            message = "你好，我是小兴。"
         elif text in {"你是谁", "你叫什么", "你叫什么名字"}:
-            message = "我是小兴，负责理解你的家庭设备指令，并在安全校验后执行。"
+            message = "我是小兴，可以控制和查询家庭设备。"
         elif text in {
             "你能控制哪些设备",
             "你能控制什么设备",
@@ -452,15 +463,11 @@ class AssistantOrchestrator:
             "怎么使用你",
             "我应该怎么使用你",
         }:
-            names = [
-                str(config.get("display_name", device_id))
-                for device_id, config in self.control.router.devices.items()
-            ]
-            message = "我可以控制或查询：" + "、".join(names) + "。"
+            message = "我能控制灯光、窗帘、空调、电视、音箱和安防设备，也支持回家、观影、睡眠等场景。"
         elif text in {"谢谢", "感谢", "谢谢你"} or text.startswith("谢谢"):
-            message = "不客气，有需要时叫我小兴。"
+            message = "不客气。"
         elif text in {"你会把我的话直接执行吗", "你会直接执行我的话吗"}:
-            message = "不会。设备命令必须先经过确定性路由、安全校验和必要确认。"
+            message = "不会，命令要经过安全校验，必要时还会确认。"
         else:
             return None
         result = IntelligentPathResult(

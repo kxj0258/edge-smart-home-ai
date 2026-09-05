@@ -167,14 +167,32 @@ def _observation_from_result(
     result: Any,
     hand_index: int,
 ) -> GestureObservation:
-    """Keep a small motion feature set at the MediaPipe adapter boundary."""
+    """Keep motion features and normalized landmarks at the adapter boundary."""
     try:
         landmarks = result.hand_landmarks[hand_index]
     except (AttributeError, IndexError):
         return GestureObservation(label, score, timestamp_ms, handedness)
     if not landmarks:
         return GestureObservation(label, score, timestamp_ms, handedness)
+    normalized_landmarks = tuple(
+        (
+            min(1.0, max(0.0, float(landmark.x))),
+            min(1.0, max(0.0, float(landmark.y))),
+            float(landmark.z),
+        )
+        for landmark in landmarks
+    )
     wrist = landmarks[0]
+    if len(landmarks) < 18:
+        return GestureObservation(
+            label=label,
+            score=score,
+            timestamp_ms=timestamp_ms,
+            handedness=handedness,
+            wrist_x=normalized_landmarks[0][0],
+            wrist_y=normalized_landmarks[0][1],
+            landmarks=normalized_landmarks,
+        )
     thumb_tip = landmarks[4]
     index_tip = landmarks[8]
     palm_scale = max(
@@ -195,4 +213,5 @@ def _observation_from_result(
         wrist_x=min(1.0, max(0.0, float(wrist.x))),
         wrist_y=min(1.0, max(0.0, float(wrist.y))),
         pinch_distance=pinch_distance,
+        landmarks=normalized_landmarks,
     )

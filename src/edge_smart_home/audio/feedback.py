@@ -2,6 +2,7 @@ from __future__ import annotations
 
 from pathlib import Path
 from queue import Empty, Queue
+import re
 from threading import Event, Thread
 from typing import Any, Callable, Protocol
 
@@ -172,70 +173,96 @@ class AssistantFeedback:
 
     def announce(self, text: str) -> None:
         """Speak a non-device status update, such as a gesture mode change."""
-        self.speaker.speak(text)
+        self._speak(text)
 
     def response(self, assistant_response: Any) -> None:
         status = assistant_response.status
         if status == "executed":
-            self.speaker.speak(self._completed_text(assistant_response))
+            self._speak(completion_message(assistant_response))
         elif status == "confirmation_required":
-            self.speaker.speak(
+            self._speak(
                 getattr(assistant_response, "confirmation_message", None)
                 or "这是高风险操作，请说确认或取消。"
             )
         elif status == "clarification_required":
             message = self._result_message(assistant_response) or "请补充房间或设备信息。"
-            self.speaker.speak(f"需要补充信息：{message}")
+            self._speak(f"需要补充信息：{message}")
         elif status == "request_rejected":
-            self.speaker.speak("指令不符合安全规则，已拒绝执行。")
+            self._speak("指令不符合安全规则，已拒绝执行。")
         elif status == "plan_rejected":
-            self.speaker.speak("生成的控制计划未通过安全校验，已拒绝执行。")
+            self._speak("控制计划未通过安全校验，已拒绝执行。")
         elif status == "device_error":
-            self.speaker.speak("设备执行失败。")
+            self._speak("设备执行失败。")
         elif status == "partial_failure":
-            self.speaker.speak("指令已处理，但只有部分设备完成。")
+            self._speak("部分设备执行失败。")
         elif status == "needs_intelligence":
             result = assistant_response.intelligent_result
-            self.speaker.speak(
+            self._speak(
                 result.message if result is not None and result.message else "当前能力暂不支持。"
             )
         elif status == "responded":
-            self.speaker.speak(
+            self._speak(
                 self._result_message(assistant_response)
                 or "我理解了这条请求，但不需要执行设备操作。"
             )
         elif status == "processing_error":
             self.processing_error()
         else:
-            self.speaker.speak("指令处理结果无法确认，请再说一遍。")
+            self._speak("处理结果无法确认，请再说一遍。")
 
     def processing_error(self) -> None:
-        self.speaker.speak("这条语音没有被可靠识别，请再说一遍。")
+        self._speak("没有听清，请再说一遍。")
+
+    def _speak(self, text: str) -> None:
+        """Keep TTS concise while preserving the full result for the UI/log."""
+        self.speaker.speak(_compact_speech(text))
 
     def _completed_text(self, assistant_response: Any) -> str:
-        outcome = assistant_response.outcome
-        if outcome is not None and hasattr(outcome, "results"):
-            completed = [
-                _describe_command(item.command.device_id, item.command.action)
-                for item in outcome.results
-                if item.succeeded
-            ]
-            if completed:
-                return "已完成：" + "、".join(completed)
-        result = assistant_response.intelligent_result
-        if result is not None and result.commands:
-            return "已完成：" + "、".join(
-                _describe_command(command.device_id, command.action)
-                for command in result.commands
-            )
-        if outcome is not None and hasattr(outcome, "device_id"):
-            return f"已完成：{_device_name(outcome.device_id)}。"
-        return "指令已完成。"
+        return completion_message(assistant_response)
 
     @staticmethod
     def _result_message(assistant_response: Any) -> str | None:
         result = assistant_response.intelligent_result
         return result.message if result is not None else assistant_response.error
+
+
+def completion_message(assistant_response: Any) -> str:
+    """Describe the action that actually completed, not the model's intent text."""
+    outcome = assistant_response.outcome
+    if outcome is not None and hasattr(outcome, "results"):
+        scene_message = _scene_completion_text(getattr(outcome, "scene_id", None))
+        if scene_message:
+            return scene_message
+        completed = [
+            _describe_command(item.command.device_id, item.command.action)
+            for item in outcome.results
+            if item.succeeded
+        ]
+        if completed:
+            if len(completed) == 1:
+                return "已完成，" + completed[0] + "。"
+            if len(completed) <= 3:
+                return "已完成，" + "、".join(completed) + "。"
+            return "已完成，" + "、".join(completed[:2]) + "等设备控制。"
+    result = assistant_response.intelligent_result
+    if result is not None and result.commands:
+        if len(result.commands) == 1:
+            command = result.commands[0]
+            return "已完成，" + _describe_command(command.device_id, command.action) + "。"
+        descriptions = [
+            _describe_command(command.device_id, command.action)
+            for command in result.commands
+        ]
+        if len(descriptions) <= 3:
+            return "已完成，" + "、".join(descriptions) + "。"
+        return "已完成，" + "、".join(descriptions[:2]) + "等设备控制。"
+    if outcome is not None and hasattr(outcome, "device_id"):
+        event = getattr(assistant_response, "event", None)
+        label = getattr(event, "label", None)
+        if label:
+            return f"已完成，{_completion_action(str(label))}。"
+        return f"已完成，{_device_name(outcome.device_id)}。"
+    return "指令已完成。"
 
 
 def _describe_command(device_id: str, action: str) -> str:
@@ -269,6 +296,49 @@ def _describe_command(device_id: str, action: str) -> str:
     action_name = actions.get(action, "执行操作")
     device_name = _device_name(device_id)
     return f"{action_name}{device_name}"
+
+
+def _scene_completion_text(scene_id: str | None) -> str | None:
+    return {
+        "home": "已完成，开启回家模式。",
+        "away": "已完成，开启离家模式。",
+        "movie": "已完成，开启观影模式。",
+        "sleep": "已完成，开启睡眠模式。",
+        "wake_up": "已完成，开启起床模式。",
+        "dinner": "已完成，开启用餐模式。",
+        "night_light": "已完成，开启夜灯模式。",
+        "energy_saving": "已完成，开启节能模式。",
+        "security": "已完成，开启安防模式。",
+    }.get(scene_id)
+
+
+def _completion_action(text: str) -> str:
+    """Turn a voice transcript into a short action-oriented completion phrase."""
+    compact = re.sub(r"[\s，。！？,.!?]", "", text).strip()
+    if any(phrase in compact for phrase in ("我想听音乐", "我想听歌", "播放音乐", "播放歌曲", "来点音乐")):
+        return "播放音乐"
+    if "下一集" in compact:
+        return "播放下一集"
+    if "上一集" in compact:
+        return "播放上一集"
+    if "下一首" in compact or "下一曲" in compact:
+        return "播放下一首"
+    if "上一首" in compact or "上一曲" in compact:
+        return "播放上一首"
+    if "暂停" in compact:
+        return "暂停播放"
+    return compact or "设备控制"
+
+
+def _compact_speech(text: str, max_chars: int = 48) -> str:
+    """Bound model-provided speech without changing the stored response."""
+    compact = re.sub(r"\s+", "", str(text)).strip()
+    if len(compact) <= max_chars:
+        return compact
+    for index in range(max_chars, max(0, max_chars - 16), -1):
+        if compact[index - 1] in "。！？；，,!?;":
+            return compact[:index]
+    return compact[:max_chars].rstrip("，,、") + "。"
 
 
 def _device_name(device_id: str) -> str:

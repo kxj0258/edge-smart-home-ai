@@ -36,12 +36,13 @@ class AssistantFeedbackTest(unittest.TestCase):
         feedback.response(
             SimpleNamespace(
                 status="executed",
+                event=SimpleNamespace(label="打开客厅灯"),
                 outcome=SimpleNamespace(device_id="living_room_light"),
                 intelligent_result=None,
             )
         )
         self.assertEqual(len(speaker.messages), 1)
-        self.assertIn("已完成：客厅灯", speaker.messages[0])
+        self.assertEqual(speaker.messages[0], "已完成，打开客厅灯。")
 
     def test_feedback_does_not_speak_received_transcript(self) -> None:
         speaker = FakeSpeaker()
@@ -83,6 +84,49 @@ class AssistantFeedbackTest(unittest.TestCase):
         self.assertIn("客厅机顶盒", speaker.messages[1])
         self.assertNotIn("plan_rejected", speaker.messages[0])
         self.assertNotIn("living_room", speaker.messages[1])
+
+    def test_feedback_summarizes_scene_completion(self) -> None:
+        speaker = FakeSpeaker()
+        AssistantFeedback(speaker).response(
+            SimpleNamespace(
+                status="executed",
+                event=SimpleNamespace(label="开启观影模式"),
+                outcome=SimpleNamespace(
+                    scene_id="movie",
+                    results=[
+                        SimpleNamespace(succeeded=True),
+                        SimpleNamespace(succeeded=True),
+                        SimpleNamespace(succeeded=True),
+                    ],
+                ),
+                intelligent_result=None,
+            )
+        )
+        self.assertEqual(speaker.messages, ["已完成，开启观影模式。"])
+
+    def test_feedback_names_gesture_action_in_completion(self) -> None:
+        speaker = FakeSpeaker()
+        AssistantFeedback(speaker).response(
+            SimpleNamespace(
+                status="executed",
+                event=SimpleNamespace(label="播放下一集"),
+                outcome=SimpleNamespace(device_id="living_room_set_top_box"),
+                intelligent_result=None,
+            )
+        )
+        self.assertEqual(speaker.messages, ["已完成，播放下一集。"])
+
+    def test_feedback_bounds_long_model_message_for_speech(self) -> None:
+        speaker = FakeSpeaker()
+        AssistantFeedback(speaker).response(
+            SimpleNamespace(
+                status="responded",
+                intelligent_result=SimpleNamespace(
+                    message="这是一段很长的模型回复，用于验证语音播报不会持续太久并且会被安全地压缩。"
+                ),
+            )
+        )
+        self.assertLessEqual(len(speaker.messages[0]), 49)
 
     def test_none_feedback_has_no_runtime_dependency(self) -> None:
         self.assertIsNone(create_feedback("none"))

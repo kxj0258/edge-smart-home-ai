@@ -10,7 +10,7 @@ from edge_smart_home.common import DeviceState, EventSource, PerceptionEvent
 
 from .interfaces import AudioSource, StreamingRecognition, StreamingSpeechRecognizer
 from .diagnostics import AudioDiagnosticRecorder
-from .feedback import AssistantFeedback
+from .feedback import AssistantFeedback, completion_message
 
 
 @dataclass(frozen=True, slots=True)
@@ -146,7 +146,9 @@ class VoiceControlPipeline:
             result = VoiceControlResult(
                 text=text,
                 message=(
-                    response.confirmation_message
+                    completion_message(response)
+                    if response.status == "executed"
+                    else response.confirmation_message
                     or (
                         response.intelligent_result.message
                         if response.intelligent_result
@@ -181,7 +183,9 @@ class VoiceControlPipeline:
         result = VoiceControlResult(
             text=text,
             message=(
-                response.confirmation_message
+                completion_message(response)
+                if response.status == "executed"
+                else response.confirmation_message
                 or (
                     response.intelligent_result.message
                     if response.intelligent_result
