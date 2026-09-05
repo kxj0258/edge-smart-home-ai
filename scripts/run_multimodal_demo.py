@@ -12,6 +12,7 @@ from edge_smart_home.audio.feedback import create_feedback
 from edge_smart_home.common import EventSource, PerceptionEvent
 from edge_smart_home.app.pipeline import _load_json
 from edge_smart_home.vision import (
+    DynamicGestureDecoder,
     GestureControlPipeline,
     GestureObservation,
     GestureTemporalFilter,
@@ -34,11 +35,15 @@ def main() -> None:
     )
     try:
         gesture_pipeline = _build_gesture_pipeline(
-            config_dir, orchestrator, feedback
+            config_dir,
+            orchestrator,
+            feedback,
+            profile=args.gesture_profile,
+            requires_activation=args.gesture_activation,
         )
         print("小兴 · Edge AI 多模态联动 Demo")
         print("共享一个 AssistantOrchestrator 和 Mock DeviceBackend。")
-        print("输入格式：text <文本> | voice <ASR文本> | gesture <手势标签> | q")
+        print("输入格式：text <文本> | voice <ASR文本> | gesture <手势标签> | profile <home/media> | q")
         print("支持简单单轮对话：问候、能力询问和一般说明不会执行设备操作。")
         print("语音反馈模式：" + args.feedback)
         if args.scripted:
@@ -73,12 +78,21 @@ def _build_parser() -> argparse.ArgumentParser:
         type=int,
         help="PortAudio output device index; omit to use the system default",
     )
+    parser.add_argument("--gesture-profile", default=None)
+    parser.add_argument(
+        "--gesture-activation",
+        action="store_true",
+        help="Require holding Open_Palm before gesture commands are accepted",
+    )
     return parser
 
 
-def _build_gesture_pipeline(config_dir, orchestrator, feedback):
+def _build_gesture_pipeline(
+    config_dir, orchestrator, feedback, *, profile=None, requires_activation=False
+):
     vision = _load_json(config_dir / "vision.json")["gesture"]
     mappings = _load_json(config_dir / "gestures.json")
+    profile = profile or mappings.get("default_profile", "media")
     return GestureControlPipeline(
         None,
         GestureTemporalFilter(
@@ -91,6 +105,20 @@ def _build_gesture_pipeline(config_dir, orchestrator, feedback):
         mappings,
         orchestrator,
         feedback,
+        dynamic_decoder=DynamicGestureDecoder(
+            swipe_distance=float(vision.get("swipe_distance", 0.22)),
+            swipe_min_duration_ms=int(vision.get("swipe_min_duration_ms", 120)),
+            swipe_max_duration_ms=int(vision.get("swipe_max_duration_ms", 1200)),
+            pinch_threshold=float(vision.get("pinch_threshold", 0.22)),
+            pinch_move_distance=float(vision.get("pinch_move_distance", 0.12)),
+            pinch_min_duration_ms=int(vision.get("pinch_min_duration_ms", 180)),
+            pinch_max_duration_ms=int(vision.get("pinch_max_duration_ms", 1800)),
+            cooldown_seconds=float(vision.get("dynamic_cooldown_seconds", 1.0)),
+        ),
+        profile=profile,
+        requires_activation=requires_activation,
+        activation_gesture=vision.get("activation_gesture", "Open_Palm"),
+        activation_hold_seconds=float(vision.get("activation_hold_seconds", 1.0)),
     )
 
 
@@ -148,6 +176,20 @@ def _run_interactive(orchestrator, gesture_pipeline, feedback) -> None:
 def _dispatch(kind, value, orchestrator, gesture_pipeline, feedback):
     if kind == "gesture":
         return _dispatch_gesture(value, gesture_pipeline)
+    if kind == "profile":
+        if value not in gesture_pipeline.profiles:
+            print("未知手势 profile：" + ", ".join(gesture_pipeline.profiles))
+            return None
+        gesture_pipeline.set_profile(value)
+        message = (
+            "已切换到家居控制模式"
+            if gesture_pipeline.profile == "home"
+            else "已切换到媒体控制模式"
+        )
+        print(f"[gesture-status] {message}")
+        if feedback:
+            feedback.announce(message)
+        return None
     if kind not in {"text", "voice"}:
         print("未知输入类型：请使用 text、voice 或 gesture")
         return None

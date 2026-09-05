@@ -43,6 +43,14 @@ class GestureTemporalFilter:
     def decision_counts(self) -> Mapping[str, int]:
         return MappingProxyType(dict(self._decision_counts))
 
+    def reset(self) -> None:
+        """Clear the current latch without changing diagnostic counters."""
+        self._candidate = None
+        self._candidate_frames = 0
+        self._release_frames = 0
+        self._release_started_ms = None
+        self._latched = None
+
     def accept(self, observation: GestureObservation) -> str | None:
         label = observation.label
         if label is None or observation.score < self.score_threshold:

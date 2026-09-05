@@ -43,11 +43,15 @@ class AssistantDemoTest(unittest.TestCase):
             [
                 "--backend", "mock", "gesture", "--model", "model.task",
                 "--score-threshold", "0.60",
+                "--gesture-profile", "home",
+                "--gesture-activation",
                 "--guided-capture",
             ]
         )
         self.assertEqual(gesture.score_threshold, 0.6)
         self.assertTrue(gesture.guided_capture)
+        self.assertEqual(gesture.gesture_profile, "home")
+        self.assertTrue(gesture.gesture_activation)
 
     def test_video_fps_uses_processed_frame_timestamps(self) -> None:
         frames = [(None, 1_000 + index * 100) for index in range(11)]

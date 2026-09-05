@@ -56,8 +56,15 @@ Orchestrator。相同非查询语音命令在 dedup window 内不会重复访问
 ## Gesture
 
 `MediaPipeGestureRecognizer` 是 MediaPipe API 的唯一适配边界，输出
-`GestureObservation`。Temporal filter 包含置信度阈值、连续帧确认、latch、
-release 帧数、连续 neutral 时长和 cooldown。
+`GestureObservation`。除分类标签和 handedness 外，adapter 只输出动态解码需要的手腕
+归一化位置和拇指-食指距离。Temporal filter 包含置信度阈值、连续帧确认、latch、
+release 帧数、连续 neutral 时长和 cooldown；`DynamicGestureDecoder` 独立判断左右挥手
+和捏合方向。
+
+Gesture 映射支持 `media` / `home` profile。模式切换只修改视觉输入的语义映射，不调用
+设备；动态或静态手势产生的文本意图仍进入同一 Router、SafetyPolicy、Dedup 和 Backend。
+实时 Demo 可使用保持 `Open_Palm` 激活机制，激活保持期间不会执行同一个手势对应的
+设备命令。
 
 真实摄像头暴露出低 FPS 下短暂 neutral 导致重复触发，当前已增加 0.8 s 连续
 neutral 释放条件。该修复需用新标注会话继续验证。

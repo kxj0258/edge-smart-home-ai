@@ -5,7 +5,7 @@
 ## 1. 产品约束
 
 本项目的 Gesture 场景固定为：算力受限的端侧设备、普通 RGB 摄像头、在线连续识别，
-当前控制语义为六种静态手势。系统目标是稳定地产生一次性 `PerceptionEvent`，而不是完成
+当前控制语义包含六种静态手势和受约束的挥手/捏合动态手势。系统目标是稳定地产生一次性 `PerceptionEvent`，而不是完成
 3D 手部重建、手语翻译或通用视频理解。
 
 因此选型优先级为：在线可靠性、误触发安全、响应时间、端侧可部署性、可复现性，最后才是
@@ -61,6 +61,22 @@ latch、neutral release 和 cooldown 属于产品事件协议，不能只用单�
 - YOLO Gesture Detector：仅在 hand/landmark coverage 被证明确为瓶颈时作为 fallback；
 - Depth、Radar、Thermal：不符合普通 RGB 摄像头约束；
 - Android、RKNN、Amlogic 转换：目标硬件明确且 Python baseline 稳定后再做。
+
+## 3.1 当前 Demo 扩展
+
+当前实现保留原有媒体手势，并增加配置化的 `media` / `home` 手势 profile。实时窗口中
+可使用 `H` / `M` 切换 profile，也可说“进入家居控制模式”或“进入媒体控制模式”完成
+不经过 LLM 的模式切换。家居 profile 用于展示灯光、窗帘、空调和回家场景；媒体 profile
+保持原有电视/机顶盒控制语义。
+
+动态解码器只接收 MediaPipe 输出的手腕位置和拇指-食指归一化距离，输出
+`swipe_left`、`swipe_right`、`pinch_up`、`pinch_down` 符号事件。事件随后仍转换为普通
+文本意图并进入既有 Router、SafetyPolicy 和 DeviceBackend，不直接执行设备操作。
+动态阈值、持续时间和冷却时间位于 `configs/vision.json`。`--gesture-activation` 可要求
+先保持 `Open_Palm` 一秒；激活手势必须先释放，不能把激活动作误当成设备命令。
+
+动态手势目前只完成单元测试和代码闭环，尚无真实摄像头动态手势准确率数据；真实使用时
+需要单独记录挥手/捏合的触发 precision、recall、误触发/分钟和端到端延迟。
 
 ## 4. 数据与验证路线
 

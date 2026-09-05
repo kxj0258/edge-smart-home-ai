@@ -12,6 +12,7 @@ from edge_smart_home.audio.feedback import create_feedback
 from edge_smart_home.app.pipeline import _load_json
 from edge_smart_home.benchmark.gesture_guided import GuidedGestureProtocol
 from edge_smart_home.vision import (
+    DynamicGestureDecoder,
     GestureControlPipeline,
     GestureDiagnosticRecorder,
     GestureTemporalFilter,
@@ -49,6 +50,16 @@ def main() -> None:
     parser.add_argument("--tts-speaker-id", type=int, default=0)
     parser.add_argument("--tts-speed", type=float, default=1.0)
     parser.add_argument("--tts-audio-device", type=int)
+    parser.add_argument(
+        "--gesture-profile",
+        default=None,
+        help="Gesture profile from configs/gestures.json, for example media or home",
+    )
+    parser.add_argument(
+        "--gesture-activation",
+        action="store_true",
+        help="Require holding Open_Palm before gesture commands are accepted",
+    )
     args = parser.parse_args()
     if args.guided_capture and not args.diagnostics_dir:
         parser.error("--guided-capture requires --diagnostics-dir")
@@ -63,6 +74,7 @@ def main() -> None:
             parser.error("--score-threshold must be between 0 and 1")
         vision_config["score_threshold"] = args.score_threshold
     mappings = _load_json(args.config_dir / "gestures.json")
+    profile = args.gesture_profile or mappings.get("default_profile", "media")
     control = AssistantOrchestrator.from_config_dir(args.config_dir)
     _preload_model(control)
     feedback = create_feedback(
@@ -79,6 +91,7 @@ def main() -> None:
         vision_config["cooldown_seconds"],
         vision_config.get("release_duration_seconds", 0.0),
     )
+    dynamic_decoder = _build_dynamic_decoder(vision_config)
     camera = cv2.VideoCapture(args.camera)
     if not camera.isOpened():
         raise RuntimeError(f"unable to open camera {args.camera}")
@@ -127,7 +140,18 @@ def main() -> None:
     try:
         with MediaPipeGestureRecognizer(args.model, vision_config) as recognizer:
             pipeline = GestureControlPipeline(
-                recognizer, temporal_filter, mappings, control, feedback
+                recognizer,
+                temporal_filter,
+                mappings,
+                control,
+                feedback,
+                dynamic_decoder=dynamic_decoder,
+                profile=profile,
+                requires_activation=args.gesture_activation,
+                activation_gesture=vision_config.get("activation_gesture", "Open_Palm"),
+                activation_hold_seconds=float(
+                    vision_config.get("activation_hold_seconds", 1.0)
+                ),
             )
             while True:
                 success, frame = camera.read()
@@ -191,6 +215,9 @@ def main() -> None:
                             "label": observation.label,
                             "score": round(observation.score, 4),
                             "handedness": observation.handedness,
+                            "wrist_x": observation.wrist_x,
+                            "wrist_y": observation.wrist_y,
+                            "pinch_distance": observation.pinch_distance,
                         }
                     )
                     if display_observation is None or observation.score > display_observation.score:
@@ -200,6 +227,15 @@ def main() -> None:
                         response_rows.append(payload)
                         last_trigger = f"{outcome.event.label}: {outcome.status}"
                         print(json.dumps(payload, ensure_ascii=False))
+                status_message = pipeline.consume_status_message()
+                if status_message:
+                    last_trigger = status_message
+                    print(f"[gesture-status] {status_message}")
+                    if feedback:
+                        feedback.announce(status_message)
+                dynamic_event = dynamic_decoder.last_event
+                if dynamic_event is not None:
+                    last_trigger = f"{dynamic_event.label}: {dynamic_event.timestamp_ms}"
                 if diagnostics:
                     diagnostics.record_frame(
                         timestamp_ms,
@@ -218,6 +254,9 @@ def main() -> None:
                         last_trigger,
                         temporal_filter.decision_counts,
                         guided_state,
+                        pipeline.profile,
+                        pipeline.gesture_enabled,
+                        dynamic_event.label if dynamic_event else None,
                     )
                 cv2.imshow("Edge Smart Home Gesture", frame)
                 if cv2.waitKey(1) == 27:
@@ -324,6 +363,19 @@ def _rolling_fps(frame_times: deque[float]) -> float:
     return (len(frame_times) - 1) / elapsed if elapsed > 0 else 0.0
 
 
+def _build_dynamic_decoder(config):
+    return DynamicGestureDecoder(
+        swipe_distance=float(config.get("swipe_distance", 0.22)),
+        swipe_min_duration_ms=int(config.get("swipe_min_duration_ms", 120)),
+        swipe_max_duration_ms=int(config.get("swipe_max_duration_ms", 1200)),
+        pinch_threshold=float(config.get("pinch_threshold", 0.22)),
+        pinch_move_distance=float(config.get("pinch_move_distance", 0.12)),
+        pinch_min_duration_ms=int(config.get("pinch_min_duration_ms", 180)),
+        pinch_max_duration_ms=int(config.get("pinch_max_duration_ms", 1800)),
+        cooldown_seconds=float(config.get("dynamic_cooldown_seconds", 1.0)),
+    )
+
+
 def _draw_overlay(
     cv2,
     frame,
@@ -333,6 +385,9 @@ def _draw_overlay(
     last_trigger: str,
     filter_counts,
     guided_state=None,
+    profile="media",
+    gesture_enabled=True,
+    dynamic_gesture=None,
 ) -> None:
     gesture = "None"
     if observation is not None and observation.label:
@@ -344,7 +399,10 @@ def _draw_overlay(
         f"Cooldown: {filter_counts.get('cooldown', 0)}  "
         f"Latched: {filter_counts.get('latched', 0)}",
         f"Last: {last_trigger}",
+        f"Profile: {profile}  Gesture control: {'ON' if gesture_enabled else 'HOLD Open_Palm'}",
     ]
+    if dynamic_gesture:
+        lines.append(f"Dynamic: {dynamic_gesture}")
     if guided_state is not None:
         lines.append(
             f"GUIDED: {guided_state.overlay_prompt}  "

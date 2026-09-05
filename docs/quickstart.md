@@ -23,6 +23,41 @@ PYTHONPATH=src python scripts/run_assistant_demo.py --backend mock gesture \
   --diagnostics-dir evaluation/gesture_sessions
 ```
 
+## 真实多模态 Gesture + Voice 窗口
+
+下面的命令启动摄像头、持续语音监听、手势模式切换和离线 TTS。启动后先保持
+`Open_Palm` 约 1 秒激活手势控制；窗口内按 `H` 切到家居 profile，按 `M` 切回媒体
+profile。也可以说“进入家居控制模式”或“进入媒体控制模式”。挥手和捏合使用当前
+`vision.json` 中的动态阈值，尚未宣称真实摄像头准确率。
+
+```bash
+amixer -c 2 sset 'Speaker' 100%
+cd /home/kxj/zte_ws/edge-smart-home-ai
+conda activate edge_ai
+export TTS_MODEL_DIR=/home/kxj/zte_ws/models/tts/vits-icefall-zh-aishell3
+PYTHONPATH=src python3 scripts/run_live_multimodal_demo.py \
+  --backend mock \
+  --camera 0 \
+  --gesture-model models/gesture_recognizer.task \
+  --asr-model-dir models/sherpa-onnx-streaming-zipformer-zh-xlarge-int8-2025-06-30 \
+  --mic-device 3 \
+  --mic-sample-rate 48000 \
+  --hotwords configs/hotwords_v2.txt \
+  --feedback tts \
+  --tts-model-dir "$TTS_MODEL_DIR" \
+  --tts-audio-device 3 \
+  --tts-speaker-id 13 \
+  --tts-speed 1.0 \
+  --echo-guard-seconds 0.5 \
+  --gesture-profile media \
+  --gesture-activation \
+  --diagnostics-dir evaluation/live_multimodal_sessions
+```
+
+动态手势 Demo 语义：媒体 profile 中左右挥手切换上一集/下一集，捏合向上/向下调节
+电视音量；家居 profile 中左右挥手控制客厅窗帘，捏合向上/向下将客厅灯亮度设为 80/20。
+所有实际设备动作仍由统一编排和安全链路处理。
+
 HaGRID-derived离线扫描和左右手Ground Truth验证后，默认候选阈值已设为0.60。需要比较
 其他阈值时可仅覆盖本次进程：
 

@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 from pathlib import Path
+from math import hypot
 from typing import Any, Mapping, Sequence
 
 from .interfaces import GestureObservation
@@ -61,15 +62,19 @@ class MediaPipeGestureRecognizer:
             if hand_index < len(result.handedness) and result.handedness[hand_index]:
                 handedness = result.handedness[hand_index][0].category_name
             observations.append(
-                GestureObservation(
-                    label=category.category_name,
-                    score=float(category.score),
-                    timestamp_ms=timestamp_ms,
-                    handedness=handedness,
+                _observation_from_result(
+                    category.category_name,
+                    float(category.score),
+                    timestamp_ms,
+                    handedness,
+                    result,
+                    hand_index,
                 )
             )
         if not observations:
-            observations.append(GestureObservation(None, 0.0, timestamp_ms))
+            observations.append(_observation_from_result(
+                None, 0.0, timestamp_ms, None, result, 0
+            ))
         return tuple(observations)
 
     def close(self) -> None:
@@ -129,15 +134,19 @@ class MediaPipeImageGestureRecognizer:
                 handedness = result.handedness[hand_index][0].category_name
             label = category.category_name
             observations.append(
-                GestureObservation(
-                    label=None if label == "None" else label,
-                    score=float(category.score),
-                    timestamp_ms=timestamp_ms,
-                    handedness=handedness,
+                _observation_from_result(
+                    None if label == "None" else label,
+                    float(category.score),
+                    timestamp_ms,
+                    handedness,
+                    result,
+                    hand_index,
                 )
             )
         if not observations:
-            observations.append(GestureObservation(None, 0.0, timestamp_ms))
+            observations.append(_observation_from_result(
+                None, 0.0, timestamp_ms, None, result, 0
+            ))
         return tuple(observations)
 
     def close(self) -> None:
@@ -148,3 +157,42 @@ class MediaPipeImageGestureRecognizer:
 
     def __exit__(self, *_: object) -> None:
         self.close()
+
+
+def _observation_from_result(
+    label: str | None,
+    score: float,
+    timestamp_ms: int,
+    handedness: str | None,
+    result: Any,
+    hand_index: int,
+) -> GestureObservation:
+    """Keep a small motion feature set at the MediaPipe adapter boundary."""
+    try:
+        landmarks = result.hand_landmarks[hand_index]
+    except (AttributeError, IndexError):
+        return GestureObservation(label, score, timestamp_ms, handedness)
+    if not landmarks:
+        return GestureObservation(label, score, timestamp_ms, handedness)
+    wrist = landmarks[0]
+    thumb_tip = landmarks[4]
+    index_tip = landmarks[8]
+    palm_scale = max(
+        hypot(float(landmarks[5].x) - float(landmarks[17].x),
+              float(landmarks[5].y) - float(landmarks[17].y)),
+        1e-6,
+    )
+    pinch_distance = min(
+        1.0,
+        hypot(float(thumb_tip.x) - float(index_tip.x),
+              float(thumb_tip.y) - float(index_tip.y)) / palm_scale,
+    )
+    return GestureObservation(
+        label=label,
+        score=score,
+        timestamp_ms=timestamp_ms,
+        handedness=handedness,
+        wrist_x=min(1.0, max(0.0, float(wrist.x))),
+        wrist_y=min(1.0, max(0.0, float(wrist.y))),
+        pinch_distance=pinch_distance,
+    )

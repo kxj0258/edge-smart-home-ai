@@ -1,8 +1,37 @@
 {
-  "Open_Palm": "继续播放",
-  "Closed_Fist": "暂停播放",
-  "Thumb_Up": "电视音量调高",
-  "Thumb_Down": "电视音量调低",
-  "Pointing_Up": "播放下一集",
-  "Victory": "开启观影模式"
+  "default_profile": "media",
+  "profiles": {
+    "media": {
+      "static": {
+        "Open_Palm": "继续播放",
+        "Closed_Fist": "暂停播放",
+        "Thumb_Up": "电视音量调高",
+        "Thumb_Down": "电视音量调低",
+        "Pointing_Up": "播放下一集",
+        "Victory": "开启观影模式"
+      },
+      "dynamic": {
+        "swipe_left": "播放上一集",
+        "swipe_right": "播放下一集",
+        "pinch_up": "电视音量调高",
+        "pinch_down": "电视音量调低"
+      }
+    },
+    "home": {
+      "static": {
+        "Open_Palm": "打开客厅灯",
+        "Closed_Fist": "关闭客厅灯",
+        "Thumb_Up": "打开客厅窗帘",
+        "Thumb_Down": "关闭客厅窗帘",
+        "Pointing_Up": "打开客厅空调",
+        "Victory": "开启回家模式"
+      },
+      "dynamic": {
+        "swipe_left": "关闭客厅窗帘",
+        "swipe_right": "打开客厅窗帘",
+        "pinch_up": "把客厅灯亮度设置为80",
+        "pinch_down": "把客厅灯亮度设置为20"
+      }
+    }
+  }
 }

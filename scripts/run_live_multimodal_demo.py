@@ -16,6 +16,7 @@ from edge_smart_home.audio.microphone import SoundDeviceMicrophone
 from edge_smart_home.audio.pipeline import VoiceControlPipeline, VoiceControlResult
 from edge_smart_home.audio.sherpa_onnx_adapters import SherpaOnnxStreamingAsr
 from edge_smart_home.vision import (
+    DynamicGestureDecoder,
     GestureControlPipeline,
     GestureTemporalFilter,
     MediaPipeGestureRecognizer,
@@ -45,6 +46,7 @@ def main() -> None:
     audio_config = _load_json(config_dir / "audio.json")
     vision_config = _load_json(config_dir / "vision.json")["gesture"]
     mappings = _load_json(config_dir / "gestures.json")
+    gesture_profile = args.gesture_profile or mappings.get("default_profile", "media")
     orchestrator = AssistantOrchestrator.from_config_dir(config_dir)
     if args.preload_model:
         _preload_model(orchestrator)
@@ -115,6 +117,7 @@ def main() -> None:
     recognition_queue: Queue = Queue(maxsize=16)
     voice_errors: Queue[Exception] = Queue()
     recognition_queue_drop_count = 0
+    gesture_controller_ref = [None]
 
     def run_asr() -> None:
         nonlocal recognition_queue_drop_count
@@ -140,7 +143,27 @@ def main() -> None:
             recognition = recognition_queue.get()
             if recognition is None:
                 return
-            result = voice_pipeline.process_recognition(recognition)
+            profile = _profile_command(recognition.text)
+            gesture_controller = gesture_controller_ref[0]
+            if profile and gesture_controller is not None and profile in gesture_controller.profiles:
+                gesture_controller.set_profile(profile)
+                result = VoiceControlResult(
+                    text=recognition.text.strip(),
+                    message=(
+                        "已切换到家居控制模式"
+                        if profile == "home"
+                        else "已切换到媒体控制模式"
+                    ),
+                    status="responded",
+                    path="gesture_mode",
+                    audio_seconds=recognition.audio_seconds,
+                    decode_seconds=recognition.decode_seconds,
+                    rtf=recognition.rtf,
+                )
+                if feedback:
+                    feedback.announce(result.message)
+            else:
+                result = voice_pipeline.process_recognition(recognition)
             if result:
                 voice_results.put(result)
 
@@ -176,10 +199,21 @@ def main() -> None:
         vision_config["cooldown_seconds"],
         vision_config.get("release_duration_seconds", 0.0),
     )
+    dynamic_decoder = DynamicGestureDecoder(
+        swipe_distance=float(vision_config.get("swipe_distance", 0.22)),
+        swipe_min_duration_ms=int(vision_config.get("swipe_min_duration_ms", 120)),
+        swipe_max_duration_ms=int(vision_config.get("swipe_max_duration_ms", 1200)),
+        pinch_threshold=float(vision_config.get("pinch_threshold", 0.22)),
+        pinch_move_distance=float(vision_config.get("pinch_move_distance", 0.12)),
+        pinch_min_duration_ms=int(vision_config.get("pinch_min_duration_ms", 180)),
+        pinch_max_duration_ms=int(vision_config.get("pinch_max_duration_ms", 1800)),
+        cooldown_seconds=float(vision_config.get("dynamic_cooldown_seconds", 1.0)),
+    )
     last_voice = "waiting"
     last_voice_result = "-"
     last_reply = "-"
     last_gesture = "none"
+    last_dynamic = "none"
     last_event = "-"
     frame_times: deque[int] = deque(maxlen=30)
     last_timestamp_ms = 0
@@ -187,7 +221,7 @@ def main() -> None:
     print("小兴 · Edge AI Smart Home Assistant - live multimodal window")
     print("Voice: listening in background")
     print("Gesture: camera recognition active")
-    print("Press q or ESC in the camera window to stop.")
+    print("Gesture profiles: H=home, M=media; press q or ESC in the camera window to stop.")
 
     try:
         with MediaPipeGestureRecognizer(gesture_model, vision_config) as recognizer:
@@ -197,7 +231,15 @@ def main() -> None:
                 mappings,
                 orchestrator,
                 feedback,
+                dynamic_decoder=dynamic_decoder,
+                profile=gesture_profile,
+                requires_activation=args.gesture_activation,
+                activation_gesture=vision_config.get("activation_gesture", "Open_Palm"),
+                activation_hold_seconds=float(
+                    vision_config.get("activation_hold_seconds", 1.0)
+                ),
             )
+            gesture_controller_ref[0] = gesture_pipeline
             while True:
                 success, frame = camera.read()
                 if not success:
@@ -214,6 +256,8 @@ def main() -> None:
                 ):
                     if observation.label:
                         last_gesture = f"{observation.label} {observation.score:.2f}"
+                    if dynamic_decoder.last_event is not None:
+                        last_dynamic = dynamic_decoder.last_event.label
                     if response is not None:
                         last_event = f"gesture {response.status} {response.path}"
                         print(
@@ -228,11 +272,20 @@ def main() -> None:
                                     "provider": response.provider,
                                     "llm_calls": response.llm_calls,
                                     "processing_ms": response.processing_ms,
+                                    "gesture": response.event.raw_payload.get("gesture"),
+                                    "dynamic": response.event.raw_payload.get("dynamic", False),
                                 },
                                 ensure_ascii=False,
                             ),
                             flush=True,
                         )
+
+                status_message = gesture_pipeline.consume_status_message()
+                if status_message:
+                    last_event = f"gesture-status {status_message}"
+                    print(f"[gesture-status] {status_message}", flush=True)
+                    if feedback:
+                        feedback.announce(status_message)
 
                 while True:
                     try:
@@ -264,9 +317,22 @@ def main() -> None:
                     last_reply,
                     last_gesture,
                     last_event,
+                    gesture_pipeline.profile,
+                    gesture_pipeline.gesture_enabled,
+                    last_dynamic,
                 )
                 cv2.imshow("小兴 · Edge AI Smart Home Assistant", frame)
                 key = cv2.waitKey(1) & 0xFF
+                if key == ord("m"):
+                    gesture_pipeline.set_profile("media")
+                    print("[gesture-status] 已切换到媒体模式", flush=True)
+                    if feedback:
+                        feedback.announce("已切换到媒体控制模式")
+                elif key == ord("h"):
+                    gesture_pipeline.set_profile("home")
+                    print("[gesture-status] 已切换到家居模式", flush=True)
+                    if feedback:
+                        feedback.announce("已切换到家居控制模式")
                 if key in (ord("q"), 27):
                     break
     finally:
@@ -317,6 +383,16 @@ def _build_parser() -> argparse.ArgumentParser:
     parser.add_argument("--tts-speed", type=float, default=1.0)
     parser.add_argument("--tts-audio-device", type=int)
     parser.add_argument(
+        "--gesture-profile",
+        default=None,
+        help="Gesture profile from configs/gestures.json, for example media or home",
+    )
+    parser.add_argument(
+        "--gesture-activation",
+        action="store_true",
+        help="Require holding Open_Palm before gesture commands are accepted",
+    )
+    parser.add_argument(
         "--preload-model",
         action=argparse.BooleanOptionalAction,
         default=True,
@@ -354,6 +430,15 @@ def _fps(frame_times: deque[int]) -> float:
     return (len(frame_times) - 1) * 1000.0 / elapsed_ms
 
 
+def _profile_command(text: str) -> str | None:
+    normalized = "".join(text.split()).lower()
+    if any(phrase in normalized for phrase in ("家居控制模式", "家居模式", "家庭控制模式")):
+        return "home"
+    if any(phrase in normalized for phrase in ("媒体控制模式", "媒体模式", "影音控制模式")):
+        return "media"
+    return None
+
+
 def _draw_overlay(
     cv2,
     frame,
@@ -363,6 +448,9 @@ def _draw_overlay(
     last_reply: str,
     last_gesture: str,
     last_event: str,
+    profile: str = "media",
+    gesture_enabled: bool = True,
+    last_dynamic: str = "none",
 ) -> None:
     lines = (
         "小兴 · Edge AI Smart Home Assistant",
@@ -371,6 +459,8 @@ def _draw_overlay(
         f"REPLY: {last_reply}",
         f"GESTURE: {last_gesture}",
         f"EVENT: {last_event}",
+        f"MODE: {profile} | CONTROL: {'ON' if gesture_enabled else 'HOLD Open_Palm'}",
+        f"DYNAMIC: {last_dynamic} | Keys: H=home M=media",
     )
     for index, line in enumerate(lines):
         cv2.putText(

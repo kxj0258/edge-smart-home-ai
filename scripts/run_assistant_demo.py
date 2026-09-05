@@ -53,6 +53,10 @@ def main() -> None:
             forwarded.extend(["--score-threshold", str(args.score_threshold)])
         if args.guided_capture:
             forwarded.append("--guided-capture")
+        if args.gesture_profile:
+            forwarded.extend(["--gesture-profile", args.gesture_profile])
+        if args.gesture_activation:
+            forwarded.append("--gesture-activation")
         forwarded.extend(
             [
                 "--feedback",
@@ -142,6 +146,8 @@ def _build_parser() -> argparse.ArgumentParser:
         help="Override the configured Gesture threshold for this run only",
     )
     gesture.add_argument("--guided-capture", action="store_true")
+    gesture.add_argument("--gesture-profile")
+    gesture.add_argument("--gesture-activation", action="store_true")
     _add_feedback_args(gesture)
 
     voice = subparsers.add_parser("voice", help="Real sherpa-onnx microphone control")

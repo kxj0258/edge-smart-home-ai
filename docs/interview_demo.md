@@ -102,6 +102,32 @@ PYTHONPATH=src python scripts/run_assistant_demo.py --backend mock voice \
 
 ### 3.4 在线 Gesture 控制（约 90 秒）
 
+组合窗口 Demo 推荐使用：
+
+```bash
+amixer -c 2 sset 'Speaker' 100%
+PYTHONPATH=src python scripts/run_live_multimodal_demo.py \
+  --backend mock \
+  --gesture-model models/gesture_recognizer.task \
+  --asr-model-dir models/sherpa-onnx-streaming-zipformer-zh-xlarge-int8-2025-06-30 \
+  --mic-device 3 --mic-sample-rate 48000 \
+  --hotwords configs/hotwords_v2.txt \
+  --feedback tts \
+  --tts-model-dir /home/kxj/zte_ws/models/tts/vits-icefall-zh-aishell3 \
+  --tts-audio-device 3 --tts-speaker-id 13 --tts-speed 1.0 \
+  --echo-guard-seconds 0.5 \
+  --gesture-profile media --gesture-activation \
+  --diagnostics-dir evaluation/live_multimodal_sessions
+```
+
+启动后保持张掌约一秒激活手势控制；窗口按 `H` / `M` 切换家居和媒体 profile，也可
+说“进入家居控制模式”或“进入媒体控制模式”。家居 profile 用于演示灯光、窗帘、空调
+和回家场景，媒体 profile 保留播放控制。左右挥手切换上一集/下一集，捏合并上下移动
+调节电视音量或将客厅灯亮度设为 80/20。动态手势的真实准确率尚未测量，现场应以实际
+录制结果为准。
+
+单独验证六类静态手势时仍可使用：
+
 ```bash
 PYTHONPATH=src python scripts/run_assistant_demo.py --backend mock gesture \
   --model models/gesture_recognizer.task \

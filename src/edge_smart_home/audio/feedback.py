@@ -170,6 +170,10 @@ class AssistantFeedback:
         """
         return None
 
+    def announce(self, text: str) -> None:
+        """Speak a non-device status update, such as a gesture mode change."""
+        self.speaker.speak(text)
+
     def response(self, assistant_response: Any) -> None:
         status = assistant_response.status
         if status == "executed":

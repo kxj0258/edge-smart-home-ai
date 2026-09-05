@@ -5,7 +5,12 @@ import unittest
 
 from edge_smart_home.app.pipeline import TextControlPipeline
 from edge_smart_home.common import DeviceState, SceneExecutionResult
-from edge_smart_home.vision import GestureControlPipeline, GestureObservation, GestureTemporalFilter
+from edge_smart_home.vision import (
+    DynamicGestureDecoder,
+    GestureControlPipeline,
+    GestureObservation,
+    GestureTemporalFilter,
+)
 
 
 PROJECT_ROOT = Path(__file__).resolve().parents[1]
@@ -100,6 +105,84 @@ class GesturePipelineTest(unittest.TestCase):
                 GestureObservation("Thumb_Up", 0.9, timestamp)
             )
         self.assertIsNotNone(retriggered)
+
+    def test_dynamic_swipe_emits_one_event(self) -> None:
+        decoder = DynamicGestureDecoder(
+            swipe_distance=0.2,
+            swipe_min_duration_ms=100,
+            swipe_max_duration_ms=800,
+        )
+        self.assertIsNone(
+            decoder.accept(GestureObservation(None, 0.9, 0, wrist_x=0.2, wrist_y=0.5))
+        )
+        self.assertEqual(
+            decoder.accept(
+                GestureObservation(None, 0.9, 300, wrist_x=0.48, wrist_y=0.5)
+            ).label,
+            "swipe_right",
+        )
+
+    def test_dynamic_pinch_maps_through_the_same_control_pipeline(self) -> None:
+        mappings = {
+            "profiles": {
+                "home": {
+                    "static": {},
+                    "dynamic": {"pinch_up": "把客厅灯亮度设置为80"},
+                }
+            }
+        }
+        pipeline = GestureControlPipeline(
+            None,
+            GestureTemporalFilter(0.65, 3, 2, 1.5),
+            mappings,
+            self.control,
+            dynamic_decoder=DynamicGestureDecoder(
+                pinch_threshold=0.2,
+                pinch_move_distance=0.1,
+                pinch_min_duration_ms=100,
+                pinch_max_duration_ms=800,
+            ),
+            profile="home",
+        )
+        pipeline.process_observation(
+            GestureObservation(None, 0.9, 0, wrist_x=0.5, wrist_y=0.6, pinch_distance=0.1)
+        )
+        outcome = pipeline.process_observation(
+            GestureObservation(None, 0.9, 300, wrist_x=0.5, wrist_y=0.45, pinch_distance=0.1)
+        )
+        self.assertIsNotNone(outcome)
+        self.assertEqual(outcome.outcome.attributes["brightness"], 80)
+        self.assertTrue(outcome.event.raw_payload["dynamic"])
+
+    def test_activation_requires_a_held_open_palm(self) -> None:
+        pipeline = GestureControlPipeline(
+            None,
+            GestureTemporalFilter(0.65, 3, 2, 1.5),
+            {"Open_Palm": "继续播放", "Closed_Fist": "暂停播放"},
+            self.control,
+            requires_activation=True,
+            activation_hold_seconds=1.0,
+        )
+        for timestamp in (0, 400, 1000):
+            self.assertIsNone(
+                pipeline.process_observation(
+                    GestureObservation("Open_Palm", 0.9, timestamp)
+                )
+            )
+        self.assertTrue(pipeline.gesture_enabled)
+        for timestamp in (1100, 1200):
+            self.assertIsNone(
+                pipeline.process_observation(
+                    GestureObservation("Closed_Fist", 0.9, timestamp)
+                )
+            )
+        pipeline.process_observation(
+            GestureObservation("Closed_Fist", 0.9, 1400)
+        )
+        outcome = pipeline.process_observation(
+            GestureObservation("Closed_Fist", 0.9, 1500)
+        )
+        self.assertIsNotNone(outcome)
 
 
 if __name__ == "__main__":
