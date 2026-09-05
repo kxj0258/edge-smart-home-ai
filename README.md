@@ -151,6 +151,7 @@ Synthetic TTS 不代表远场、噪声或真实麦克风表现。
 - [优化与准确度路线](docs/optimization_roadmap.md)
 - [产品决策记录](docs/product_decisions.md)
 - [面试展示 Demo 与项目总结](docs/interview_demo.md)
+- [项目完整总结（蓝剑综合面试版）](docs/project_complete_summary.md)
 - [三页PPT紧凑版](docs/interview_demo_3page.md)
 - [上游项目与版本](docs/upstream_projects.md)
 
