@@ -93,6 +93,27 @@ class ExtendedHomeTest(unittest.TestCase):
         self.assertEqual(music.device_id, "living_room_speaker")
         self.assertEqual(music.attributes["playback"], "playing")
 
+    def test_curtain_state_stays_consistent_after_partial_open_and_close(self) -> None:
+        partial = self.pipeline.handle_text("客厅窗帘半开")
+        self.assertEqual(
+            (partial.attributes["position"], partial.attributes["position_percent"]),
+            ("partial", 50),
+        )
+        opened = self.pipeline.handle_text("打开客厅窗帘")
+        self.assertEqual(
+            (opened.attributes["position"], opened.attributes["position_percent"]),
+            ("open", 100),
+        )
+        closed = self.pipeline.handle_text("关闭客厅窗帘")
+        self.assertEqual(
+            (closed.attributes["position"], closed.attributes["position_percent"]),
+            ("closed", 0),
+        )
+        self.assertEqual(
+            dict(self.pipeline.backend.get_state("living_room_curtain").attributes),
+            dict(closed.attributes),
+        )
+
     def test_generic_music_defaults_to_living_room_speaker(self) -> None:
         music = self.pipeline.handle_text("我想听歌")
         self.assertEqual(music.device_id, "living_room_speaker")

@@ -70,6 +70,8 @@ class MockDeviceBackend(DeviceBackend):
             state["hvac_mode"] = mode
         elif command.action == "open":
             state["position"] = "open"
+            if "position_percent" in state:
+                state["position_percent"] = 100
         elif command.action == "close":
             state["position"] = "closed"
             if "position_percent" in state:

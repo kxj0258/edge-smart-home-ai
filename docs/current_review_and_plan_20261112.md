@@ -1,5 +1,7 @@
 # 当前成果、开源参考、Demo 交付与开发规划
 
+> 后续整合更新：新增“ai算法”学习约束后，排期与必做范围以[工作区统一规划](../../ai-learning/docs/INTEGRATED_DEVELOPMENT_PLAN.md)为准。本审计以下保留当时事实；S0归档/测试隔离与窗帘修复的后续结果见 `docs/stages/`，不再把它们列为尚未开始。
+
 审计日期：2026-11-12，Asia/Shanghai。项目根：`/home/kxj/zte_ws/edge-smart-home-ai`。
 
 本轮核对源码、Git、历史评测 JSON、模型文件和演示入口，并联网查阅官方开源仓库。起始分支 `main`，HEAD `208550366e76621265d00c41c4304352d844e396`，相对本地 `origin/main` 领先 12 个提交；没有 fetch，因此这不是远端最新状态判断。工作区已有 21 个 tracked 文件改动及观测、负载工具等 untracked 文件。本轮仅提交审计与开发约定，不混入这些既有实现。
