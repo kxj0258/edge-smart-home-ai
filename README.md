@@ -18,6 +18,12 @@
 
 运行入口 [W11 Benchmark](docs/W11_BENCHMARK.md)，交付 [阶段结果](docs/stages/L1-w11-results.md)、[机器基线](baselines/20261112-w11-local-llm-v1.json)、[资源表](docs/llm_evidence/20261112-w11-resource-table.csv)与[证据索引](docs/llm_evidence/20261112-w11-results.json)。201项离线测试通过、进程内网络尝试0，产品配置和后端未改；未测CPU-only、ARM/中兴目标芯片或多样指令语义质量。
 
+## W12：家庭指令合同与当前版本回归
+
+已固定29条正常/歧义/非法及定时延期指令，复用Schema/validator与W10–W11模型后端。补重复键拒绝和明确延期入口，未新增调度器；按官方固定llama.cpp支持范围把条件Schema投影为等价oneOf请求格式。首版空plan合同失败保留；当前29/29结构门槛通过，原始模型20/29、guard后25/29、四规则4/29。仍有状态查询、猜缺失参数及修改越界输入等4条语义错误，其中3条guard后计划未拦截，**未验收生产安全或个人掌握**。
+
+[W12结果](docs/stages/L2-w12-results.md) · [复现命令](docs/W12_EVALUATION.md) · [题库与来源](docs/W12_CASESET.md) · [机器基线](baselines/20261112-w12-home-intents-v1.json)。254项离线测试通过，网络尝试0；58次版本化真实模型调用均只规划、不执行设备。W13优先补请求—计划一致性与当前错例，再整合接口/错误码；不自动进入新阶段。
+
 ## 2026-09-09 增量负载诊断与队列修复
 
 已新增五阶段音频负载诊断入口、固定口令协议和 JSON/CSV 对比，

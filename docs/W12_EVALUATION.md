@@ -69,3 +69,5 @@ git diff --check
 按 [Ollama固定v0.40.2 API](https://github.com/ollama/ollama/blob/b061384d90ff455462bc32745dd0de479de717a3/docs/api.md)的 `format` Schema、非流式response和终止counter适配HTTP接口，复用既有后端；MIT上游源码没有整体迁入。JSON Schema固定2020-12的结构/参数边界、RFC8259重复成员应用策略和实际validator范围见 [合同参考](W12_CONTRACT.md)。只用Schema约束输出不能代替设备allowlist、请求guard、安全确认或执行授权。模型Apache-2.0及实际包来源继续沿用W10记录。
 
 Git仅保存代码、冻结题库、说明与小型结果/hash，完整生成内容及raw留在本地忽略的evaluation；hash不是产物备份。阶段结果由主代理绑定实际实现/运行/归档Git版本，不自动push/release或完成个人理解任务。
+
+本轮结果见 [L2b结果](stages/L2-w12-results.md)、[机器基线](../baselines/20261112-w12-home-intents-v1.json)与[逐题CSV](llm_evidence/20261112-w12-cases-candidate_b.csv)。当前oneOf版结构29/29通过，原始语义20/29、guard后25/29，仍有4条语义错例；生产安全未验收。首版报告和重算产物保留，复查首版使用0ddb源码，v2使用fc4159源码；版本守卫会拒绝把旧协议当新格式运行。复现所有输出路径需改用新目录。
