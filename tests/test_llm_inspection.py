@@ -93,6 +93,28 @@ class IdentityTest(unittest.TestCase):
         self.assertIsNone(inspect.thinking_support({}, False))
         self.assertFalse(inspect.thinking_support({"thinking":{"values":[0]}}, False))
 
+    def test_real_tags_superset_of_show_details_is_supported_and_retained(self):
+        value = metadata()
+        shared = {**value["show"]["details"], "parent_model":"", "families":["qwen3"]}
+        value["show"]["details"] = deepcopy(shared)
+        value["tags"]["models"][0]["details"] = {**shared, "context_length":262144,
+            "embedding_length":2560, "runner":"ggml"}
+        result = inspect.identity(value,"qwen3:4b",DIGEST,"0.40.2")
+        self.assertEqual(result["tag_details"]["runner"],"ggml")
+        self.assertNotIn("runner",result["details"])
+        self.assertEqual(result["dimensions"]["model_context_length"],262144)
+
+    def test_core_shared_details_and_tag_dimension_disagreement_still_rejected(self):
+        variants = []
+        for key, changed in (("family","other"),("format",""),("parameter_size",None),("quantization_level","Q8_0"),
+                             ("context_length",4096),("embedding_length",2561),("context_length",True)):
+            value = metadata();value["tags"]["models"][0]["details"] = {**value["tags"]["models"][0]["details"],key:changed}
+            variants.append(value)
+        value=metadata();value["tags"]["models"][0]["details"]={**value["tags"]["models"][0]["details"],"families":["other"]}
+        value["show"]["details"]={**value["show"]["details"],"families":["qwen3"]};variants.append(value)
+        for value in variants:
+            with self.assertRaises(ValueError):inspect.identity(value,"qwen3:4b",DIGEST,"0.40.2")
+
 
 class CounterRatesTest(unittest.TestCase):
     def test_nanosecond_rates_and_prompt_cache_subtraction(self):

@@ -136,7 +136,18 @@ def identity(snapshot: dict, model: str, expected_digest: str | None, expected_v
     show = snapshot["show"]
     if any(row.get(key) for row in (tag, show) for key in ("remote_host", "remote_model")):
         raise ValueError("W10 inspection requires a local model, not a remotely delegated tag")
-    if tag.get("details") != show.get("details"): raise ValueError("Tag/show model details disagree")
+    tag_details, show_details = tag.get("details"), show.get("details")
+    if not isinstance(tag_details, dict) or not isinstance(show_details, dict):
+        raise ValueError("Tag/show model details must be objects")
+    for key in ("format", "family", "parameter_size", "quantization_level"):
+        if (not isinstance(tag_details.get(key), str) or not tag_details[key].strip()
+                or not isinstance(show_details.get(key), str) or not show_details[key].strip()):
+            raise ValueError("Tag/show model core details are missing or empty")
+    # /tags provides richer details than /show in Ollama 0.40.2. Extra fields
+    # are valid, but every shared field and the four core fields must agree.
+    for key in tag_details.keys() & show_details.keys():
+        if type(tag_details[key]) is not type(show_details[key]) or tag_details[key] != show_details[key]:
+            raise ValueError("Tag/show shared model details disagree")
     info = show["model_info"]; architecture = info["general.architecture"]
     if not isinstance(architecture, str) or not architecture: raise ValueError("Model architecture is missing")
     # head_dim is taken from GGUF key/value lengths, never hidden_size/n_head.
@@ -148,13 +159,17 @@ def identity(snapshot: dict, model: str, expected_digest: str | None, expected_v
         raise ValueError("Model must provide explicit positive architecture dimensions")
     if dimensions["query_heads"] < dimensions["kv_heads"] or dimensions["query_heads"] % dimensions["kv_heads"]:
         raise ValueError("Query heads must form complete groups of KV heads")
+    for details in (tag_details, show_details):
+        for key, dimension in (("context_length", "model_context_length"), ("embedding_length", "embedding_length")):
+            if key in details and (type(details[key]) is not int or details[key] != dimensions[dimension]):
+                raise ValueError("Tag/show detail dimension differs from explicit model_info")
     for resident in snapshot["ps"]["models"]:
         if resident.get("name") == model or resident.get("model") == model:
             if digest_value(resident["digest"]) != digest: raise ValueError("Loaded model digest differs from tag identity")
     stable = {key: show.get(key) for key in ("details", "model_info", "template", "parameters", "license", "capabilities", "thinking")}
     signature = hashlib.sha256(json.dumps(stable, sort_keys=True, ensure_ascii=False, allow_nan=False).encode()).hexdigest()
     return {"model_tag": model, "digest": digest, "expected_digest_checked": expected_digest is not None,
-            "server_version": version, "show_identity_sha256": signature, "details": show["details"],
+            "server_version": version, "show_identity_sha256": signature, "details": show_details, "tag_details": tag_details,
             "dimensions": dimensions, "thinking_support": show.get("thinking"),
             "model_provenance": {key: info.get(key) for key in ("general.basename", "general.finetune", "general.version", "general.license", "general.license.link")},
             "kv_cache_dtype": None, "kv_cache_dtype_status": "NOT_OBSERVED: weight quantization does not determine KV precision"}
