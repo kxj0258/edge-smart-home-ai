@@ -5,6 +5,8 @@ from dataclasses import dataclass, field
 from edge_smart_home.common.observability import Trace
 from typing import Any, Iterable, Sequence
 
+from .validation import validate_sample_rate
+
 
 @dataclass(frozen=True, slots=True)
 class AudioChunk:
@@ -17,8 +19,7 @@ class AudioChunk:
     queue_depth: int | None = None
 
     def __post_init__(self) -> None:
-        if self.sample_rate <= 0:
-            raise ValueError("sample_rate must be positive")
+        validate_sample_rate(self.sample_rate)
 
 
 @dataclass(frozen=True, slots=True)

@@ -1,6 +1,8 @@
 from __future__ import annotations
 
 from pathlib import Path
+from math import isfinite
+from numbers import Integral
 from time import perf_counter, monotonic_ns
 from edge_smart_home.common.observability import Trace, activate, span
 from typing import Any, Mapping
@@ -12,6 +14,7 @@ from .interfaces import (
     StreamingSpeechRecognizer,
     VoiceActivityDetector,
 )
+from .validation import AudioInputError, validate_audio_samples, validate_sample_rate
 
 
 class VoiceDependencyError(RuntimeError):
@@ -35,7 +38,19 @@ def _require_file(path: Path, label: str) -> str:
 
 
 class SherpaOnnxVad(VoiceActivityDetector):
+    """Adapter for this project's 16 kHz k2-fsa Silero ONNX export.
+
+    Its model metadata says only the 16 kHz branch was retained. Other Silero
+    exports may support 8 kHz; that does not make this model resample input.
+    """
+
     def __init__(self, model: Path, sample_rate: int, config: Mapping[str, Any]) -> None:
+        sample_rate = validate_sample_rate(sample_rate)
+        if sample_rate != 16000:
+            raise AudioInputError(
+                "this adapter requires the project's 16 kHz-only Silero export",
+                "AUDIO_SAMPLE_RATE_MISMATCH",
+            )
         sherpa_onnx = _sherpa_onnx()
         vad_config = sherpa_onnx.VadModelConfig()
         vad_config.silero_vad.model = _require_file(model, "VAD model")
@@ -49,11 +64,34 @@ class SherpaOnnxVad(VoiceActivityDetector):
             vad_config,
             buffer_size_in_seconds=float(config["buffer_size_seconds"]),
         )
+        self._finished = False
 
     def accept(self, chunk: AudioChunk) -> tuple[AudioChunk, ...]:
+        if self._finished:
+            raise RuntimeError("VAD stream is already finished")
+        waveform = validate_audio_samples(chunk.samples, chunk.sample_rate)
         if chunk.sample_rate != self._sample_rate:
-            raise ValueError("audio source and VAD sample rates must match")
-        self._vad.accept_waveform(chunk.samples)
+            raise AudioInputError(
+                "audio source and VAD sample rates must match; VAD does not resample",
+                "AUDIO_SAMPLE_RATE_MISMATCH",
+            )
+        self._vad.accept_waveform(waveform)
+        return self._drain_segments()
+
+    def finish(self) -> tuple[AudioChunk, ...]:
+        """Flush an active VAD segment once using the native flush API.
+
+        Unlike ASR finish, this does not append silence or infer speech from
+        a residual input shorter than the native model's analysis window.
+        This separate adapter is not enabled in the streaming ASR pipeline.
+        """
+        if self._finished:
+            return ()
+        self._finished = True
+        self._vad.flush()
+        return self._drain_segments()
+
+    def _drain_segments(self) -> tuple[AudioChunk, ...]:
         segments = []
         while not self._vad.empty():
             segments.append(AudioChunk(self._vad.front.samples, self._sample_rate))
@@ -72,9 +110,12 @@ class SherpaOnnxStreamingAsr(StreamingSpeechRecognizer):
         config: Mapping[str, Any],
         hotwords_file: Path | None = None,
     ) -> None:
+        sample_rate = validate_sample_rate(sample_rate)
         sherpa_onnx = _sherpa_onnx()
         self._sample_rate = sample_rate
         self._tail_padding_seconds = float(config["tail_padding_seconds"])
+        if not isfinite(self._tail_padding_seconds) or self._tail_padding_seconds < 0:
+            raise AudioInputError("ASR tail padding must be finite and nonnegative", "AUDIO_PADDING_INVALID")
         self.hotword_validation = HotwordValidationResult((), ())
         validated_hotwords: Path | None = None
         if hotwords_file:
@@ -107,12 +148,21 @@ class SherpaOnnxStreamingAsr(StreamingSpeechRecognizer):
         self._audio_seconds = 0.0
         self._decode_seconds = 0.0
         self._last_input_sample_rate = sample_rate
+        self._input_sample_rate: int | None = None
         self._finished = False
         self._trace = Trace()
 
     def accept(self, chunk: AudioChunk) -> tuple[StreamingRecognition, ...]:
         if self._finished:
             raise RuntimeError("recognizer stream is already finished")
+        waveform = validate_audio_samples(chunk.samples, chunk.sample_rate)
+        if self._input_sample_rate is not None and chunk.sample_rate != self._input_sample_rate:
+            # The native feature extractor preserves its resampler even after
+            # endpoint/reset, and may terminate the process on a changed rate.
+            raise AudioInputError(
+                "input sample rate must remain constant within one ASR stream",
+                "AUDIO_SAMPLE_RATE_CHANGED",
+            )
         # sherpa-onnx performs native low-pass resampling when chunk.sample_rate
         # differs from the recognizer feature sample rate.
         if chunk.callback_ns is not None:
@@ -124,8 +174,9 @@ class SherpaOnnxStreamingAsr(StreamingSpeechRecognizer):
                             sequence=chunk.sequence, discontinuity=chunk.discontinuity,
                             queue_depth=chunk.queue_depth)
         with activate(self._trace), span("asr_accept_resample"):
-            self._stream.accept_waveform(chunk.sample_rate, chunk.samples)
-        self._audio_seconds += len(chunk.samples) / chunk.sample_rate
+            self._stream.accept_waveform(chunk.sample_rate, waveform)
+        self._input_sample_rate = chunk.sample_rate
+        self._audio_seconds += len(waveform) / chunk.sample_rate
         self._last_input_sample_rate = chunk.sample_rate
         with activate(self._trace), span("asr_decode"):
             self._decode_ready()
@@ -142,6 +193,8 @@ class SherpaOnnxStreamingAsr(StreamingSpeechRecognizer):
         if self._finished:
             return ()
         self._finished = True
+        if self._input_sample_rate is None:
+            return ()
         with activate(self._trace), span("asr_finish"):
             self._append_tail_padding(self._last_input_sample_rate)
             self._stream.input_finished()
@@ -162,14 +215,16 @@ class SherpaOnnxStreamingAsr(StreamingSpeechRecognizer):
         self, samples: Any, input_sample_rate: int, chunk_duration_ms: int = 100
     ) -> StreamingRecognition:
         """Decode one independent waveform while reusing the loaded model."""
-        if input_sample_rate <= 0 or chunk_duration_ms <= 0:
-            raise ValueError("sample rate and chunk duration must be positive")
+        input_sample_rate = validate_sample_rate(input_sample_rate)
+        if (isinstance(chunk_duration_ms, bool) or not isinstance(chunk_duration_ms, Integral)
+                or chunk_duration_ms <= 0):
+            raise AudioInputError("chunk duration must be a positive integer in ms", "AUDIO_CHUNK_DURATION_INVALID")
         try:
             import numpy as np
         except ImportError as error:
             raise VoiceDependencyError("numpy is required for ASR evaluation") from error
 
-        waveform = np.asarray(samples, dtype=np.float32)
+        waveform = validate_audio_samples(samples, input_sample_rate)
         stream = self._recognizer.create_stream()
         chunk_size = max(1, input_sample_rate * chunk_duration_ms // 1000)
         texts: list[str] = []

@@ -9,6 +9,7 @@ import re
 
 from edge_smart_home.app.orchestrator import AssistantOrchestrator
 from edge_smart_home.app.pipeline import ControlOutcome, TextControlPipeline
+from edge_smart_home.agent.error_codes import IntentErrorCode
 from edge_smart_home.common import DeviceState, EventSource, PerceptionEvent
 
 from .interfaces import AudioSource, StreamingRecognition, StreamingSpeechRecognizer
@@ -32,6 +33,7 @@ class VoiceControlResult:
     llm_calls: int = 0
     llm_latency_ms: float | None = None
     trace: Trace | None = field(default=None, compare=False, repr=False)
+    error_code: str | None = None
 
 
 class VoiceControlPipeline:
@@ -102,7 +104,8 @@ class VoiceControlPipeline:
                 yield result
 
     def _handle_processing_error(
-        self, recognition: StreamingRecognition, error: Exception
+        self, recognition: StreamingRecognition, error: Exception,
+        error_code: str | None = None,
     ) -> VoiceControlResult | None:
         text = recognition.text.strip()
         if not text:
@@ -113,6 +116,7 @@ class VoiceControlPipeline:
             text=text,
             error=f"{type(error).__name__}: {error}",
             status="processing_error",
+            error_code=error_code or getattr(error, "error_code", None) or IntentErrorCode.INTENT_INTERNAL_ERROR.value,
             audio_seconds=recognition.audio_seconds,
             decode_seconds=recognition.decode_seconds,
             rtf=recognition.rtf,
@@ -124,6 +128,7 @@ class VoiceControlPipeline:
                 result.status,
                 {
                     "error": result.error,
+                    "error_code": result.error_code,
                     "trace": recognition.trace.snapshot(),
                     "processing_ms": result.processing_ms,
                     "audio_seconds": result.audio_seconds,
@@ -141,7 +146,8 @@ class VoiceControlPipeline:
             return None
         if len(text) < 2:
             return self._handle_processing_error(
-                recognition, ValueError("recognized transcript is too short to route safely"))
+                recognition, ValueError("recognized transcript is too short to route safely"),
+                IntentErrorCode.REQUEST_INPUT_INVALID.value)
         event = PerceptionEvent(source=EventSource.VOICE, label=text, trace=recognition.trace,
                                 event_id=recognition.trace.event_id)
         metrics = {
@@ -167,6 +173,7 @@ class VoiceControlPipeline:
                     )
                 ),
                 error=response.error,
+                error_code=response.error_code,
                 status=response.status,
                 processing_ms=response.processing_ms,
                 path=response.path,
@@ -182,6 +189,7 @@ class VoiceControlPipeline:
                     {
                         "message": result.message,
                         "error": response.error,
+                        "error_code": response.error_code,
                         "processing_ms": response.processing_ms,
                         "path": response.path,
                         "provider": response.provider,
@@ -204,6 +212,8 @@ class VoiceControlPipeline:
                 )
             ),
             state=response.outcome,
+            error=response.error,
+            error_code=response.error_code,
             status=response.status,
             processing_ms=response.processing_ms,
             path=response.path,
@@ -216,6 +226,8 @@ class VoiceControlPipeline:
             detail = {
                 **_diagnostic_detail(response.outcome),
                 "message": result.message,
+                "error": result.error,
+                "error_code": result.error_code,
                 "processing_ms": response.processing_ms,
                 "path": response.path,
                 "provider": response.provider,

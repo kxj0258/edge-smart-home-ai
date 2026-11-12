@@ -16,9 +16,11 @@ from .feedback import (
     create_feedback,
 )
 from .pipeline import VoiceControlPipeline, VoiceControlResult
+from .validation import AudioInputError, validate_audio_samples, validate_sample_rate
 
 __all__ = [
     "AudioChunk",
+    "AudioInputError",
     "AudioDiagnosticRecorder",
     "AudioSource",
     "AssistantFeedback",
@@ -33,4 +35,6 @@ __all__ = [
     "VoiceControlPipeline",
     "VoiceControlResult",
     "create_feedback",
+    "validate_audio_samples",
+    "validate_sample_rate",
 ]

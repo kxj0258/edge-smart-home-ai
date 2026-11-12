@@ -1,0 +1,312 @@
+{
+  "schema_version": 1,
+  "kind": "w14_existing_asr_source_inventory",
+  "local_work_date": "2026-11-13",
+  "timezone": "Asia/Shanghai",
+  "model": {
+    "name": "sherpa-onnx-streaming-zipformer-zh-xlarge-int8-2025-06-30",
+    "type": "online transducer / streaming zipformer2, feature=whisper",
+    "weight_variant": "upstream INT8 encoder/joiner and FP32 decoder; not self-performed PTQ",
+    "source_repository": "https://huggingface.co/csukuangfj/sherpa-onnx-streaming-zipformer-zh-xlarge-int8-2025-06-30",
+    "source_revision": "18f31ce4644ac3bcf544eea692d7242b798d508f",
+    "original_repository": "https://huggingface.co/yuekai/icefall-asr-multi-zh-hans-zipformer-xl",
+    "original_revision": "d590e01487685985c9982b6ab128969611be49c8",
+    "original_gated": "auto",
+    "license": "NOT_VERIFIED",
+    "license_note": "Neither accessible converted repository card/tree nor original repository API provides a weight license. Original gated README was unavailable. Framework Apache-2.0 is not assigned to the weights. Existing local evaluation only; no new gated weights fetched or model redistributed.",
+    "deployment_license_accepted": false,
+    "feature_sample_rate": 16000,
+    "files": [
+      {
+        "path": "models/sherpa-onnx-streaming-zipformer-zh-xlarge-int8-2025-06-30/README.md",
+        "bytes": 311,
+        "sha256": "9bd6af44d7ad96de4c3457613a8a95c75dbd91a40b26fb988a1b42d07a190f36",
+        "upstream_lfs_sha256": null,
+        "upstream_size_matches": true,
+        "upstream_lfs_sha256_matches": null
+      },
+      {
+        "path": "models/sherpa-onnx-streaming-zipformer-zh-xlarge-int8-2025-06-30/bpe.model",
+        "bytes": 263956,
+        "sha256": "867a7355801cb43939962ad757ba1cb7941b6171b5a6902772483b4e3a623377",
+        "upstream_lfs_sha256": "867a7355801cb43939962ad757ba1cb7941b6171b5a6902772483b4e3a623377",
+        "upstream_size_matches": true,
+        "upstream_lfs_sha256_matches": true
+      },
+      {
+        "path": "models/sherpa-onnx-streaming-zipformer-zh-xlarge-int8-2025-06-30/decoder.onnx",
+        "bytes": 8533022,
+        "sha256": "8f9c903da2818f207304a3f30b9eeb30028e30398f333c1e95e12c97704173e6",
+        "upstream_lfs_sha256": "8f9c903da2818f207304a3f30b9eeb30028e30398f333c1e95e12c97704173e6",
+        "upstream_size_matches": true,
+        "upstream_lfs_sha256_matches": true
+      },
+      {
+        "path": "models/sherpa-onnx-streaming-zipformer-zh-xlarge-int8-2025-06-30/encoder.int8.onnx",
+        "bytes": 761133737,
+        "sha256": "f2c543a0330e1ed0bd09c82e4ae7d3f1cbee10a15feca638fcc4f88083a36b8a",
+        "upstream_lfs_sha256": "f2c543a0330e1ed0bd09c82e4ae7d3f1cbee10a15feca638fcc4f88083a36b8a",
+        "upstream_size_matches": true,
+        "upstream_lfs_sha256_matches": true
+      },
+      {
+        "path": "models/sherpa-onnx-streaming-zipformer-zh-xlarge-int8-2025-06-30/joiner.int8.onnx",
+        "bytes": 1545417,
+        "sha256": "f76ffce14b6ef80098cfdbce8846896ff68133970abc314eafab632f910df0d7",
+        "upstream_lfs_sha256": "f76ffce14b6ef80098cfdbce8846896ff68133970abc314eafab632f910df0d7",
+        "upstream_size_matches": true,
+        "upstream_lfs_sha256_matches": true
+      },
+      {
+        "path": "models/sherpa-onnx-streaming-zipformer-zh-xlarge-int8-2025-06-30/tokens.txt",
+        "bytes": 18626,
+        "sha256": "6722bd1585f46f84456b29c3550a343a3cc375b971645773c02ed8e0b4e2405c",
+        "upstream_lfs_sha256": null,
+        "upstream_size_matches": true,
+        "upstream_lfs_sha256_matches": null
+      }
+    ]
+  },
+  "vad": {
+    "name": "local k2-fsa Silero-v4 ONNX export",
+    "file": {
+      "path": "models/silero_vad.onnx",
+      "bytes": 643854,
+      "sha256": "9e2449e1087496d8d4caba907f23e0bd3f78d91fa552479bb9c23ac09cbb1fd6"
+    },
+    "sample_rate": 16000,
+    "sample_rate_evidence": "ONNX metadata: Only the 16kHz branch is kept",
+    "upstream_repository": "https://github.com/snakers4/silero-vad",
+    "reference_revision": "066409f3d9db45a30d21dfcbf9147826ffdd7052",
+    "license": "MIT",
+    "license_binding_note": "Local model metadata links to upstream Silero license; local export SHA recorded. Reference repository revision is not claimed as the original conversion commit.",
+    "enabled_in_production_asr": false
+  },
+  "dependencies": {
+    "python": "3.10.21",
+    "executable": "/home/kxj/miniforge3/envs/edge_ai/bin/python3.10",
+    "platform": "Linux-6.8.0-138-generic-x86_64-with-glibc2.35",
+    "sherpa_onnx": {
+      "version": "1.13.6",
+      "reference_revision": "1cb484af5e69d3c7803c1eb0b3b5ab8041e0e911",
+      "reference_tag": "v1.13.6",
+      "license": "Apache-2.0",
+      "usage": "direct dependency, existing API adapter; no framework migration"
+    },
+    "bundled_onnxruntime": {
+      "reported_version": "1.27.1",
+      "license": "MIT with third-party notices",
+      "standalone_python_ort_used": false,
+      "build_commit_verified": false
+    },
+    "installed_packages": {
+      "sherpa-onnx": {
+        "version": "1.13.6",
+        "license_files": [
+          {
+            "path": "/home/kxj/miniforge3/envs/edge_ai/lib/python3.10/site-packages/sherpa_onnx-1.13.6.dist-info/licenses/LICENSE",
+            "bytes": 11358,
+            "sha256": "cfc7749b96f63bd31c3c42b5c471bf756814053e847c10f3eb003417bc523d30"
+          }
+        ],
+        "metadata_file": [
+          {
+            "path": "/home/kxj/miniforge3/envs/edge_ai/lib/python3.10/site-packages/sherpa_onnx-1.13.6.dist-info/METADATA",
+            "bytes": 52371,
+            "sha256": "c0de8be93984812a7a6115f345c588c98a450bb8f6b563d692013c4865d69e76"
+          }
+        ]
+      },
+      "numpy": {
+        "version": "2.2.6",
+        "license_files": [
+          {
+            "path": "/home/kxj/miniforge3/envs/edge_ai/lib/python3.10/site-packages/numpy-2.2.6.dist-info/LICENSE.txt",
+            "bytes": 47755,
+            "sha256": "c002bd26de7dc7aa464250a0de063d58fe55974452e4389e5c21c350a820bf06"
+          },
+          {
+            "path": "/home/kxj/miniforge3/envs/edge_ai/lib/python3.10/site-packages/numpy/_core/include/numpy/random/LICENSE.txt",
+            "bytes": 1018,
+            "sha256": "fbc539f47d0cf83bc61378080fb873d5c14630126cacbfe754035c3926daa5ec"
+          },
+          {
+            "path": "/home/kxj/miniforge3/envs/edge_ai/lib/python3.10/site-packages/numpy/ma/LICENSE",
+            "bytes": 1593,
+            "sha256": "05f3b88351988ecfad10abe92c0c50e5875c6452d5009a0084cc291551ffcca6"
+          },
+          {
+            "path": "/home/kxj/miniforge3/envs/edge_ai/lib/python3.10/site-packages/numpy/random/LICENSE.md",
+            "bytes": 3511,
+            "sha256": "103166b62b80443afb9eb3488e052ea06be0cff566b908f199e561fde49af19f"
+          }
+        ],
+        "metadata_file": [
+          {
+            "path": "/home/kxj/miniforge3/envs/edge_ai/lib/python3.10/site-packages/numpy-2.2.6.dist-info/METADATA",
+            "bytes": 62026,
+            "sha256": "22d648f53848429464ca643b40d73b49a920d47876fc77c395d4dca4e834904a"
+          }
+        ]
+      },
+      "sounddevice": {
+        "version": "0.5.6",
+        "license_files": [
+          {
+            "path": "/home/kxj/miniforge3/envs/edge_ai/lib/python3.10/site-packages/sounddevice-0.5.6.dist-info/licenses/LICENSE",
+            "bytes": 1063,
+            "sha256": "b6eea21bbafbaf7a2177e492f1be6b5efc6f4e708b1980773de51cdaa52f8211"
+          }
+        ],
+        "metadata_file": [
+          {
+            "path": "/home/kxj/miniforge3/envs/edge_ai/lib/python3.10/site-packages/sounddevice-0.5.6.dist-info/METADATA",
+            "bytes": 1450,
+            "sha256": "0e95620083c46c892d3c78f5cae5db01d63814db395c1b170d2c013cb9e0b4de"
+          }
+        ]
+      },
+      "cffi": {
+        "version": "2.1.1",
+        "license_files": [
+          {
+            "path": "/home/kxj/miniforge3/envs/edge_ai/lib/python3.10/site-packages/cffi-2.1.1.dist-info/licenses/LICENSE",
+            "bytes": 1123,
+            "sha256": "5ba24ddc57067f9249add644c3afc41a5d6dc37e23433ef759d95df370b0af63"
+          }
+        ],
+        "metadata_file": [
+          {
+            "path": "/home/kxj/miniforge3/envs/edge_ai/lib/python3.10/site-packages/cffi-2.1.1.dist-info/METADATA",
+            "bytes": 2527,
+            "sha256": "558bafb9093a8e790175d9ecff9688382981d744877dad86fd6770db0f4dc918"
+          }
+        ]
+      },
+      "pycparser": {
+        "version": "3.0",
+        "license_files": [
+          {
+            "path": "/home/kxj/miniforge3/envs/edge_ai/lib/python3.10/site-packages/pycparser-3.0.dist-info/licenses/LICENSE",
+            "bytes": 1543,
+            "sha256": "0c846399369ea76ddd7b5c44fe6d16497415fcf015f5cbb508c24bf98b81c5b1"
+          }
+        ],
+        "metadata_file": [
+          {
+            "path": "/home/kxj/miniforge3/envs/edge_ai/lib/python3.10/site-packages/pycparser-3.0.dist-info/METADATA",
+            "bytes": 8229,
+            "sha256": "f547a60b0ab54cc2f242213d1f87960ad80df7dd5dfeb98d17a444d48bfb6b93"
+          }
+        ]
+      }
+    },
+    "native_binaries": [
+      {
+        "path": "/home/kxj/miniforge3/envs/edge_ai/lib/python3.10/site-packages/sherpa_onnx/lib/_sherpa_onnx.cpython-310-x86_64-linux-gnu.so",
+        "bytes": 6200177,
+        "sha256": "4f5af873b2e4ed39d230f329e2dcb972401a0aea4f345f271039806b9e1f1452"
+      },
+      {
+        "path": "/home/kxj/miniforge3/envs/edge_ai/lib/python3.10/site-packages/sherpa_onnx/lib/libonnxruntime.so",
+        "bytes": 26407985,
+        "sha256": "c85f471e1bd5059a4556038f7f5288fa41141647613688452ae7de4879150903"
+      },
+      {
+        "path": "/home/kxj/miniforge3/envs/edge_ai/lib/python3.10/site-packages/sherpa_onnx/lib/libsherpa-onnx-c-api.so",
+        "bytes": 5101472,
+        "sha256": "e25a6cb94d0b56a1f17c0f66b07e573599d351db690eea1e8d0ae90fcb6ea0f7"
+      },
+      {
+        "path": "/home/kxj/miniforge3/envs/edge_ai/lib/python3.10/site-packages/sherpa_onnx/lib/libsherpa-onnx-cxx-api.so",
+        "bytes": 261792,
+        "sha256": "84f46a17f8bd144b2243b5121c7b582373ba4b34a0cf001ff30e26ed792ceb29"
+      }
+    ],
+    "numpy_license_note": "NumPy BSD-3-Clause; binary LICENSE also includes bundled OpenBLAS/GCC runtime components and their notices. No claim that all wheel contents share BSD.",
+    "sounddevice_usage": "Installed MIT dependency; no PortAudio microphone capture in this stage. No full distribution/commercial licensing clearance implied."
+  },
+  "official_references": [
+    {
+      "name": "sherpa-LICENSE.txt",
+      "url": "https://raw.githubusercontent.com/k2-fsa/sherpa-onnx/1cb484af5e69d3c7803c1eb0b3b5ab8041e0e911/LICENSE",
+      "status": 200,
+      "bytes": 11358,
+      "sha256": "cfc7749b96f63bd31c3c42b5c471bf756814053e847c10f3eb003417bc523d30"
+    },
+    {
+      "name": "sherpa-online-file.py",
+      "url": "https://raw.githubusercontent.com/k2-fsa/sherpa-onnx/1cb484af5e69d3c7803c1eb0b3b5ab8041e0e911/python-api-examples/online-decode-files.py",
+      "status": 200,
+      "bytes": 14621,
+      "sha256": "2eaca0d1a51c3ded0728d44feb4d9c0da84a3bc81f987b84c6acb5b9b00ed696"
+    },
+    {
+      "name": "sherpa-online-microphone.py",
+      "url": "https://raw.githubusercontent.com/k2-fsa/sherpa-onnx/1cb484af5e69d3c7803c1eb0b3b5ab8041e0e911/python-api-examples/speech-recognition-from-microphone-with-endpoint-detection.py",
+      "status": 200,
+      "bytes": 5733,
+      "sha256": "9ba6d66b043e8aaa1b0550456a053231834dcda4e20ac876bb44f3925cda3baa"
+    },
+    {
+      "name": "sherpa-vad-example.py",
+      "url": "https://raw.githubusercontent.com/k2-fsa/sherpa-onnx/1cb484af5e69d3c7803c1eb0b3b5ab8041e0e911/python-api-examples/vad-with-non-streaming-asr.py",
+      "status": 200,
+      "bytes": 15583,
+      "sha256": "92d6f0195df30163e0a36063efd2846b985f2f4bcc27d03e9718935789764824"
+    },
+    {
+      "name": "sherpa-online-recognizer.py",
+      "url": "https://raw.githubusercontent.com/k2-fsa/sherpa-onnx/1cb484af5e69d3c7803c1eb0b3b5ab8041e0e911/sherpa-onnx/python/sherpa_onnx/online_recognizer.py",
+      "status": 200,
+      "bytes": 43953,
+      "sha256": "a80620a5eb35e06a190584c2c643e5210bff672410283e5a8f106655c1519c9e"
+    },
+    {
+      "name": "asr-converted-README.md",
+      "url": "https://huggingface.co/csukuangfj/sherpa-onnx-streaming-zipformer-zh-xlarge-int8-2025-06-30/resolve/18f31ce4644ac3bcf544eea692d7242b798d508f/README.md",
+      "status": 200,
+      "bytes": 311,
+      "sha256": "9bd6af44d7ad96de4c3457613a8a95c75dbd91a40b26fb988a1b42d07a190f36"
+    },
+    {
+      "name": "asr-converted-tree.json",
+      "url": "https://huggingface.co/api/models/csukuangfj/sherpa-onnx-streaming-zipformer-zh-xlarge-int8-2025-06-30/tree/18f31ce4644ac3bcf544eea692d7242b798d508f?recursive=true&expand=true",
+      "status": 200,
+      "bytes": 12113,
+      "sha256": "2cc714e0bfd46cba55257cb8d82e9269da1eedba4957b2b2982f2c80f92c49ed"
+    },
+    {
+      "name": "asr-origin-README-attempt.txt",
+      "url": "https://huggingface.co/yuekai/icefall-asr-multi-zh-hans-zipformer-xl/resolve/d590e01487685985c9982b6ab128969611be49c8/README.md",
+      "status": 404,
+      "bytes": 15,
+      "sha256": "f36668ddf22403a332f978057d527cf285b01468bc3431b04094a7bafa6aba59",
+      "error": "HTTPError"
+    },
+    {
+      "name": "silero-LICENSE.txt",
+      "url": "https://raw.githubusercontent.com/snakers4/silero-vad/066409f3d9db45a30d21dfcbf9147826ffdd7052/LICENSE",
+      "status": 200,
+      "bytes": 1075,
+      "sha256": "2e63e9a38b6e8fc0c7bc37ce174caca1862870856c6daf5697cfb785e925520b"
+    },
+    {
+      "name": "silero-releases.json",
+      "url": "https://api.github.com/repos/snakers4/silero-vad/releases",
+      "status": 200,
+      "bytes": 41288,
+      "sha256": "f7492a21e8f8e86dcdcc0a2ce071879ee27bbaa0d47a55c71ab490ec40647b21"
+    },
+    {
+      "name": "sherpa-asr-release.json",
+      "url": "https://api.github.com/repos/k2-fsa/sherpa-onnx/releases/tags/asr-models",
+      "status": 200,
+      "bytes": 784290,
+      "sha256": "3f08be28da25b5c3f8c040e3e8fa56721818adc2a3b8404825f941610c7010aa"
+    }
+  ],
+  "model_or_dependency_upgrades": false,
+  "raw_identity_evidence": "evaluation/20261113-w14-identity/before.json",
+  "onnx_metadata_evidence": "evaluation/20261113-w14-identity/onnx-metadata.json"
+}
