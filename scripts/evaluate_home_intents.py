@@ -18,6 +18,7 @@ from edge_smart_home.agent.contract import AGENT_RESPONSE_KINDS, parse_agent_res
 from edge_smart_home.agent.evaluation_errors import evaluate_model_response, diagnose_fixture_suite
 from edge_smart_home.agent.local_llm import build_agent_prompt, UrllibJsonTransport, LlmHttpError
 from edge_smart_home.agent.rule_based import RuleBasedIntelligentPath
+from edge_smart_home.agent.schema_format import ollama_agent_response_format
 from edge_smart_home.agent.validation import AgentPlanValidator
 from edge_smart_home.common import EventSource, PerceptionEvent
 from edge_smart_home.device.mock import MockDeviceBackend
@@ -90,6 +91,7 @@ def source_hashes(corpus_path, corpus):
              'src/edge_smart_home/agent/evaluation_errors.py', 'src/edge_smart_home/agent/contract.py',
              'src/edge_smart_home/agent/local_llm.py', 'src/edge_smart_home/agent/rule_based.py',
              'src/edge_smart_home/agent/validation.py', 'src/edge_smart_home/agent/interfaces.py',
+             'src/edge_smart_home/agent/schema_format.py',
              'src/edge_smart_home/device/mock.py', 'src/edge_smart_home/common/timing_policy.py',
              'src/edge_smart_home/app/pipeline.py', 'src/edge_smart_home/app/orchestrator.py', 'configs/agent.json', 'configs/devices.json',
              'schemas/agent_response.schema.json', 'configs/llm-model-source-v1.json']
@@ -120,7 +122,7 @@ def payloads(config, devices, schema, cases):
     result = []
     for index, case in enumerate(cases):
         prompt = build_agent_prompt(PerceptionEvent(source=EventSource.TEXT, label=case['text']), devices, states, schema, config['max_commands'])
-        payload = {'model': o['model'], 'prompt': prompt, 'format': schema, 'stream': False,
+        payload = {'model': o['model'], 'prompt': prompt, 'format': ollama_agent_response_format(schema), 'stream': False,
                    'think': o['think'], 'keep_alive': o['keep_alive'],
                    'options': {'temperature': o['temperature'], 'num_predict': o['max_output_tokens'], 'seed': o['seed']}}
         result.append({'call_index': index, 'case_id': case['id'], 'payload': payload, 'payload_sha256': signature(payload)})
@@ -139,6 +141,8 @@ def validate_protocol(p):
     cases = validate_corpus(p['corpus'], p['devices'], p['config']['max_commands'])
     if signature(p['corpus']) != p['corpus_content_sha256']:
         raise ValueError('Frozen literal oracle content hash differs')
+    if p.get('format_adapter') != 'canonical_contract_equivalent_disjoint_oneof_v1':
+        raise ValueError('Expected explicit equivalent oneOf generation-format adapter')
     if payloads(p['config'], p['devices'], p['schema'], cases) != p['requests']:
         raise ValueError('Frozen requests differ from original product prompt/schema/configuration')
     if p['acceptance_policy'] != acceptance_policy(): raise ValueError('Frozen acceptance policy differs')
@@ -171,10 +175,11 @@ def prepare(args, client=None):
          'expected_digest': MODEL_DIGEST, 'expected_version': SERVER_VERSION, 'model_identity': pinned,
          'config_dir': str(args.config_dir.resolve()), 'corpus_path': str(corpus_path),
          'config': config, 'devices': devices, 'schema': schema, 'corpus': corpus,
+         'format_adapter': 'canonical_contract_equivalent_disjoint_oneof_v1',
          'corpus_content_sha256': signature(corpus), 'requests': payloads(config, devices, schema, cases),
          'sources_sha256': source_hashes(corpus_path, corpus), 'prepared_git': git,
          'acceptance_policy': acceptance_policy(), 'reference': REFERENCE,
-         'scope': 'Raw model-only calls, separate read-only request guard and separate offline rule baseline; no full routed/fast-path/execution claim',
+         'scope': 'Raw model-only calls with equivalent oneOf format adapter; canonical prompt/schema and frozen oracle unchanged. Separate read-only request guard and offline rule baseline; no routed/execution claim',
          'generation_calls': 0, 'explicit_load_calls': 0, 'explicit_unload_calls': 0}
     validate_protocol(p); write_json(args.outdir / 'protocol.json', p)
     return {'passed': True, 'protocol': str(args.outdir / 'protocol.json'), 'generation_calls': 0, 'cases': len(cases)}

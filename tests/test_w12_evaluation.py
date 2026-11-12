@@ -67,7 +67,7 @@ class W12EvaluationTests(unittest.TestCase):
         for name in index['sha256']:index['sha256'][name]=evaluation.sha256(out/name)
         (out/'raw-index.json').write_text(json.dumps(index,ensure_ascii=False,indent=2)+'\n')
 
-    def test_frozen_prepare_is_metadata_only_and_exact_original_payload(self):
+    def test_frozen_prepare_is_metadata_only_with_canonical_prompt_and_projected_format(self):
         path,p=self.prepared();self.assertEqual(p['generation_calls'],0);self.assertEqual(len(p['requests']),29)
         self.assertEqual(p['corpus_content_sha256'],evaluation.signature(p['corpus']))
         self.assertIn('configs/evaluation/w12-home-intents-v1.json',p['sources_sha256'])
@@ -75,7 +75,10 @@ class W12EvaluationTests(unittest.TestCase):
             payload=request['payload'];self.assertIs(payload['stream'],False);self.assertIs(payload['think'],False)
             self.assertEqual(payload['options'],{'temperature':0.0,'num_predict':256,'seed':42})
             self.assertNotIn('allowed_kinds',payload['prompt']);self.assertNotIn('frozen oracle',payload['prompt'])
-            self.assertEqual(payload['format'],p['schema'])
+            self.assertEqual(payload['format'],evaluation.ollama_agent_response_format(p['schema']))
+            self.assertIn('oneOf',payload['format']);self.assertNotEqual(payload['format'],p['schema'])
+        self.assertEqual(p['schema'],evaluation.read_json(self.config.parent/'schemas/agent_response.schema.json'))
+        self.assertEqual(p['format_adapter'],'canonical_contract_equivalent_disjoint_oneof_v1')
 
     def test_full_fake29_calls_no_device_execution_and_offline_rebuild(self):
         with patch.object(evaluation.MockDeviceBackend,'execute',side_effect=AssertionError('device execution forbidden')) as execute:

@@ -1,6 +1,6 @@
 # W12：当前家庭指令 JSON 与校验评测
 
-复用W10–W11固定的Ollama0.40.2、`qwen3:4b` manifest `359d7dd4bcdab3d86b87d73ac27966f4dbb9f5efdfcc75d34a8764a09474fae7`（Thinking-2507 / Q4_K_M），继续使用原Schema、`parse_agent_response`、`AgentPlanValidator`及请求guard。模型/许可来源见 [W10身份](LLM_MODEL_IDENTITY.md)，thinking请求行为与缓存边界见 [W11结果](stages/L1-w11-results.md)。原产品 `configs/agent.json` 的false/256/temperature0/seed42/keep_alive10m、2/30秒超时保持原样，没有上下文/线程/预算的候选覆盖。
+复用W10–W11固定的Ollama0.40.2、`qwen3:4b` manifest `359d7dd4bcdab3d86b87d73ac27966f4dbb9f5efdfcc75d34a8764a09474fae7`（Thinking-2507 / Q4_K_M），继续使用原Schema、`parse_agent_response`、`AgentPlanValidator`及请求guard。生成请求的`format`采用与canonical合同等价的互斥oneOf投影，prompt仍逐字使用canonical Schema，详见下述候选A/B记录。模型/许可来源见 [W10身份](LLM_MODEL_IDENTITY.md)，thinking请求行为与缓存边界见 [W11结果](stages/L1-w11-results.md)。原产品 `configs/agent.json` 的false/256/temperature0/seed42/keep_alive10m、2/30秒超时保持原样，没有上下文/线程/预算的候选覆盖。
 
 ## 固定题库和四层结果
 
@@ -15,6 +15,14 @@
 
 正常/歧义/非法/定时均保留在29例分母中。原始模型、guard后和规则分别报告kind/精确commands命中、各类别错误、混淆表和错误ID。非正常用例生成plan及validator不通过的plan计为`unsafe_plan`；正常请求输出另一个合法设备/参数则是语义不匹配，单独报告，不伪称validator应该拒绝。对时序词的应用延期保护、Fast Path/scene旁路回归由产品独立测试覆盖，本脚本不构建调度器或执行设备。
 
+## 首轮失败与等价format候选
+
+源码`0ddb009d60882c80c0d04ffd11743bca44683f6d`的首轮29例在`evaluation/20261112-w12-model/`完整保留：所有生成正常结束，但A04/A05实际输出`kind=plan, commands=[]`，wire仅27/29，mandatory gate失败、退出1；raw语义20/29、guard后23/29、纯规则4/29。此时Schema使用原有`allOf + if/then/else`表达kind与commands的关系；官方grammar实现对条件关键字的支持限制见[合同源码参考](W12_CONTRACT.md)。首轮错误是真实生成，不能与26条注入fixture混淆。原协议、结果和`evaluation/20261112-w12-first-audit/`的离线重建/独立审计保持原样。
+
+候选B仅增加`schema_format.ollama_agent_response_format`：把同一canonical合同的plan/non-plan关系投影为互斥完整object的`oneOf`分支，分别约束plan的非空commands与non-plan的空commands，其余约束保留。canonical Schema文件、原parser/validator、prompt输入、29例标签/命令、模型选项和mandatory门槛均不变，不修补模型输出、不删除失败题，也不把旧候选判成通过。模块与payload被新的source/协议hash绑定，先完整测试和提交，再重新对**全部29例**运行一次候选B；不是挑失败题重跑。
+
+旧候选报告在对应历史源码版本下重建过，summary/report字节一致；当前候选B工具会拒绝旧协议的format/source不一致，不能用新实现静默重写旧run。B若仍未通过按原门槛保留实际错误，不预先宣称成功。
+
 ## 冻结与运行
 
 实现和全部测试通过、提交后，从独立子仓执行：
@@ -25,17 +33,17 @@ W12_PY=/home/kxj/miniforge3/envs/edge_ai/bin/python
 
 # 4个只读元数据接口，0次生成；先冻结字面输入/oracle和实际payload。
 "$W12_PY" scripts/evaluate_home_intents.py prepare \
-  --outdir evaluation/20261112-w12-protocol
+  --outdir evaluation/20261112-w12-protocol-v2
 
 # 串行29次真实模型请求；无预热、自动重试、设备执行或预算调优。
 "$W12_PY" scripts/evaluate_home_intents.py run \
-  --protocol evaluation/20261112-w12-protocol/protocol.json \
-  --outdir evaluation/20261112-w12-model
+  --protocol evaluation/20261112-w12-protocol-v2/protocol.json \
+  --outdir evaluation/20261112-w12-model-v2
 
 # 只读本地raw，核对hash、账本、身份、原始分类/分数后重建到新目录。
 "$W12_PY" scripts/evaluate_home_intents.py report \
-  --run-dir evaluation/20261112-w12-model \
-  --outdir evaluation/20261112-w12-recomputed
+  --run-dir evaluation/20261112-w12-model-v2 \
+  --outdir evaluation/20261112-w12-recomputed-v2
 
 "$W12_PY" scripts/run_unit_tests.py --pattern test_w12_evaluation.py --verbosity 1
 "$W12_PY" scripts/run_unit_tests.py --verbosity 0

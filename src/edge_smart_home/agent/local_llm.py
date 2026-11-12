@@ -23,6 +23,7 @@ from .contract import (
     parse_agent_response,
 )
 from .interfaces import IntelligentPathResult, IntelligentResultKind
+from .schema_format import ollama_agent_response_format
 
 
 DEFAULT_OLLAMA_ENDPOINT = "http://127.0.0.1:11434/api/generate"
@@ -395,7 +396,7 @@ class LocalLlmIntelligentPath:
                         {
                             "model": self.model,
                             "prompt": prompt,
-                            "format": self.response_schema,
+                            "format": ollama_agent_response_format(self.response_schema),
                             "stream": False,
                             "think": self.think,
                             "keep_alive": self.keep_alive,

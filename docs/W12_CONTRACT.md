@@ -19,6 +19,18 @@
 
 项目应用政策比一般Schema类型更严格：纯空白字符串拒绝，数值50.0即使没有小数部分也不当Python int；Draft2020-12的integer允许无小数部分的数值。此差异明示保留，不修改Schema或冒称完全等价的通用实现。
 
+## 原Schema到API format的等价投影
+
+首次29条当前模型运行保存在 `evaluation/20261112-w12-model/`（源码 `0ddb` 前缀）。其中A04/A05均正常stop且JSON语法完整，却返回kind=plan、commands=[]，因此原生产解析器正确拒绝，wire合同仅27/29通过。原始失败、预期和门槛保留；不放宽“plan至少一条命令”的要求，也不改成clarification补救后冒充模型原始通过。
+
+官方Ollama0.40.2的 `LLAMA_CPP_VERSION` 固定llama.cpp `b11351`，解析为commit `631109b34da437a3c4a5ebd75091d677671392e3`，与本机runner `--version`报告的631109b34一致。该固定源码的 [grammar限制](https://github.com/ggml-org/llama.cpp/blob/631109b34da437a3c4a5ebd75091d677671392e3/grammars/README.md)明确列出if/then/else不受支持且不支持的功能可能被静默略过；[节点解析器](https://github.com/ggml-org/llama.cpp/blob/631109b34da437a3c4a5ebd75091d677671392e3/common/json-schema.cpp)先处理oneOf/anyOf，而有properties的object直接构造对象，不能从Schema存在conditional就推定生成时执行了它。原始2个输出与此限制一致；这是源码支持的机制推断，未直接抓取实际生成所用的grammar，也未证明本机二进制可复现构建或运行进程映射inode。
+
+候选B只将API `format` 通过 `agent/schema_format.py::ollama_agent_response_format` 转为两个互斥完整对象分支：plan分支kind const=plan、commands至少1；非plan分支kind枚举排除plan、commands至多0。每个分支保留原type、required、additionalProperties、message、command items及全部参数约束，顶层只有元数据和oneOf，避免把properties与oneOf混用。规范Schema文件、prompt内的规范Schema、既有解析器与AgentPlanValidator不变，没有给定用例答案或修改oracle。
+
+对共享约束B，原关系为 `B ∧ ((kind=plan ∧ n≥1) ∨ (kind≠plan ∧ n=0))`。五个kind构成原枚举，两个分支按kind互斥，因此oneOf与后端按union处理的anyOf在此合同上等价。7项专门回归验证每个kind及非法kind×命令数0–9的有限关系、分支互斥、共同约束逐项保留、输入/分支不共享可变对象及未知条件形状拒绝；这不是完整通用Schema引擎证明，也不把不同的Python严格int/空白政策偷偷改成规范类型。
+
+候选B须使用新源码提交、新冻结协议和完整29条重跑，保留首次失败；不能只重跑A04/A05或把两轮成功样本拼成通过。结构约束修复不保证语义、设备选择或个人理解通过；原始模型与guard后的语义成绩继续分别报告。
+
 ## 解析与校验错误口径
 
 `agent/evaluation_errors.py::evaluate_model_response` 是只读诊断适配器，不替换生产校验器、不修复输出、不重试模型或生成兜底“成功”。分类依据实际处理阶段和异常类型，不靠英文异常消息中的关键词猜测细类。
