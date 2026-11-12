@@ -1,0 +1,696 @@
+{
+  "schema_version": 1,
+  "kind": "w14_existing_streaming_asr_replay_baseline",
+  "created_at": "2026-11-12T16:54:07.890966+00:00",
+  "local_work_date": "2026-11-13",
+  "timezone": "Asia/Shanghai",
+  "engineering_evidence_passed": true,
+  "speech_recognition_exact_all_passed": false,
+  "asr_weight_license_verified": false,
+  "commercial_distribution_license_accepted": false,
+  "current_household_microphone_accepted": false,
+  "overflow_resolution_accepted": false,
+  "personal_understanding_accepted": false,
+  "root_implementation_commit": "43743de93f6708a96684f3c5cf81f18ad88c6bcd",
+  "runtime_source_commit": "04ff041f5c99377d8a83dde52002b6a597e26d2c",
+  "protocol_sha256": "1b78e6490d1cf8b24ac5ffb2af3452c40bb636694c38df85fde4f4a1e22e4835",
+  "manifest_sha256": "a8808bf8221676d9b4ccf16bfbbfa17bace1a26e18636c7291d7b122a23697ed",
+  "model_inventory": "configs/asr-model-source-v1.json",
+  "source_input_inventory": "docs/asr_evidence/20261113-w14-inputs.json",
+  "transcripts": "docs/asr_evidence/20261113-w14-transcripts.csv",
+  "tests": {
+    "full_unit": 377,
+    "new_vs_w13": 52,
+    "audio_boundaries": 22,
+    "evaluation": 17,
+    "source_preparation": 13,
+    "network_attempts": 0,
+    "tested_source_files": 157
+  },
+  "measurement": {
+    "schema_version": 1,
+    "kind": "w14_asr_file_replay_results",
+    "passed": true,
+    "engineering_gates": {
+      "all_frozen_cases_recorded_once": true,
+      "all_audio_and_asr_runs_complete": true,
+      "at_least_five_licensed_recordings_complete": true,
+      "no_internal_text_resolver_errors": true,
+      "no_global_runtime_failure": true,
+      "waveform_attempt_count_matches": true,
+      "zero_real_device_and_model_service_calls": true
+    },
+    "runtime_source_commit": "04ff041f5c99377d8a83dde52002b6a597e26d2c",
+    "overall": {
+      "recordings": 5,
+      "completed": 5,
+      "errors_by_stage_and_code": {
+        "text_resolver:CAPABILITY_UNAVAILABLE": 5,
+        "transcript:ASR_TRANSCRIPT_MISMATCH": 5
+      },
+      "recognizer": {
+        "scored": 5,
+        "exact_matches": 0,
+        "character_edits": 10,
+        "reference_characters": 144,
+        "cer": 0.06944444444444445
+      },
+      "voice": {
+        "scored": 5,
+        "exact_matches": 0,
+        "character_edits": 10,
+        "reference_characters": 144,
+        "cer": 0.06944444444444445
+      },
+      "latency_ms": {
+        "pcm_read_convert_wall_ms": {
+          "n": 5,
+          "p50": 0.45994600077392533,
+          "p95": 0.9347494007670321
+        },
+        "asr_replay_wall_ms": {
+          "n": 5,
+          "p50": 1614.026103001379,
+          "p95": 2869.1369769978337
+        },
+        "decode_only_ms": {
+          "n": 5,
+          "p50": 1481.4269909911673,
+          "p95": 2633.137495184201
+        },
+        "text_resolver_wall_ms": {
+          "n": 5,
+          "p50": 0.2128609994542785,
+          "p95": 0.21522920142160729
+        }
+      },
+      "decode_only_rtf": {
+        "n": 5,
+        "p50": 0.14949239549909538,
+        "p95": 0.1525916522705041
+      },
+      "text_resolver_status_counts": {
+        "unroutable": 5
+      }
+    },
+    "by_source_kind": {
+      "human": {
+        "recordings": 5,
+        "completed": 5,
+        "errors_by_stage_and_code": {
+          "text_resolver:CAPABILITY_UNAVAILABLE": 5,
+          "transcript:ASR_TRANSCRIPT_MISMATCH": 5
+        },
+        "recognizer": {
+          "scored": 5,
+          "exact_matches": 0,
+          "character_edits": 10,
+          "reference_characters": 144,
+          "cer": 0.06944444444444445
+        },
+        "voice": {
+          "scored": 5,
+          "exact_matches": 0,
+          "character_edits": 10,
+          "reference_characters": 144,
+          "cer": 0.06944444444444445
+        },
+        "latency_ms": {
+          "pcm_read_convert_wall_ms": {
+            "n": 5,
+            "p50": 0.45994600077392533,
+            "p95": 0.9347494007670321
+          },
+          "asr_replay_wall_ms": {
+            "n": 5,
+            "p50": 1614.026103001379,
+            "p95": 2869.1369769978337
+          },
+          "decode_only_ms": {
+            "n": 5,
+            "p50": 1481.4269909911673,
+            "p95": 2633.137495184201
+          },
+          "text_resolver_wall_ms": {
+            "n": 5,
+            "p50": 0.2128609994542785,
+            "p95": 0.21522920142160729
+          }
+        },
+        "decode_only_rtf": {
+          "n": 5,
+          "p50": 0.14949239549909538,
+          "p95": 0.1525916522705041
+        },
+        "text_resolver_status_counts": {
+          "unroutable": 5
+        }
+      },
+      "synthetic": {
+        "recordings": 0,
+        "completed": 0,
+        "errors_by_stage_and_code": {},
+        "recognizer": {
+          "scored": 0,
+          "exact_matches": 0,
+          "character_edits": 0,
+          "reference_characters": 0,
+          "cer": null
+        },
+        "voice": {
+          "scored": 0,
+          "exact_matches": 0,
+          "character_edits": 0,
+          "reference_characters": 0,
+          "cer": null
+        },
+        "latency_ms": {
+          "pcm_read_convert_wall_ms": {
+            "n": 0,
+            "p50": null,
+            "p95": null
+          },
+          "asr_replay_wall_ms": {
+            "n": 0,
+            "p50": null,
+            "p95": null
+          },
+          "decode_only_ms": {
+            "n": 0,
+            "p50": null,
+            "p95": null
+          },
+          "text_resolver_wall_ms": {
+            "n": 0,
+            "p50": null,
+            "p95": null
+          }
+        },
+        "decode_only_rtf": {
+          "n": 0,
+          "p50": null,
+          "p95": null
+        },
+        "text_resolver_status_counts": {}
+      },
+      "mock": {
+        "recordings": 0,
+        "completed": 0,
+        "errors_by_stage_and_code": {},
+        "recognizer": {
+          "scored": 0,
+          "exact_matches": 0,
+          "character_edits": 0,
+          "reference_characters": 0,
+          "cer": null
+        },
+        "voice": {
+          "scored": 0,
+          "exact_matches": 0,
+          "character_edits": 0,
+          "reference_characters": 0,
+          "cer": null
+        },
+        "latency_ms": {
+          "pcm_read_convert_wall_ms": {
+            "n": 0,
+            "p50": null,
+            "p95": null
+          },
+          "asr_replay_wall_ms": {
+            "n": 0,
+            "p50": null,
+            "p95": null
+          },
+          "decode_only_ms": {
+            "n": 0,
+            "p50": null,
+            "p95": null
+          },
+          "text_resolver_wall_ms": {
+            "n": 0,
+            "p50": null,
+            "p95": null
+          }
+        },
+        "decode_only_rtf": {
+          "n": 0,
+          "p50": null,
+          "p95": null
+        },
+        "text_resolver_status_counts": {}
+      },
+      "unknown": {
+        "recordings": 0,
+        "completed": 0,
+        "errors_by_stage_and_code": {},
+        "recognizer": {
+          "scored": 0,
+          "exact_matches": 0,
+          "character_edits": 0,
+          "reference_characters": 0,
+          "cer": null
+        },
+        "voice": {
+          "scored": 0,
+          "exact_matches": 0,
+          "character_edits": 0,
+          "reference_characters": 0,
+          "cer": null
+        },
+        "latency_ms": {
+          "pcm_read_convert_wall_ms": {
+            "n": 0,
+            "p50": null,
+            "p95": null
+          },
+          "asr_replay_wall_ms": {
+            "n": 0,
+            "p50": null,
+            "p95": null
+          },
+          "decode_only_ms": {
+            "n": 0,
+            "p50": null,
+            "p95": null
+          },
+          "text_resolver_wall_ms": {
+            "n": 0,
+            "p50": null,
+            "p95": null
+          }
+        },
+        "decode_only_rtf": {
+          "n": 0,
+          "p50": null,
+          "p95": null
+        },
+        "text_resolver_status_counts": {}
+      }
+    },
+    "model_load_wall_ms": 3403.946837002877,
+    "asr_calls": 5,
+    "asr_calls_definition": "Independent transcribe_waveform invocations attempted, not native decode_stream iterations or network requests",
+    "warmups": 0,
+    "retries": 0,
+    "real_device_executions": 0,
+    "mock_device_executions": 0,
+    "model_service_calls": 0,
+    "independent_vad_applied": false,
+    "live_e2e_ms": null,
+    "live_overflow_count": null,
+    "personal_understanding_accepted": false,
+    "latency_policy": {
+      "mode": "offline file replay, no real-time pacing",
+      "model_load_excluded_from_per_clip": true,
+      "pcm_read_convert_wall_ms": "WAV parse/read/PCM16-to-float validation",
+      "asr_replay_wall_ms": "fresh stream + chunk accept/resample/decode + endpoint/reset + tail padding/EOF",
+      "decode_only_ms": "existing adapter decode-ready loops; excludes accept/resampling and is nested within replay wall",
+      "text_resolver_wall_ms": "voice-normalized text through fresh Mock-backed resolver; no execution",
+      "percentile": "linear interpolation at (n-1)*q; only five or few different clips, not repeated performance benchmark"
+    },
+    "acceptance_policy": {
+      "minimum_licensed_recordings": 5,
+      "require_unique_id_path_and_sha256": true,
+      "every_frozen_case_recorded_once": true,
+      "all_audio_and_asr_runs_complete": true,
+      "classify_every_error": true,
+      "accuracy_100_percent_required": false,
+      "retries": 0,
+      "warmups": 0,
+      "real_device_executions": 0,
+      "model_service_calls": 0
+    },
+    "limitations": [
+      "Previously selected small file-replay development sample; not a held-out home-command or speaker benchmark.",
+      "Source kind and license attribution come from the frozen provenance manifest, not automatic voice authenticity detection.",
+      "Recognizer output includes the frozen decoder/hotword search bias; it is not an unconditioned model baseline.",
+      "Voice normalization and text resolution are separate observations; no Orchestrator, Ollama, backend.execute or TTS is called.",
+      "Independent Silero VAD is not in this ASR path; recognizer endpoint detection is not a VAD accuracy measurement.",
+      "Offline decode RTF and replay wall time do not prove live input overflow/drop fixed; live E2E and overflow remain unmeasured.",
+      "No accuracy threshold was frozen; transcript errors are reported and do not alone fail engineering evidence gates.",
+      "No real device, microphone, ARM, personal understanding or comprehensive production safety acceptance."
+    ]
+  },
+  "native_probes": {
+    "schema_version": 1,
+    "kind": "w14_native_boundary_probes",
+    "source_commit": "04ff041f5c99377d8a83dde52002b6a597e26d2c",
+    "git_status": "",
+    "manifest_sha256": "a8808bf8221676d9b4ccf16bfbbfa17bace1a26e18636c7291d7b122a23697ed",
+    "identities": [
+      {
+        "path": "/home/kxj/zte_ws/edge-smart-home-ai/models/sherpa-onnx-streaming-zipformer-zh-xlarge-int8-2025-06-30/tokens.txt",
+        "bytes": 18626,
+        "sha256": "6722bd1585f46f84456b29c3550a343a3cc375b971645773c02ed8e0b4e2405c"
+      },
+      {
+        "path": "/home/kxj/zte_ws/edge-smart-home-ai/models/sherpa-onnx-streaming-zipformer-zh-xlarge-int8-2025-06-30/encoder.int8.onnx",
+        "bytes": 761133737,
+        "sha256": "f2c543a0330e1ed0bd09c82e4ae7d3f1cbee10a15feca638fcc4f88083a36b8a"
+      },
+      {
+        "path": "/home/kxj/zte_ws/edge-smart-home-ai/models/sherpa-onnx-streaming-zipformer-zh-xlarge-int8-2025-06-30/decoder.onnx",
+        "bytes": 8533022,
+        "sha256": "8f9c903da2818f207304a3f30b9eeb30028e30398f333c1e95e12c97704173e6"
+      },
+      {
+        "path": "/home/kxj/zte_ws/edge-smart-home-ai/models/sherpa-onnx-streaming-zipformer-zh-xlarge-int8-2025-06-30/joiner.int8.onnx",
+        "bytes": 1545417,
+        "sha256": "f76ffce14b6ef80098cfdbce8846896ff68133970abc314eafab632f910df0d7"
+      },
+      {
+        "path": "/home/kxj/zte_ws/edge-smart-home-ai/models/silero_vad.onnx",
+        "bytes": 643854,
+        "sha256": "9e2449e1087496d8d4caba907f23e0bd3f78d91fa552479bb9c23ac09cbb1fd6"
+      },
+      {
+        "path": "/home/kxj/zte_ws/edge-smart-home-ai/configs/audio.json",
+        "bytes": 607,
+        "sha256": "6302ca7081b1cebaed2c9bdfd19c1cfecda361a041fe33a356b16bf0ce3f88ca"
+      },
+      {
+        "path": "/home/kxj/zte_ws/edge-smart-home-ai/configs/hotwords_v2.txt",
+        "bytes": 942,
+        "sha256": "10a03213ead8e3da02b6a7683f3a3851298b877e2f0373a9b8912e6bf353dc37"
+      }
+    ],
+    "synthetic_silence": [
+      {
+        "source_kind": "synthetic_signal",
+        "sample_rate": 8000,
+        "source_audio_seconds": 1.0,
+        "text": "",
+        "decode_seconds": 0.19501829100045143,
+        "rtf_decode_only": 0.19501829100045143,
+        "fileless_asr_wall_ms": 214.4564789996366
+      },
+      {
+        "source_kind": "synthetic_signal",
+        "sample_rate": 16000,
+        "source_audio_seconds": 1.0,
+        "text": "",
+        "decode_seconds": 0.18622390100063058,
+        "rtf_decode_only": 0.18622390100063058,
+        "fileless_asr_wall_ms": 205.65917199564865
+      },
+      {
+        "source_kind": "synthetic_signal",
+        "sample_rate": 48000,
+        "source_audio_seconds": 1.0,
+        "text": "",
+        "decode_seconds": 0.188840616014204,
+        "rtf_decode_only": 0.188840616014204,
+        "fileless_asr_wall_ms": 210.0410790008027
+      }
+    ],
+    "rejected_inputs": [
+      {
+        "expected": "AUDIO_SAMPLE_TYPE_INVALID",
+        "observed": "AUDIO_SAMPLE_TYPE_INVALID",
+        "matched": true,
+        "native_called": false,
+        "evidence_kind": "intentional_injection"
+      },
+      {
+        "expected": "AUDIO_SHAPE_INVALID",
+        "observed": "AUDIO_SHAPE_INVALID",
+        "matched": true,
+        "native_called": false,
+        "evidence_kind": "intentional_injection"
+      },
+      {
+        "expected": "AUDIO_NONFINITE",
+        "observed": "AUDIO_NONFINITE",
+        "matched": true,
+        "native_called": false,
+        "evidence_kind": "intentional_injection"
+      },
+      {
+        "expected": "AUDIO_RANGE_INVALID",
+        "observed": "AUDIO_RANGE_INVALID",
+        "matched": true,
+        "native_called": false,
+        "evidence_kind": "intentional_injection"
+      },
+      {
+        "expected": "AUDIO_EMPTY",
+        "observed": "AUDIO_EMPTY",
+        "matched": true,
+        "native_called": false,
+        "evidence_kind": "intentional_injection"
+      }
+    ],
+    "shadow_vad": [
+      {
+        "id": "W14-H01",
+        "source_kind": "human",
+        "source_audio_seconds": 18.38,
+        "segment_count": 2,
+        "segment_sample_counts": [
+          85088,
+          72288
+        ],
+        "model_init_ms": 4.0317579987458885,
+        "vad_accept_flush_wall_ms": 53.2364390019211,
+        "changed_asr_input": false,
+        "speech_gt_available": false
+      },
+      {
+        "id": "W14-H02",
+        "source_kind": "human",
+        "source_audio_seconds": 7.44,
+        "segment_count": 1,
+        "segment_sample_counts": [
+          99424
+        ],
+        "model_init_ms": 4.107761997147463,
+        "vad_accept_flush_wall_ms": 21.478466005646624,
+        "changed_asr_input": false,
+        "speech_gt_available": false
+      },
+      {
+        "id": "W14-H03",
+        "source_kind": "human",
+        "source_audio_seconds": 7.56,
+        "segment_count": 1,
+        "segment_sample_counts": [
+          78432
+        ],
+        "model_init_ms": 3.65829499787651,
+        "vad_accept_flush_wall_ms": 20.783988999028224,
+        "changed_asr_input": false,
+        "speech_gt_available": false
+      },
+      {
+        "id": "W14-H04",
+        "source_kind": "human",
+        "source_audio_seconds": 9.66,
+        "segment_count": 1,
+        "segment_sample_counts": [
+          56416
+        ],
+        "model_init_ms": 3.477856000245083,
+        "vad_accept_flush_wall_ms": 26.334946996939834,
+        "changed_asr_input": false,
+        "speech_gt_available": false
+      },
+      {
+        "id": "W14-H05",
+        "source_kind": "human",
+        "source_audio_seconds": 15.46,
+        "segment_count": 2,
+        "segment_sample_counts": [
+          14944,
+          91232
+        ],
+        "model_init_ms": 4.439226002432406,
+        "vad_accept_flush_wall_ms": 43.2049380033277,
+        "changed_asr_input": false,
+        "speech_gt_available": false
+      }
+    ],
+    "live_capture": false,
+    "portaudio_overflow_count": null,
+    "queue_drop_count": null,
+    "live_e2e_ms": null,
+    "device_execution_calls": 0,
+    "model_http_calls": 0,
+    "notes": [
+      "Synthetic silence is not human or synthesized speech accuracy.",
+      "Silero shadow segmentation is not enabled in the product streaming path.",
+      "File replay and decode-only RTF cannot establish overflow resolution."
+    ],
+    "asr_model_init_ms": 3310.1083200017456,
+    "same_stream_rate_change": {
+      "first_rate": 8000,
+      "second_rate": 16000,
+      "code": "AUDIO_SAMPLE_RATE_CHANGED",
+      "rejected_before_native": true
+    },
+    "passed": true
+  },
+  "observations": [
+    {
+      "id": "W14-H01",
+      "source_kind": "human",
+      "duration_seconds": 18.38,
+      "expected": "报告警告称，没有人能保证目前在伊拉克采取的任何行动能够阻止宗派战争、不断增长的暴力或走向混乱。",
+      "recognizer_output_hotword_biased": "报告警告称没有人能保证目前在伊拉克采取的任何行动能够阻止宗派战争不断增长的暴力或走向混乱",
+      "voice_normalized": "报告警告称没有人能保证目前在伊拉克采取的任何行动能够阻止宗派战争不断增长的暴力或走向混乱",
+      "exact_match": false,
+      "character_edits": 1,
+      "reference_characters": 45,
+      "cer": 0.0222,
+      "pcm_read_convert_wall_ms": 1.026912999805063,
+      "asr_replay_wall_ms": 2957.3875439964468,
+      "decode_only_ms": 2715.1607719788444,
+      "text_resolver_wall_ms": 0.21567600197158754,
+      "resolver_status": "unroutable",
+      "resolver_error_code": "CAPABILITY_UNAVAILABLE",
+      "layered_errors": "transcript:ASR_TRANSCRIPT_MISMATCH;text_resolver:CAPABILITY_UNAVAILABLE",
+      "shadow_vad_segments": 2
+    },
+    {
+      "id": "W14-H02",
+      "source_kind": "human",
+      "duration_seconds": 7.44,
+      "expected": "因为远离大陆，哺乳动物无法长途跋涉而来，使得巨龟成为科隆群岛主要的食草动物。",
+      "recognizer_output_hotword_biased": "因为远离大陆庙动物无法长途跋涉而来使得巨韧为克隆群岛主要的食草动物",
+      "voice_normalized": "因为远离大陆庙动物无法长途跋涉而来使得巨韧为克隆群岛主要的食草动物",
+      "exact_match": false,
+      "character_edits": 5,
+      "reference_characters": 35,
+      "cer": 0.1429,
+      "pcm_read_convert_wall_ms": 0.45994600077392533,
+      "asr_replay_wall_ms": 1215.1646050042473,
+      "decode_only_ms": 1112.510163024126,
+      "text_resolver_wall_ms": 0.2128609994542785,
+      "resolver_status": "unroutable",
+      "resolver_error_code": "CAPABILITY_UNAVAILABLE",
+      "layered_errors": "transcript:ASR_TRANSCRIPT_MISMATCH;text_resolver:CAPABILITY_UNAVAILABLE",
+      "shadow_vad_segments": 1
+    },
+    {
+      "id": "W14-H03",
+      "source_kind": "human",
+      "duration_seconds": 7.56,
+      "expected": "亚马逊河也是地球上最宽的河流，有些河段的宽度可达6英里。",
+      "recognizer_output_hotword_biased": "亚马逊河也是地球上最宽的河流有些河段的宽度可达六英里",
+      "voice_normalized": "亚马逊河也是地球上最宽的河流有些河段的宽度可达六英里",
+      "exact_match": false,
+      "character_edits": 1,
+      "reference_characters": 26,
+      "cer": 0.0385,
+      "pcm_read_convert_wall_ms": 0.3811170026892796,
+      "asr_replay_wall_ms": 1233.7571590032894,
+      "decode_only_ms": 1130.162509973161,
+      "text_resolver_wall_ms": 0.21344199922168627,
+      "resolver_status": "unroutable",
+      "resolver_error_code": "CAPABILITY_UNAVAILABLE",
+      "layered_errors": "transcript:ASR_TRANSCRIPT_MISMATCH;text_resolver:CAPABILITY_UNAVAILABLE",
+      "shadow_vad_segments": 1
+    },
+    {
+      "id": "W14-H04",
+      "source_kind": "human",
+      "duration_seconds": 9.66,
+      "expected": "迦南没有大森林，所以木材非常昂贵。",
+      "recognizer_output_hotword_biased": "嘉男没有大森林所以木材非常昂贵",
+      "voice_normalized": "嘉男没有大森林所以木材非常昂贵",
+      "exact_match": false,
+      "character_edits": 2,
+      "reference_characters": 15,
+      "cer": 0.1333,
+      "pcm_read_convert_wall_ms": 0.4439249969436787,
+      "asr_replay_wall_ms": 1614.026103001379,
+      "decode_only_ms": 1481.4269909911673,
+      "text_resolver_wall_ms": 0.2021000036620535,
+      "resolver_status": "unroutable",
+      "resolver_error_code": "CAPABILITY_UNAVAILABLE",
+      "layered_errors": "transcript:ASR_TRANSCRIPT_MISMATCH;text_resolver:CAPABILITY_UNAVAILABLE",
+      "shadow_vad_segments": 1
+    },
+    {
+      "id": "W14-H05",
+      "source_kind": "human",
+      "duration_seconds": 15.46,
+      "expected": "据警方称，撞倒摄影师的汽车司机未必会面临刑事指控。",
+      "recognizer_output_hotword_biased": "据警方称撞倒摄影师的汽车司机未必密会面临刑事指控",
+      "voice_normalized": "据警方称撞倒摄影师的汽车司机未必密会面临刑事指控",
+      "exact_match": false,
+      "character_edits": 1,
+      "reference_characters": 23,
+      "cer": 0.0435,
+      "pcm_read_convert_wall_ms": 0.5660950046149082,
+      "asr_replay_wall_ms": 2516.1347090033814,
+      "decode_only_ms": 2305.0443880056264,
+      "text_resolver_wall_ms": 0.19912499556085095,
+      "resolver_status": "unroutable",
+      "resolver_error_code": "CAPABILITY_UNAVAILABLE",
+      "layered_errors": "transcript:ASR_TRANSCRIPT_MISMATCH;text_resolver:CAPABILITY_UNAVAILABLE",
+      "shadow_vad_segments": 2
+    }
+  ],
+  "metric_interpretation": [
+    "Frozen existing normalizer removes whitespace and ，。！？,.!? only. H01 still counts enumeration punctuation 、; H03 counts digit6 versus Chinese六. Both remain in the main score.",
+    "Recognizer output and conservative Voice normalization have identical scores in this run; fixed hotword decoder bias remains.",
+    "All five reference and recognized texts are unroutable read speech; CAPABILITY_UNAVAILABLE is separate from ASR transcript errors and not a household-control failure rate.",
+    "Five different clips once each, no warmup/retry; percentiles summarize these observations, not a repeated performance benchmark."
+  ],
+  "call_accounting": {
+    "primary_human_transcribe_waveform_attempts": 5,
+    "primary_asr_model_initializations": 1,
+    "synthetic_silence_transcribe_waveform_attempts": 3,
+    "separate_probe_asr_model_initializations": 1,
+    "same_stream_rate_change_probe": {
+      "source_audio_seconds": 0.1,
+      "rejected_before_native_second_accept": true,
+      "finish_called": true
+    },
+    "shadow_vad_instances": 5,
+    "shadow_vad_segments": 7,
+    "ollama_model_service_calls": 0,
+    "device_execution_calls": 0,
+    "microphone_capture_calls": 0
+  },
+  "identity_and_negative_proof": {
+    "passed": true,
+    "all_before_after_model_config_dependency_identities_equal": true,
+    "model_files": 7,
+    "sherpa_native_binaries": 4,
+    "installed_dependency_versions_unchanged": true,
+    "pip_freeze_exact_bytes_unchanged": false,
+    "pip_freeze_only_editable_project_revision_changed": {
+      "before": "78bb9e65ab252a5b736b9847fd61a14e24848f90",
+      "after": "04ff041f5c99377d8a83dde52002b6a597e26d2c",
+      "all_other_lines_identical": true
+    },
+    "initial_verification_note": "An initial inline exact pip-freeze byte assertion failed because editable project Git HEAD advanced from base to tested implementation. All actual package versions/binaries/models/configs matched. Original freeze files retained; no dependency change or model rerun.",
+    "runtime_clean_git": {
+      "commit": "04ff041f5c99377d8a83dde52002b6a597e26d2c",
+      "status": ""
+    },
+    "protocol_sha256": "1b78e6490d1cf8b24ac5ffb2af3452c40bb636694c38df85fde4f4a1e22e4835",
+    "frozen_product_script_config_source_files": 115,
+    "negative_existing_output": {
+      "returncode": 2,
+      "all_replay_files_unchanged": 11,
+      "protocol_path_intentionally_missing": true,
+      "extra_asr_calls": 0
+    },
+    "report_rebuilt_byte_identical": true
+  },
+  "reproduce": "docs/W14_ASR.md",
+  "evidence_index": "docs/asr_evidence/20261113-w14-results.json",
+  "limitations": [
+    "Previously selected small file-replay development sample; not a held-out home-command or speaker benchmark.",
+    "Source kind and license attribution come from the frozen provenance manifest, not automatic voice authenticity detection.",
+    "Recognizer output includes the frozen decoder/hotword search bias; it is not an unconditioned model baseline.",
+    "Voice normalization and text resolution are separate observations; no Orchestrator, Ollama, backend.execute or TTS is called.",
+    "Independent Silero VAD is not in this ASR path; recognizer endpoint detection is not a VAD accuracy measurement.",
+    "Offline decode RTF and replay wall time do not prove live input overflow/drop fixed; live E2E and overflow remain unmeasured.",
+    "No accuracy threshold was frozen; transcript errors are reported and do not alone fail engineering evidence gates.",
+    "No real device, microphone, ARM, personal understanding or comprehensive production safety acceptance."
+  ]
+}

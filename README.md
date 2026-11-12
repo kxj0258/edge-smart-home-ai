@@ -30,6 +30,12 @@
 
 [W13结果](docs/stages/L3-w13-results.md) · [统一接口/错误码](docs/W13_INTERFACE.md) · [有限一致性边界](docs/W13_REQUEST_CONSISTENCY.md) · [复现命令](docs/W13_EVALUATION.md) · [机器基线](baselines/20261113-w13-intent-pipeline-v0.json)。个人理解与Jan本人复盘仍待验收，P0-3保留in_progress；下一工程阶段W14复用当前入口对接语音，未自动执行。
 
+## W14：流式 ASR 边界与许可真人语音回放
+
+复用既有sherpa-onnx/中文xlarge和W13文本链，新增输入/同流采样率保护、独立VAD flush和Voice错误码传播；377项离线测试/0网络。固定FLEURS中文dev前5段CC-BY-4.0真人朗读完成当前回放：Exact0/5、CER10/144=6.94%，参考/识别/规范化/解析分层保存，不改既有计分规则。8/16/48k合成静音与5段影子VAD另列；无麦克风/设备执行，不代表家庭命令、生产VAD或overflow通过。现有ASR权重许可仍未核实，个人理解待验收。
+
+[W14结果](docs/stages/A0-w14-results.md) · [边界与复现命令](docs/W14_ASR.md) · [逐段识别表](docs/asr_evidence/20261113-w14-transcripts.csv) · [模型来源/许可缺口](configs/asr-model-source-v1.json) · [机器基线](baselines/20261113-w14-streaming-asr-v0.json)。公开真人朗读不代替家庭口令自录与现场采集；不以本次或历史RTF证明overflow解决。
+
 ## 2026-09-09 增量负载诊断与队列修复
 
 已新增五阶段音频负载诊断入口、固定口令协议和 JSON/CSV 对比，

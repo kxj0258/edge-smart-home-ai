@@ -1,0 +1,275 @@
+{
+  "schema_version": 1,
+  "kind": "w14_licensed_speech_inputs",
+  "dataset": "google/fleurs",
+  "revision": "70bb2e84b976b7e960aa89f1c648e09c59f894dd",
+  "config": "cmn_hans_cn",
+  "split": "validation/dev",
+  "source_kind": "human_public_read_speech",
+  "selection": "First five regular WAV members in fixed archive order, selected before ASR",
+  "license": "CC-BY-4.0",
+  "license_url": "https://creativecommons.org/licenses/by/4.0/",
+  "attribution": "Google FLEURS; Conneau et al., FLEURS: Few-shot Learning Evaluation of Universal Representations of Speech (2022), https://arxiv.org/abs/2205.12446",
+  "source_counts": {
+    "human": 5,
+    "synthetic_speech": 0,
+    "mock": 0,
+    "unknown": 0
+  },
+  "unknown_unique_speaker_count": true,
+  "original_and_derived": [
+    {
+      "id": "W14-H01",
+      "source_member": "dev/10116334326946811387.wav",
+      "source_url": "https://huggingface.co/datasets/google/fleurs/resolve/70bb2e84b976b7e960aa89f1c648e09c59f894dd/data/cmn_hans_cn/audio/dev.tar.gz",
+      "reference_source": "https://huggingface.co/datasets/google/fleurs/resolve/70bb2e84b976b7e960aa89f1c648e09c59f894dd/data/cmn_hans_cn/dev.tsv",
+      "expected": "报告警告称，没有人能保证目前在伊拉克采取的任何行动能够阻止宗派战争、不断增长的暴力或走向混乱。",
+      "original_sha256": "f3e12a114bedbc867e06bfb7aceb2721701aa729685b9e4be39f2b98305b72ab",
+      "derived_sha256": "6935dd5d8522dedb62e7bf0f6255804fd07a05ffd25160f3abda37b5bfc80f44",
+      "conversion": {
+        "source_wav": {
+          "container": "RIFF/WAVE",
+          "format_code": 3,
+          "sample_format": "IEEE_FLOAT_LE_FLOAT32",
+          "channels": 1,
+          "sample_rate": 16000,
+          "sample_frames": 294080,
+          "bits_per_sample": 32,
+          "duration_seconds": 18.38,
+          "chunks": [
+            {
+              "id": "fmt ",
+              "bytes": 18
+            },
+            {
+              "id": "fact",
+              "bytes": 4
+            },
+            {
+              "id": "data",
+              "bytes": 1176320
+            }
+          ]
+        },
+        "origin_sha256": "f3e12a114bedbc867e06bfb7aceb2721701aa729685b9e4be39f2b98305b72ab",
+        "derived_sha256": "6935dd5d8522dedb62e7bf0f6255804fd07a05ffd25160f3abda37b5bfc80f44",
+        "origin_bytes": 1176378,
+        "derived_bytes": 588204,
+        "derived_format": "PCM16_LE",
+        "sample_rate": 16000,
+        "sample_frames": 294080,
+        "channels": 1,
+        "resampled": false,
+        "trimmed": false,
+        "formula": "q=clip(rint(float64(x)*32768),-32768,32767); rint ties to even",
+        "origin_peak_abs": 0.5283258557319641,
+        "clipped_sample_count": 0,
+        "derived_peak_abs": 0.5283203125,
+        "max_abs_quantization_error": 1.52587890625e-05
+      }
+    },
+    {
+      "id": "W14-H02",
+      "source_member": "dev/10149760684641961155.wav",
+      "source_url": "https://huggingface.co/datasets/google/fleurs/resolve/70bb2e84b976b7e960aa89f1c648e09c59f894dd/data/cmn_hans_cn/audio/dev.tar.gz",
+      "reference_source": "https://huggingface.co/datasets/google/fleurs/resolve/70bb2e84b976b7e960aa89f1c648e09c59f894dd/data/cmn_hans_cn/dev.tsv",
+      "expected": "因为远离大陆，哺乳动物无法长途跋涉而来，使得巨龟成为科隆群岛主要的食草动物。",
+      "original_sha256": "577a635c2261680c61dda5fecbc4f83bff6f37f453665b8d9d1a68f210f57c0a",
+      "derived_sha256": "1c5f3713cd43a9c23e178499d3165c56dfb5184a49a947388d2f55e578a7119e",
+      "conversion": {
+        "source_wav": {
+          "container": "RIFF/WAVE",
+          "format_code": 3,
+          "sample_format": "IEEE_FLOAT_LE_FLOAT32",
+          "channels": 1,
+          "sample_rate": 16000,
+          "sample_frames": 119040,
+          "bits_per_sample": 32,
+          "duration_seconds": 7.44,
+          "chunks": [
+            {
+              "id": "fmt ",
+              "bytes": 18
+            },
+            {
+              "id": "fact",
+              "bytes": 4
+            },
+            {
+              "id": "data",
+              "bytes": 476160
+            }
+          ]
+        },
+        "origin_sha256": "577a635c2261680c61dda5fecbc4f83bff6f37f453665b8d9d1a68f210f57c0a",
+        "derived_sha256": "1c5f3713cd43a9c23e178499d3165c56dfb5184a49a947388d2f55e578a7119e",
+        "origin_bytes": 476218,
+        "derived_bytes": 238124,
+        "derived_format": "PCM16_LE",
+        "sample_rate": 16000,
+        "sample_frames": 119040,
+        "channels": 1,
+        "resampled": false,
+        "trimmed": false,
+        "formula": "q=clip(rint(float64(x)*32768),-32768,32767); rint ties to even",
+        "origin_peak_abs": 0.3634607791900635,
+        "clipped_sample_count": 0,
+        "derived_peak_abs": 0.36346435546875,
+        "max_abs_quantization_error": 1.52587890625e-05
+      }
+    },
+    {
+      "id": "W14-H03",
+      "source_member": "dev/10291819997967779677.wav",
+      "source_url": "https://huggingface.co/datasets/google/fleurs/resolve/70bb2e84b976b7e960aa89f1c648e09c59f894dd/data/cmn_hans_cn/audio/dev.tar.gz",
+      "reference_source": "https://huggingface.co/datasets/google/fleurs/resolve/70bb2e84b976b7e960aa89f1c648e09c59f894dd/data/cmn_hans_cn/dev.tsv",
+      "expected": "亚马逊河也是地球上最宽的河流，有些河段的宽度可达6英里。",
+      "original_sha256": "8234c830aba9500be3c32dab1f91e72599b9bb03c36f962ae8b6bfc174ca13f0",
+      "derived_sha256": "9e27717706ae3ede47f59899ee76a7316433c070e8ec45f8c1568a72b4fbc90b",
+      "conversion": {
+        "source_wav": {
+          "container": "RIFF/WAVE",
+          "format_code": 3,
+          "sample_format": "IEEE_FLOAT_LE_FLOAT32",
+          "channels": 1,
+          "sample_rate": 16000,
+          "sample_frames": 120960,
+          "bits_per_sample": 32,
+          "duration_seconds": 7.56,
+          "chunks": [
+            {
+              "id": "fmt ",
+              "bytes": 18
+            },
+            {
+              "id": "fact",
+              "bytes": 4
+            },
+            {
+              "id": "data",
+              "bytes": 483840
+            }
+          ]
+        },
+        "origin_sha256": "8234c830aba9500be3c32dab1f91e72599b9bb03c36f962ae8b6bfc174ca13f0",
+        "derived_sha256": "9e27717706ae3ede47f59899ee76a7316433c070e8ec45f8c1568a72b4fbc90b",
+        "origin_bytes": 483898,
+        "derived_bytes": 241964,
+        "derived_format": "PCM16_LE",
+        "sample_rate": 16000,
+        "sample_frames": 120960,
+        "channels": 1,
+        "resampled": false,
+        "trimmed": false,
+        "formula": "q=clip(rint(float64(x)*32768),-32768,32767); rint ties to even",
+        "origin_peak_abs": 0.2056484818458557,
+        "clipped_sample_count": 0,
+        "derived_peak_abs": 0.205657958984375,
+        "max_abs_quantization_error": 1.52587890625e-05
+      }
+    },
+    {
+      "id": "W14-H04",
+      "source_member": "dev/10312747577451821721.wav",
+      "source_url": "https://huggingface.co/datasets/google/fleurs/resolve/70bb2e84b976b7e960aa89f1c648e09c59f894dd/data/cmn_hans_cn/audio/dev.tar.gz",
+      "reference_source": "https://huggingface.co/datasets/google/fleurs/resolve/70bb2e84b976b7e960aa89f1c648e09c59f894dd/data/cmn_hans_cn/dev.tsv",
+      "expected": "迦南没有大森林，所以木材非常昂贵。",
+      "original_sha256": "28502266dfa1c0c5202d1488015b29ca0d26fafbf3540cae61f112508caf1ded",
+      "derived_sha256": "a81ebce7ad2ffff70f4992c213229a0942c5422458a476569d5ec256756f4764",
+      "conversion": {
+        "source_wav": {
+          "container": "RIFF/WAVE",
+          "format_code": 3,
+          "sample_format": "IEEE_FLOAT_LE_FLOAT32",
+          "channels": 1,
+          "sample_rate": 16000,
+          "sample_frames": 154560,
+          "bits_per_sample": 32,
+          "duration_seconds": 9.66,
+          "chunks": [
+            {
+              "id": "fmt ",
+              "bytes": 18
+            },
+            {
+              "id": "fact",
+              "bytes": 4
+            },
+            {
+              "id": "data",
+              "bytes": 618240
+            }
+          ]
+        },
+        "origin_sha256": "28502266dfa1c0c5202d1488015b29ca0d26fafbf3540cae61f112508caf1ded",
+        "derived_sha256": "a81ebce7ad2ffff70f4992c213229a0942c5422458a476569d5ec256756f4764",
+        "origin_bytes": 618298,
+        "derived_bytes": 309164,
+        "derived_format": "PCM16_LE",
+        "sample_rate": 16000,
+        "sample_frames": 154560,
+        "channels": 1,
+        "resampled": false,
+        "trimmed": false,
+        "formula": "q=clip(rint(float64(x)*32768),-32768,32767); rint ties to even",
+        "origin_peak_abs": 0.478668212890625,
+        "clipped_sample_count": 0,
+        "derived_peak_abs": 0.478668212890625,
+        "max_abs_quantization_error": 1.52587890625e-05
+      }
+    },
+    {
+      "id": "W14-H05",
+      "source_member": "dev/10323412965683910375.wav",
+      "source_url": "https://huggingface.co/datasets/google/fleurs/resolve/70bb2e84b976b7e960aa89f1c648e09c59f894dd/data/cmn_hans_cn/audio/dev.tar.gz",
+      "reference_source": "https://huggingface.co/datasets/google/fleurs/resolve/70bb2e84b976b7e960aa89f1c648e09c59f894dd/data/cmn_hans_cn/dev.tsv",
+      "expected": "据警方称，撞倒摄影师的汽车司机未必会面临刑事指控。",
+      "original_sha256": "c786829b65a5bc73b3730cc2d19cbf77008334be75b1cda306a4184259369671",
+      "derived_sha256": "98981812e17e17a4ff3acadc6d6948b0127b4611355c85ad8c7b27f0fb83c50c",
+      "conversion": {
+        "source_wav": {
+          "container": "RIFF/WAVE",
+          "format_code": 3,
+          "sample_format": "IEEE_FLOAT_LE_FLOAT32",
+          "channels": 1,
+          "sample_rate": 16000,
+          "sample_frames": 247360,
+          "bits_per_sample": 32,
+          "duration_seconds": 15.46,
+          "chunks": [
+            {
+              "id": "fmt ",
+              "bytes": 18
+            },
+            {
+              "id": "fact",
+              "bytes": 4
+            },
+            {
+              "id": "data",
+              "bytes": 989440
+            }
+          ]
+        },
+        "origin_sha256": "c786829b65a5bc73b3730cc2d19cbf77008334be75b1cda306a4184259369671",
+        "derived_sha256": "98981812e17e17a4ff3acadc6d6948b0127b4611355c85ad8c7b27f0fb83c50c",
+        "origin_bytes": 989498,
+        "derived_bytes": 494764,
+        "derived_format": "PCM16_LE",
+        "sample_rate": 16000,
+        "sample_frames": 247360,
+        "channels": 1,
+        "resampled": false,
+        "trimmed": false,
+        "formula": "q=clip(rint(float64(x)*32768),-32768,32767); rint ties to even",
+        "origin_peak_abs": 0.4736977815628052,
+        "clipped_sample_count": 0,
+        "derived_peak_abs": 0.47369384765625,
+        "max_abs_quantization_error": 1.52587890625e-05
+      }
+    }
+  ],
+  "household_self_recordings_current_run": 0,
+  "current_live_microphone_recordings": 0,
+  "old_local_recording_note": "One legacy asr_real_command_sets clip exists with overflow5; older sessions kept as historical inputs, not relabeled as current clean capture or dataset licensing clearance."
+}
