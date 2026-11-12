@@ -1,5 +1,7 @@
 # 本地语义规划智能体验证
 
+> W10补充：当前模型包、服务版本和许可证已按 [身份记录](LLM_MODEL_IDENTITY.md)重新核对；[检查与测量协议](LLM_MEASUREMENT_PROTOCOL.md)区分当前工程证据、配置兼容性、非流式wall与未测TTFT。下文9月结果保留历史口径，不能替代本轮绑定后的验证。
+
 当前已实现 Ollama 本地 HTTP provider，配置可在 `configs/agent.json` 中切换。Fast Path
 和无模型环境仍保留安全降级。已完成一轮真实 Qwen3-4B 评测；后续结果只记录用户实际运行
 数据，不扩展为未经验证的硬件或产品指标。

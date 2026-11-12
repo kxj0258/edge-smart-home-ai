@@ -1,0 +1,368 @@
+{
+  "schema_version": 1,
+  "kind": "w10_ollama_qwen_model_source",
+  "created_at": "2026-11-12T14:47:38.747891+00:00",
+  "scope": "Read-only initial identity/license audit. No model pull/create/delete/unload/generation or performance acceptance. Initial configuration snapshot is historical, not a permanent approved generation configuration.",
+  "model": {
+    "configured_tag": "qwen3:4b",
+    "tag_is_mutable": true,
+    "digest": "359d7dd4bcdab3d86b87d73ac27966f4dbb9f5efdfcc75d34a8764a09474fae7",
+    "manifest_bytes": 859,
+    "local_gguf_identity": {
+      "path": "/var/snap/ollama/common/models/blobs/sha256-3e4cb14174460404e7a233e531675303b2fbf7749c02f91864fe311ab6344e4f",
+      "media_type": "application/vnd.ollama.image.model",
+      "bytes": 2497280480,
+      "sha256": "3e4cb14174460404e7a233e531675303b2fbf7749c02f91864fe311ab6344e4f"
+    },
+    "api_total_package_bytes": 2497293931,
+    "format": "gguf",
+    "weight_quantization": "Q4_K_M",
+    "gguf_quantization_version": 2,
+    "parameter_count": 4022468096,
+    "actual_finetune": "Thinking",
+    "actual_model_version": "2507",
+    "upstream_model_repository": "Qwen/Qwen3-4B-Thinking-2507",
+    "upstream_model_revision": "768f209d9ea81521153ed38c47d515654e938aea",
+    "upstream_model_license": "Apache-2.0",
+    "gguf_declared_license": "apache-2.0",
+    "gguf_license_link": "https://huggingface.co/Qwen/Qwen3-4B-Thinking-2507/blob/main/LICENSE",
+    "upstream_bf16_to_gguf_bitwise_conversion_proven": false
+  },
+  "architecture": {
+    "num_hidden_layers": 36,
+    "num_attention_heads": 32,
+    "num_key_value_heads": 8,
+    "key_head_dim": 128,
+    "value_head_dim": 128,
+    "hidden_size": 2560,
+    "intermediate_size": 9728,
+    "model_context_limit": 262144,
+    "rope_theta": 5000000,
+    "upstream_dtype": "bfloat16",
+    "runtime_kv_cache_dtype": null,
+    "runtime_context_length_at_initial_audit": null,
+    "note": "Explicit head_dim128; hidden_size2560 /32 is not the attention head dimension. Declared model context is not allocated cache capacity."
+  },
+  "runtime": {
+    "api_version": "0.40.2",
+    "cli_version_evidence": {
+      "path": "edge-smart-home-ai/evaluation/20261112-w10-identity/api/cli-version.txt",
+      "sha256": "c52be7925b0b5a7d31964b1e73d14d48c6fc3bbbeadcee9cf91c0b435a282c85",
+      "bytes": 25
+    },
+    "installed_cli_binary": {
+      "path": "/snap/ollama/141/bin/ollama",
+      "bytes": 29872208,
+      "sha256": "8ff456e3f8c08b7fb211857c634d4df8e1a84cacaaf5b9e7b6bbf89e0f9ae8e0"
+    },
+    "installed_snap_metadata": {
+      "path": "edge-smart-home-ai/evaluation/20261112-w10-identity/upstream/installed-snap.yaml",
+      "sha256": "932e602a6c6abd535dc58770eb2acf65fe4cd512c1e5f4b726801868d8dd0c56",
+      "bytes": 1100
+    },
+    "initial_running_models": [],
+    "initial_residency": "not_loaded",
+    "initial_accelerator_offload": null,
+    "server_process_argv": "/snap/ollama/141/bin/ollama serve",
+    "server_proc_exe_identity_read": false,
+    "server_proc_exe_read_limitation": "PermissionError reading /proc/1715/exe; observed process argv and API version do not constitute a reproducible-build or mapped-inode proof.",
+    "upstream_source_tag": "v0.40.2",
+    "upstream_source_commit": "b061384d90ff455462bc32745dd0de479de717a3",
+    "upstream_source_license": "MIT",
+    "binary_matches_upstream_commit_reproducibly_verified": false
+  },
+  "initial_configuration": {
+    "source_commit": "42b9ef743ccd0d7f581e2a67ead36aa1c16bfd42",
+    "source_path": "edge-smart-home-ai/configs/agent.json",
+    "snapshot": {
+      "path": "edge-smart-home-ai/evaluation/20261112-w10-identity/agent-config-initial.json",
+      "sha256": "2698607ea327b44b9b5b49d1003825ae1f621dbc6f1c48e298ca56bf98c059ff",
+      "bytes": 1008
+    },
+    "ollama": {
+      "endpoint": "http://127.0.0.1:11434/api/generate",
+      "model": "qwen3:4b",
+      "connect_timeout_seconds": 2.0,
+      "total_timeout_seconds": 30.0,
+      "max_output_tokens": 256,
+      "temperature": 0.0,
+      "seed": 42,
+      "think": false,
+      "keep_alive": "10m"
+    },
+    "advertised_thinking": {
+      "values": [
+        true
+      ],
+      "default": true
+    },
+    "request_think_supported": false,
+    "note": "Product config initially requests think=false while actual package advertises [true]. Later candidate/configuration and smoke results must be recorded separately; this audit does not assert current route success."
+  },
+  "storage": {
+    "local_manifest": {
+      "path": "/var/snap/ollama/common/models/manifests/registry.ollama.ai/library/qwen3/4b",
+      "sha256": "359d7dd4bcdab3d86b87d73ac27966f4dbb9f5efdfcc75d34a8764a09474fae7",
+      "bytes": 859
+    },
+    "manifest_snapshot": {
+      "path": "edge-smart-home-ai/evaluation/20261112-w10-identity/ollama-manifest.json",
+      "sha256": "359d7dd4bcdab3d86b87d73ac27966f4dbb9f5efdfcc75d34a8764a09474fae7",
+      "bytes": 859
+    },
+    "registry_snapshot": {
+      "path": "edge-smart-home-ai/evaluation/20261112-w10-identity/upstream/ollama-registry-tag-manifest.json",
+      "sha256": "359d7dd4bcdab3d86b87d73ac27966f4dbb9f5efdfcc75d34a8764a09474fae7",
+      "bytes": 859
+    },
+    "registry_url": "https://registry.ollama.ai/v2/library/qwen3/manifests/4b",
+    "registry_manifest_bytes_equal_local": true,
+    "blobs": [
+      {
+        "path": "/var/snap/ollama/common/models/blobs/sha256-e18a783aae5525fd2852fc94c985541a77e791e034abc2d3056474d59de336fc",
+        "media_type": "application/vnd.docker.container.image.v1+json",
+        "bytes": 487,
+        "sha256": "e18a783aae5525fd2852fc94c985541a77e791e034abc2d3056474d59de336fc"
+      },
+      {
+        "path": "/var/snap/ollama/common/models/blobs/sha256-3e4cb14174460404e7a233e531675303b2fbf7749c02f91864fe311ab6344e4f",
+        "media_type": "application/vnd.ollama.image.model",
+        "bytes": 2497280480,
+        "sha256": "3e4cb14174460404e7a233e531675303b2fbf7749c02f91864fe311ab6344e4f"
+      },
+      {
+        "path": "/var/snap/ollama/common/models/blobs/sha256-2d54db2b9bb29ce7db54fea63a891f5859603813c555b1f88b5e0994652897f9",
+        "media_type": "application/vnd.ollama.image.template",
+        "bytes": 1506,
+        "sha256": "2d54db2b9bb29ce7db54fea63a891f5859603813c555b1f88b5e0994652897f9"
+      },
+      {
+        "path": "/var/snap/ollama/common/models/blobs/sha256-d18a5cc71b84bc4af394a31116bd3932b42241de70c77d2b76d69a314ec8aa12",
+        "media_type": "application/vnd.ollama.image.license",
+        "bytes": 11338,
+        "sha256": "d18a5cc71b84bc4af394a31116bd3932b42241de70c77d2b76d69a314ec8aa12"
+      },
+      {
+        "path": "/var/snap/ollama/common/models/blobs/sha256-cff3f395ef3756ab63e58b0ad1b32bb6f802905cae1472e6a12034e4246fbbdb",
+        "media_type": "application/vnd.ollama.image.params",
+        "bytes": 120,
+        "sha256": "cff3f395ef3756ab63e58b0ad1b32bb6f802905cae1472e6a12034e4246fbbdb"
+      }
+    ]
+  },
+  "licenses": {
+    "model_package_embedded": {
+      "path": "edge-smart-home-ai/evaluation/20261112-w10-identity/sha256-d18a5cc71b84bc4af394a31116bd3932b42241de70c77d2b76d69a314ec8aa12.original",
+      "sha256": "d18a5cc71b84bc4af394a31116bd3932b42241de70c77d2b76d69a314ec8aa12",
+      "bytes": 11338
+    },
+    "qwen_official_original": {
+      "path": "edge-smart-home-ai/evaluation/20261112-w10-identity/upstream/qwen-LICENSE.txt",
+      "sha256": "832dd9e00a68dd83b3c3fb9f5588dad7dcf337a0db50f7d9483f310cd292e92e",
+      "bytes": 11343
+    },
+    "same_license_after_whitespace_normalization": true,
+    "original_bytes_equal": false,
+    "runtime_original": {
+      "path": "edge-smart-home-ai/evaluation/20261112-w10-identity/upstream/ollama-license-version.txt",
+      "sha256": "5934ed2ce0d15154bcdb9c85203210abac0da4314af34081e36df4599f90b226",
+      "bytes": 1058
+    },
+    "scope": "Qwen model repository and embedded package Apache-2.0; Ollama core MIT. Actual Snap metadata also declares MIT. Template/parameters have separately pinned package layer identities. This is not a transitive-dependency SBOM or a new license for user-authored project code."
+  },
+  "historical_identity": {
+    "documentation": {
+      "path": "edge-smart-home-ai/docs/local_llm_agent.md",
+      "recorded_digest": "359d7dd4bcdab3d86b87d73ac27966f4dbb9f5efdfcc75d34a8764a09474fae7",
+      "same_digest_as_current_documented": true
+    },
+    "raw_run_audit": {
+      "path": "edge-smart-home-ai/evaluation/20261112-w10-identity/historical-identity-v2.json",
+      "sha256": "60dcdfc782cbf1c0f219c70acf0354525180ca521f2d28ebb1a4c15e68ff83fb",
+      "bytes": 841
+    },
+    "raw_run_digest_and_runtime_version_available": false,
+    "interpretation": "Historical documentation records the same digest; inspected three raw historical JSON runs only name qwen3:4b and do not bind digest/runtime version. No evidence of recent local/registry tag drift."
+  },
+  "validation": {
+    "path": "edge-smart-home-ai/evaluation/20261112-w10-identity/identity-crosschecks.json",
+    "sha256": "fae1a6400e8044472121351ce2c4dcf3498c5749f614aa7953ce155c981d2a36",
+    "bytes": 1098
+  },
+  "api_evidence": {
+    "version": {
+      "path": "edge-smart-home-ai/evaluation/20261112-w10-identity/api/version.json",
+      "sha256": "2657f6fff8018900025e47485e719c930017826b790e73ae28087cdcd93fe50e",
+      "bytes": 20
+    },
+    "tags": {
+      "path": "edge-smart-home-ai/evaluation/20261112-w10-identity/api/tags.json",
+      "sha256": "62e16d397febc1ff129002ecb84a87074d67f2da71452becb983976a2223837d",
+      "bytes": 448
+    },
+    "ps": {
+      "path": "edge-smart-home-ai/evaluation/20261112-w10-identity/api/ps.json",
+      "sha256": "a6fe9ec6e26a38d99fca418b69826e0238b7a2bb319ff05eb153a6fcfd1fa28d",
+      "bytes": 13
+    },
+    "show": {
+      "path": "edge-smart-home-ai/evaluation/20261112-w10-identity/api/show.json",
+      "sha256": "05d6a71b364e25a58c3e8cfe548606602107e54eae2543cf6507d1a739462907",
+      "bytes": 4181025
+    }
+  },
+  "source_retrievals": [
+    {
+      "url": "https://huggingface.co/api/models/Qwen/Qwen3-4B-Thinking-2507",
+      "resolved_url": "https://huggingface.co/api/models/Qwen/Qwen3-4B-Thinking-2507",
+      "path": "edge-smart-home-ai/evaluation/20261112-w10-identity/upstream/hf-model-api.json",
+      "sha256": "8c4e85a8cbd9fbc4dd0a09eec404717cf7ff24d46ec506fe66a88573208a4876",
+      "bytes": 7959,
+      "retrieved_at": "2026-11-12T14:42:28.431433+00:00"
+    },
+    {
+      "url": "https://huggingface.co/api/models/Qwen/Qwen3-4B-Thinking-2507-GGUF?blobs=true",
+      "error": "HTTPError: HTTP Error 401: Unauthorized"
+    },
+    {
+      "url": "https://raw.githubusercontent.com/ollama/ollama/v0.40.2/LICENSE",
+      "resolved_url": "https://raw.githubusercontent.com/ollama/ollama/v0.40.2/LICENSE",
+      "path": "edge-smart-home-ai/evaluation/20261112-w10-identity/upstream/ollama-license-version.txt",
+      "sha256": "5934ed2ce0d15154bcdb9c85203210abac0da4314af34081e36df4599f90b226",
+      "bytes": 1058,
+      "retrieved_at": "2026-11-12T14:42:29.243572+00:00"
+    },
+    {
+      "url": "https://raw.githubusercontent.com/ollama/ollama/v0.40.2/version/version.go",
+      "resolved_url": "https://raw.githubusercontent.com/ollama/ollama/v0.40.2/version/version.go",
+      "path": "edge-smart-home-ai/evaluation/20261112-w10-identity/upstream/ollama-version-source.go",
+      "sha256": "ba257b479c143215239bf47a05d937ac93ae432b00dc9ade4d7d0d0a8467d440",
+      "bytes": 46,
+      "retrieved_at": "2026-11-12T14:42:29.995617+00:00"
+    },
+    {
+      "url": "https://docs.ollama.com/llms.txt",
+      "resolved_url": "https://docs.ollama.com/llms.txt",
+      "path": "edge-smart-home-ai/evaluation/20261112-w10-identity/upstream/ollama-doc-index.txt",
+      "sha256": "d679dcd8161d1d3b1fd692f3ab6c6e70fdf952b0ec5b3dab43a7a125aeb8a497",
+      "bytes": 5394,
+      "retrieved_at": "2026-11-12T14:42:30.657449+00:00"
+    },
+    {
+      "url": "https://huggingface.co/Qwen/Qwen3-4B-Thinking-2507/resolve/768f209d9ea81521153ed38c47d515654e938aea/config.json",
+      "resolved_url": "https://huggingface.co/api/resolve-cache/models/Qwen/Qwen3-4B-Thinking-2507/768f209d9ea81521153ed38c47d515654e938aea/config.json?%2FQwen%2FQwen3-4B-Thinking-2507%2Fresolve%2F768f209d9ea81521153ed38c47d515654e938aea%2Fconfig.json=&etag=%226988f134db143052042f2bd6e0c897bc6a605189%22",
+      "path": "edge-smart-home-ai/evaluation/20261112-w10-identity/upstream/qwen-config.json",
+      "sha256": "5beea1a4a34c62782bfb2f911c606741a3bab8f92d80a118fa053c28af12e8ba",
+      "bytes": 727,
+      "retrieved_at": "2026-11-12T14:42:59.189102+00:00"
+    },
+    {
+      "url": "https://huggingface.co/Qwen/Qwen3-4B-Thinking-2507/resolve/768f209d9ea81521153ed38c47d515654e938aea/LICENSE",
+      "resolved_url": "https://huggingface.co/api/resolve-cache/models/Qwen/Qwen3-4B-Thinking-2507/768f209d9ea81521153ed38c47d515654e938aea/LICENSE?%2FQwen%2FQwen3-4B-Thinking-2507%2Fresolve%2F768f209d9ea81521153ed38c47d515654e938aea%2FLICENSE=&etag=%226634c8cc3133b3848ec74b9f275acaaa1ea618ab%22",
+      "path": "edge-smart-home-ai/evaluation/20261112-w10-identity/upstream/qwen-LICENSE.txt",
+      "sha256": "832dd9e00a68dd83b3c3fb9f5588dad7dcf337a0db50f7d9483f310cd292e92e",
+      "bytes": 11343,
+      "retrieved_at": "2026-11-12T14:42:59.776593+00:00"
+    },
+    {
+      "url": "https://huggingface.co/Qwen/Qwen3-4B-Thinking-2507/resolve/768f209d9ea81521153ed38c47d515654e938aea/README.md",
+      "resolved_url": "https://huggingface.co/api/resolve-cache/models/Qwen/Qwen3-4B-Thinking-2507/768f209d9ea81521153ed38c47d515654e938aea/README.md?%2FQwen%2FQwen3-4B-Thinking-2507%2Fresolve%2F768f209d9ea81521153ed38c47d515654e938aea%2FREADME.md=&etag=%22962b92df82aa870f4b6cad1768250634b44a1317%22",
+      "path": "edge-smart-home-ai/evaluation/20261112-w10-identity/upstream/qwen-README.md",
+      "sha256": "6a608c737decd22569edf9609499d142021a65e942999890704a880bc804d163",
+      "bytes": 10063,
+      "retrieved_at": "2026-11-12T14:43:00.377274+00:00"
+    },
+    {
+      "url": "https://huggingface.co/Qwen/Qwen3-4B-Thinking-2507/resolve/768f209d9ea81521153ed38c47d515654e938aea/tokenizer_config.json",
+      "resolved_url": "https://huggingface.co/api/resolve-cache/models/Qwen/Qwen3-4B-Thinking-2507/768f209d9ea81521153ed38c47d515654e938aea/tokenizer_config.json?%2FQwen%2FQwen3-4B-Thinking-2507%2Fresolve%2F768f209d9ea81521153ed38c47d515654e938aea%2Ftokenizer_config.json=&etag=%228dec7d58dda385ce95b469aa2d277ec162168e58%22",
+      "path": "edge-smart-home-ai/evaluation/20261112-w10-identity/upstream/qwen-tokenizer-config.json",
+      "sha256": "60adcfc35f5f251e19a196ec977b4ca0fcfb534852911b3196d68d5e3b146aa0",
+      "bytes": 10834,
+      "retrieved_at": "2026-11-12T14:43:00.963805+00:00"
+    },
+    {
+      "url": "https://api.github.com/repos/ollama/ollama/commits/v0.40.2",
+      "resolved_url": "https://api.github.com/repos/ollama/ollama/commits/v0.40.2",
+      "path": "edge-smart-home-ai/evaluation/20261112-w10-identity/upstream/ollama-commit.json",
+      "sha256": "37105316c74f0711b685356dda481401c45f5f49c70809c50b807398743d0d40",
+      "bytes": 10056,
+      "retrieved_at": "2026-11-12T14:43:01.531888+00:00"
+    },
+    {
+      "url": "https://raw.githubusercontent.com/ollama/ollama/v0.40.2/go.mod",
+      "resolved_url": "https://raw.githubusercontent.com/ollama/ollama/v0.40.2/go.mod",
+      "path": "edge-smart-home-ai/evaluation/20261112-w10-identity/upstream/ollama-gomod.txt",
+      "sha256": "c8330ba5f762c4bded1401cc8ecadbe85ebe8e5d159fd81da122da986b26cda5",
+      "bytes": 3858,
+      "retrieved_at": "2026-11-12T14:43:02.146354+00:00"
+    },
+    {
+      "url": "https://raw.githubusercontent.com/ollama/ollama/v0.40.2/.gitmodules",
+      "error": "HTTPError: HTTP Error 404: Not Found"
+    },
+    {
+      "url": "https://docs.ollama.com/capabilities/thinking",
+      "resolved_url": "https://docs.ollama.com/capabilities/thinking",
+      "path": "edge-smart-home-ai/evaluation/20261112-w10-identity/upstream/ollama-thinking.html",
+      "sha256": "1f05fdc9e685c512a6b24aba29aa6ad6b5e8a0986eed5e6f1811a33e663ae454",
+      "bytes": 209319,
+      "retrieved_at": "2026-11-12T14:43:03.007647+00:00"
+    },
+    {
+      "url": "https://registry.ollama.ai/v2/library/qwen3/manifests/sha256:359d7dd4bcdab3d86b87d73ac27966f4dbb9f5efdfcc75d34a8764a09474fae7",
+      "error": "HTTPError: HTTP Error 404: Not Found"
+    },
+    {
+      "url": "https://registry.ollama.ai/v2/library/qwen3/manifests/4b",
+      "resolved_url": "https://registry.ollama.ai/v2/library/qwen3/manifests/4b",
+      "path": "edge-smart-home-ai/evaluation/20261112-w10-identity/upstream/ollama-registry-tag-manifest.json",
+      "sha256": "359d7dd4bcdab3d86b87d73ac27966f4dbb9f5efdfcc75d34a8764a09474fae7",
+      "bytes": 859,
+      "retrieved_at": "2026-11-12T14:44:21.523030+00:00",
+      "docker_content_digest": null
+    },
+    {
+      "url": "https://raw.githubusercontent.com/ollama/ollama/b061384d90ff455462bc32745dd0de479de717a3/api/types.go",
+      "resolved_url": "https://raw.githubusercontent.com/ollama/ollama/b061384d90ff455462bc32745dd0de479de717a3/api/types.go",
+      "path": "edge-smart-home-ai/evaluation/20261112-w10-identity/upstream/ollama-api-types.go",
+      "sha256": "75369e029dcfc815013243b1e728fcff32514a3b38b26f3288eb1ee2b7fa4d1b",
+      "bytes": 42713,
+      "retrieved_at": "2026-11-12T14:44:21.998111+00:00",
+      "docker_content_digest": null
+    },
+    {
+      "url": "https://raw.githubusercontent.com/ollama/ollama/b061384d90ff455462bc32745dd0de479de717a3/server/model.go",
+      "resolved_url": "https://raw.githubusercontent.com/ollama/ollama/b061384d90ff455462bc32745dd0de479de717a3/server/model.go",
+      "path": "edge-smart-home-ai/evaluation/20261112-w10-identity/upstream/ollama-server-model.go",
+      "sha256": "8d8bfcec35aa8e44da98c238196026325f6ff07549402442bec8c4111fbce717",
+      "bytes": 3783,
+      "retrieved_at": "2026-11-12T14:44:22.390185+00:00",
+      "docker_content_digest": null
+    },
+    {
+      "url": "https://docs.ollama.com/api-reference/show-model-details.md",
+      "resolved_url": "https://docs.ollama.com/api-reference/show-model-details.md",
+      "path": "edge-smart-home-ai/evaluation/20261112-w10-identity/upstream/ollama-show-model-details.md",
+      "sha256": "c09c08bd77e70dd0eefbf742019e55a1d6618df20da130d0fbc25fcfffd8e89b",
+      "bytes": 8269,
+      "retrieved_at": "2026-11-12T14:44:22.679393+00:00",
+      "docker_content_digest": null
+    },
+    {
+      "url": "https://raw.githubusercontent.com/ollama/ollama/b061384d90ff455462bc32745dd0de479de717a3/llama/llama.cpp/LICENSE",
+      "error": "HTTPError: HTTP Error 404: Not Found"
+    }
+  ],
+  "limitations": [
+    "Initial /api/ps is empty, so KV dtype, allocated context, accelerator/offload and RAM/VRAM residency are unobserved here.",
+    "Q4_K_M refers to stored weight quantization, not KV cache dtype or all runtime tensor precision.",
+    "Official registry package identity is verified; a bitwise conversion lineage from the upstream BF16 safetensors is not proven.",
+    "Model/capability metadata and local availability are engineering evidence, not personal understanding acceptance or a TTFT/TPS benchmark."
+  ],
+  "path_conventions": {
+    "evidence_paths": "All relative path fields in this derived inventory are relative to /home/kxj/zte_ws (workspace root).",
+    "external_absolute_paths": "Ollama model-store paths and installed runtime binary paths are absolute and explicitly outside the workspace.",
+    "historical_source_reference": "initial_configuration.source_path refers to its recorded Git source_commit, not a promise that the current working file remains unchanged.",
+    "raw_evidence_files": "Original API/source retrieval files retain original bytes/path strings; this derived inventory normalizes only its own evidence references."
+  }
+}
