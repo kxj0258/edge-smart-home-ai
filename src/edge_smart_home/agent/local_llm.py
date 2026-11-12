@@ -13,6 +13,7 @@ from typing import Any, Protocol
 from urllib.parse import urlsplit, urlunsplit
 
 from edge_smart_home.common import DeviceState, PerceptionEvent
+from edge_smart_home.common.device_targets import unknown_explicit_target
 from edge_smart_home.common.timing_policy import (
     DEFERRED_TIME_MESSAGE, DEFERRED_TIME_REASON, is_deferred_time_request,
 )
@@ -230,6 +231,12 @@ class LocalLlmRequestGuard:
                 kind=IntelligentResultKind.UNAVAILABLE,
                 reason="requested capability is not available locally",
                 error_code=IntentErrorCode.CAPABILITY_UNAVAILABLE,
+            )
+        if unknown_explicit_target(event.label, self._devices):
+            return IntelligentPathResult(
+                kind=IntelligentResultKind.REJECTED,
+                message="指定设备未在目录中配置，已拒绝替换为其他设备。",
+                error_code=IntentErrorCode.UNKNOWN_DEVICE,
             )
         decision = self.consistency.preflight(event)
         return replace(decision.result, error_code=decision.code) if decision else None

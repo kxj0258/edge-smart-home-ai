@@ -9,10 +9,11 @@
       "actions": {
         "turn_on": {"domain": "light", "service": "turn_on"},
         "turn_off": {"domain": "light", "service": "turn_off"},
-        "set_brightness": {"domain": "light", "service": "turn_on", "arguments": {"brightness": {"source": "brightness", "scale": 2.55}}}
+        "set_brightness": {"domain": "light", "service": "turn_on", "arguments": {"brightness_pct": {"source": "brightness"}}}
       },
       "state_fields": {
-        "power": {"source": "state", "values": {"on": true, "off": false}}
+        "power": {"source": "state", "values": {"on": true, "off": false}},
+        "brightness": {"source": "brightness", "scale": 0.39215686274509803, "round": 0}
       }
     },
     "living_room_tv": {
@@ -38,8 +39,9 @@
         "set_hvac_mode": {"domain": "climate", "service": "set_hvac_mode", "arguments": {"hvac_mode": {"source": "mode"}}}
       },
       "state_fields": {
-        "power": {"source": "state", "values": {"off": false, "cool": true, "heat": true, "auto": true}},
-        "temperature": {"source": "temperature"}
+        "power": {"source": "state", "values": {"off": false, "cool": true, "heat": true, "auto": true, "dry": true}},
+        "temperature": {"source": "temperature"},
+        "hvac_mode": {"source": "state"}
       }
     },
     "living_room_curtain": {
@@ -49,7 +51,10 @@
         "close": {"domain": "cover", "service": "close_cover"},
         "set_position": {"domain": "cover", "service": "set_cover_position", "arguments": {"position": {"source": "position"}}}
       },
-      "state_fields": {"position": {"source": "state"}}
+      "state_fields": {
+        "position": {"source": "state"},
+        "position_percent": {"source": "current_position"}
+      }
     },
     "living_room_fan": {
       "entity_id": "fan.living_room",
@@ -58,7 +63,10 @@
         "turn_off": {"domain": "fan", "service": "turn_off"},
         "set_speed": {"domain": "fan", "service": "set_percentage", "arguments": {"percentage": {"source": "speed", "scale": 33.333333}}}
       },
-      "state_fields": {"power": {"source": "state", "values": {"on": true, "off": false}}}
+      "state_fields": {
+        "power": {"source": "state", "values": {"on": true, "off": false}},
+        "speed": {"source": "percentage", "scale": 0.03, "round": 0}
+      }
     },
     "bedroom_air_purifier": {
       "entity_id": "fan.bedroom_air_purifier",
@@ -107,9 +115,12 @@
       "actions": {
         "turn_on": {"domain": "light", "service": "turn_on"},
         "turn_off": {"domain": "light", "service": "turn_off"},
-        "set_brightness": {"domain": "light", "service": "turn_on", "arguments": {"brightness": {"source": "brightness", "scale": 2.55}}}
+        "set_brightness": {"domain": "light", "service": "turn_on", "arguments": {"brightness_pct": {"source": "brightness"}}}
       },
-      "state_fields": {"power": {"source": "state", "values": {"on": true, "off": false}}, "brightness": {"source": "brightness", "scale": 0.3921568627, "round": 0}}
+      "state_fields": {
+        "power": {"source": "state", "values": {"on": true, "off": false}},
+        "brightness": {"source": "brightness", "scale": 0.39215686274509803, "round": 0}
+      }
     },
     "bedroom_air_conditioner": {
       "entity_id": "climate.bedroom",
@@ -128,16 +139,22 @@
         "close": {"domain": "cover", "service": "close_cover"},
         "set_position": {"domain": "cover", "service": "set_cover_position", "arguments": {"position": {"source": "position"}}}
       },
-      "state_fields": {"position": {"source": "state"}}
+      "state_fields": {
+        "position": {"source": "state"},
+        "position_percent": {"source": "current_position"}
+      }
     },
     "kitchen_light": {
       "entity_id": "light.kitchen",
       "actions": {
         "turn_on": {"domain": "light", "service": "turn_on"},
         "turn_off": {"domain": "light", "service": "turn_off"},
-        "set_brightness": {"domain": "light", "service": "turn_on", "arguments": {"brightness": {"source": "brightness", "scale": 2.55}}}
+        "set_brightness": {"domain": "light", "service": "turn_on", "arguments": {"brightness_pct": {"source": "brightness"}}}
       },
-      "state_fields": {"power": {"source": "state", "values": {"on": true, "off": false}}, "brightness": {"source": "brightness", "scale": 0.3921568627, "round": 0}}
+      "state_fields": {
+        "power": {"source": "state", "values": {"on": true, "off": false}},
+        "brightness": {"source": "brightness", "scale": 0.39215686274509803, "round": 0}
+      }
     },
     "kitchen_smart_plug": {
       "entity_id": "switch.kitchen_smart_plug",

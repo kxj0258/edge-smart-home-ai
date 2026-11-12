@@ -34,6 +34,8 @@ class VoiceControlResult:
     llm_latency_ms: float | None = None
     trace: Trace | None = field(default=None, compare=False, repr=False)
     error_code: str | None = None
+    request_accepted: bool | None = None
+    observed_state: DeviceState | None = None
 
 
 class VoiceControlPipeline:
@@ -174,6 +176,8 @@ class VoiceControlPipeline:
                 ),
                 error=response.error,
                 error_code=response.error_code,
+                request_accepted=response.request_accepted,
+                observed_state=response.observed_state,
                 status=response.status,
                 processing_ms=response.processing_ms,
                 path=response.path,
@@ -190,6 +194,8 @@ class VoiceControlPipeline:
                         "message": result.message,
                         "error": response.error,
                         "error_code": response.error_code,
+                        "request_accepted": response.request_accepted,
+                        "observed_state": _diagnostic_detail(response.observed_state) if response.observed_state else None,
                         "processing_ms": response.processing_ms,
                         "path": response.path,
                         "provider": response.provider,
@@ -214,6 +220,8 @@ class VoiceControlPipeline:
             state=response.outcome,
             error=response.error,
             error_code=response.error_code,
+            request_accepted=response.request_accepted,
+            observed_state=response.observed_state,
             status=response.status,
             processing_ms=response.processing_ms,
             path=response.path,
@@ -228,6 +236,7 @@ class VoiceControlPipeline:
                 "message": result.message,
                 "error": result.error,
                 "error_code": result.error_code,
+                "backend_kind": result.state.backend_kind if result.state and isinstance(result.state, DeviceState) else None,
                 "processing_ms": response.processing_ms,
                 "path": response.path,
                 "provider": response.provider,
@@ -249,6 +258,8 @@ def _diagnostic_detail(outcome: ControlOutcome) -> dict:
         return {
             "device_id": outcome.device_id,
             "attributes": dict(outcome.attributes),
+            "backend_kind": outcome.backend_kind,
+            "completion_scope": outcome.completion_scope,
         }
     return {
         "scene_id": outcome.scene_id,
@@ -259,6 +270,9 @@ def _diagnostic_detail(outcome: ControlOutcome) -> dict:
                 "action": result.command.action,
                 "succeeded": result.succeeded,
                 "error": result.error,
+                "error_code": result.error_code,
+                "request_accepted": result.request_accepted,
+                "observed_state": _diagnostic_detail(result.observed_state) if result.observed_state else None,
             }
             for result in outcome.results
         ],

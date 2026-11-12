@@ -4,10 +4,15 @@ import re
 from typing import Any, Mapping
 
 from edge_smart_home.common import DeviceCommand, PerceptionEvent
+from edge_smart_home.common.device_targets import unknown_explicit_target
 
 
 class UnsupportedCommandError(ValueError):
     """The deterministic router cannot safely parse an event."""
+
+
+class UnknownDeviceTargetError(UnsupportedCommandError):
+    error_code = "UNKNOWN_DEVICE"
 
 
 class FastPathRouter:
@@ -27,6 +32,8 @@ class FastPathRouter:
 
     def route(self, event: PerceptionEvent) -> DeviceCommand:
         text = self._normalize(event.label)
+        if unknown_explicit_target(event.label, self._devices):
+            raise UnknownDeviceTargetError("explicit device target is not configured")
         if any(
             phrase in text for phrase in ("网络音乐", "在线音乐", "网络歌曲", "网络电台")
         ):

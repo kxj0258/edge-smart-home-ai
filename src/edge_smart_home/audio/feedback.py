@@ -247,7 +247,16 @@ class AssistantFeedback:
 
 def completion_message(assistant_response: Any) -> str:
     """Describe the action that actually completed, not the model's intent text."""
+    if getattr(assistant_response, "status", "executed") != "executed":
+        return "设备执行未确认完成。"
     outcome = assistant_response.outcome
+    if getattr(outcome, "backend_kind", None) == "home_assistant":
+        return ("已从家庭平台回读到目标状态。" if outcome.completion_scope == "ha_target_observed"
+                else "已从家庭平台读取设备状态。")
+    if (outcome is not None and hasattr(outcome, "results") and
+            any(getattr(item.state, "backend_kind", None) == "home_assistant" for item in outcome.results
+                if getattr(item, "state", None) is not None)):
+        return "已从家庭平台回读到目标状态。"
     if outcome is not None and hasattr(outcome, "results"):
         scene_message = _scene_completion_text(getattr(outcome, "scene_id", None))
         if scene_message:

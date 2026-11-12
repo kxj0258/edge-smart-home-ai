@@ -46,6 +46,8 @@ def serialize_outcome(outcome: ControlOutcome) -> dict:
             "available": outcome.available,
             "attributes": dict(outcome.attributes),
             "updated_at": outcome.updated_at.isoformat(),
+            "backend_kind": outcome.backend_kind,
+            "completion_scope": outcome.completion_scope,
         }
     return {
         "type": "scene_result",
@@ -59,6 +61,11 @@ def serialize_outcome(outcome: ControlOutcome) -> dict:
                 "succeeded": result.succeeded,
                 "attributes": dict(result.state.attributes) if result.state else None,
                 "error": result.error,
+                "error_code": result.error_code,
+                "backend_kind": result.state.backend_kind if result.state else None,
+                "completion_scope": result.state.completion_scope if result.state else None,
+                "request_accepted": result.request_accepted,
+                "observed_state": serialize_outcome(result.observed_state) if result.observed_state else None,
             }
             for result in outcome.results
         ],
@@ -91,6 +98,10 @@ def serialize_response(response: AssistantResponse) -> dict:
         payload["result"] = serialize_outcome(response.outcome)
     if response.error is not None:
         payload["error"] = response.error
+    if response.request_accepted is not None:
+        payload["request_accepted"] = response.request_accepted
+    if response.observed_state is not None:
+        payload["observed_state"] = serialize_outcome(response.observed_state)
     if response.intelligent_result is not None:
         payload["intelligent_path"] = {
             "kind": response.intelligent_result.kind.value,

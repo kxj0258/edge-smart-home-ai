@@ -67,6 +67,8 @@ class DeviceState:
     available: bool
     attributes: Mapping[str, Any]
     updated_at: datetime = field(default_factory=utc_now)
+    backend_kind: str = "unspecified"
+    completion_scope: str = "state_observation"
 
     def __post_init__(self) -> None:
         if not self.device_id:
@@ -79,10 +81,13 @@ class CommandExecutionResult:
     command: DeviceCommand
     state: DeviceState | None = None
     error: str | None = None
+    error_code: str | None = None
+    request_accepted: bool | None = None
+    observed_state: DeviceState | None = None
 
     @property
     def succeeded(self) -> bool:
-        return self.state is not None and self.error is None
+        return self.state is not None and self.state.available and self.error is None and self.error_code is None
 
 
 @dataclass(frozen=True, slots=True)

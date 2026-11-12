@@ -4,6 +4,8 @@ from typing import Any, Mapping, Sequence
 
 from .interfaces import PlannedDeviceCommand
 from .error_codes import IntentErrorCode, normalize_error_code
+from edge_smart_home.device.validation import validate_action_arguments
+from edge_smart_home.device.base import DeviceBackendError
 
 
 class AgentPlanValidationError(ValueError):
@@ -44,48 +46,10 @@ class AgentPlanValidator:
 
     @staticmethod
     def _validate_arguments(command: PlannedDeviceCommand) -> None:
-        arguments = dict(command.arguments)
-        rules = {
-            "set_volume": ("volume", int, 0, 100),
-            "set_brightness": ("brightness", int, 0, 100),
-            "set_position": ("position", int, 0, 100),
-            "set_speed": ("speed", int, 1, 3),
-            "set_temperature": ("temperature", int, 16, 30),
-        }
-        if command.action in rules:
-            name, value_type, minimum, maximum = rules[command.action]
-            value = arguments.pop(name, None)
-            if type(value) is not value_type or not minimum <= value <= maximum:
-                raise AgentPlanValidationError(
-                    f"invalid agent argument for {command.action}: {name}",
-                    error_code=IntentErrorCode.INVALID_ARGUMENTS,
-                )
-        elif command.action in {"set_channel", "open_app", "set_mode", "set_hvac_mode"}:
-            names = {
-                "set_channel": "channel",
-                "open_app": "app",
-                "set_mode": "mode",
-                "set_hvac_mode": "mode",
-            }
-            name = names[command.action]
-            value = arguments.pop(name, None)
-            if not isinstance(value, str) or not value:
-                raise AgentPlanValidationError(
-                    f"invalid agent argument for {command.action}: {name}",
-                    error_code=IntentErrorCode.INVALID_ARGUMENTS,
-                )
-            if command.action == "set_mode" and value not in {"auto", "sleep", "turbo"}:
-                raise AgentPlanValidationError(
-                    f"invalid agent argument for set_mode: {value}",
-                    error_code=IntentErrorCode.INVALID_ARGUMENTS,
-                )
-            if command.action == "set_hvac_mode" and value not in {"cool", "heat", "auto", "dry"}:
-                raise AgentPlanValidationError(
-                    f"invalid agent argument for set_hvac_mode: {value}",
-                    error_code=IntentErrorCode.INVALID_ARGUMENTS,
-                )
-        if arguments:
+        try:
+            validate_action_arguments(command.action, command.arguments)
+        except DeviceBackendError as error:
             raise AgentPlanValidationError(
-                f"unexpected agent arguments for {command.action}: {sorted(arguments)}",
-                error_code=IntentErrorCode.INVALID_ARGUMENTS,
-            )
+                f"invalid agent argument for {command.action}: {error}",
+                error_code=error.error_code,
+            ) from error

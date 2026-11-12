@@ -1,0 +1,732 @@
+{
+  "schema_version": 1,
+  "kind": "w15_device_regressions",
+  "version": "1.0.0",
+  "authored_on": "2026-11-13",
+  "baseline_child_commit": "549ebc5aa0a073bbdd0297578048bc2e584699d2",
+  "purpose": "Fixed development regressions of Mock control/readback and existing text/synthetic-transcript paths; not real HA or physical completion acceptance.",
+  "freeze_policy": "Cases and oracles fixed before current evaluator run; no score-driven label changes. Catalog capability examples derived and frozen in prepare before run.",
+  "device_scope": "Existing configs/devices.json (25 devices), all declared capabilities and 9 scene references. No new device service, ASR call, real HA call or request_id idempotency.",
+  "completion_scope": "Compare returned Mock snapshots with explicit immediate get_state; not a physical completion proof.",
+  "voice_scope": "Synthetic StreamingRecognition transcript only; not audio/ASR or microphone testing.",
+  "cases": [
+    {
+      "id": "W15-01",
+      "path": "direct",
+      "category": "light_current_state",
+      "expect": {
+        "status": "completed",
+        "error_code": null,
+        "attributes": {
+          "living_room_light": {
+            "power": true,
+            "brightness": 100
+          }
+        },
+        "unchanged": false
+      },
+      "command": {
+        "device_id": "living_room_light",
+        "action": "turn_on",
+        "arguments": {}
+      },
+      "setup": []
+    },
+    {
+      "id": "W15-02",
+      "path": "direct",
+      "category": "brightness_lower_boundary",
+      "expect": {
+        "status": "completed",
+        "error_code": null,
+        "attributes": {
+          "living_room_light": {
+            "power": false,
+            "brightness": 0
+          }
+        },
+        "unchanged": false
+      },
+      "command": {
+        "device_id": "living_room_light",
+        "action": "set_brightness",
+        "arguments": {
+          "brightness": 0
+        }
+      },
+      "setup": [
+        {
+          "command": {
+            "device_id": "living_room_light",
+            "action": "set_brightness",
+            "arguments": {
+              "brightness": 50
+            }
+          },
+          "expected_error_code": null
+        }
+      ]
+    },
+    {
+      "id": "W15-03",
+      "path": "direct",
+      "category": "brightness_upper_boundary",
+      "expect": {
+        "status": "completed",
+        "error_code": null,
+        "attributes": {
+          "living_room_light": {
+            "power": true,
+            "brightness": 100
+          }
+        },
+        "unchanged": false
+      },
+      "command": {
+        "device_id": "living_room_light",
+        "action": "set_brightness",
+        "arguments": {
+          "brightness": 100
+        }
+      },
+      "setup": []
+    },
+    {
+      "id": "W15-04",
+      "path": "direct",
+      "category": "temperature_lower_boundary",
+      "expect": {
+        "status": "completed",
+        "error_code": null,
+        "attributes": {
+          "living_room_air_conditioner": {
+            "power": true,
+            "temperature": 16
+          }
+        },
+        "unchanged": false
+      },
+      "command": {
+        "device_id": "living_room_air_conditioner",
+        "action": "set_temperature",
+        "arguments": {
+          "temperature": 16
+        }
+      },
+      "setup": []
+    },
+    {
+      "id": "W15-05",
+      "path": "direct",
+      "category": "temperature_upper_boundary",
+      "expect": {
+        "status": "completed",
+        "error_code": null,
+        "attributes": {
+          "living_room_air_conditioner": {
+            "power": true,
+            "temperature": 30
+          }
+        },
+        "unchanged": false
+      },
+      "command": {
+        "device_id": "living_room_air_conditioner",
+        "action": "set_temperature",
+        "arguments": {
+          "temperature": 30
+        }
+      },
+      "setup": []
+    },
+    {
+      "id": "W15-06",
+      "path": "direct",
+      "category": "curtain_open_consistency",
+      "expect": {
+        "status": "completed",
+        "error_code": null,
+        "attributes": {
+          "living_room_curtain": {
+            "position": "open",
+            "position_percent": 100
+          }
+        },
+        "unchanged": false
+      },
+      "command": {
+        "device_id": "living_room_curtain",
+        "action": "open",
+        "arguments": {}
+      },
+      "setup": []
+    },
+    {
+      "id": "W15-07",
+      "path": "direct",
+      "category": "curtain_close_consistency",
+      "expect": {
+        "status": "completed",
+        "error_code": null,
+        "attributes": {
+          "living_room_curtain": {
+            "position": "closed",
+            "position_percent": 0
+          }
+        },
+        "unchanged": false
+      },
+      "command": {
+        "device_id": "living_room_curtain",
+        "action": "close",
+        "arguments": {}
+      },
+      "setup": [
+        {
+          "command": {
+            "device_id": "living_room_curtain",
+            "action": "open",
+            "arguments": {}
+          },
+          "expected_error_code": null
+        }
+      ]
+    },
+    {
+      "id": "W15-08",
+      "path": "direct",
+      "category": "curtain_partial_consistency",
+      "expect": {
+        "status": "completed",
+        "error_code": null,
+        "attributes": {
+          "living_room_curtain": {
+            "position": "partial",
+            "position_percent": 42
+          }
+        },
+        "unchanged": false
+      },
+      "command": {
+        "device_id": "living_room_curtain",
+        "action": "set_position",
+        "arguments": {
+          "position": 42
+        }
+      },
+      "setup": []
+    },
+    {
+      "id": "W15-09",
+      "path": "direct",
+      "category": "unknown_device",
+      "expect": {
+        "status": "error",
+        "error_code": "UNKNOWN_DEVICE",
+        "attributes": {},
+        "unchanged": true
+      },
+      "command": {
+        "device_id": "secret_device",
+        "action": "turn_on",
+        "arguments": {}
+      },
+      "setup": []
+    },
+    {
+      "id": "W15-10",
+      "path": "direct",
+      "category": "unsupported_action",
+      "expect": {
+        "status": "error",
+        "error_code": "UNSUPPORTED_ACTION",
+        "attributes": {},
+        "unchanged": true
+      },
+      "command": {
+        "device_id": "living_room_light",
+        "action": "erase_all",
+        "arguments": {}
+      },
+      "setup": []
+    },
+    {
+      "id": "W15-11",
+      "path": "direct",
+      "category": "out_of_range_temperature",
+      "expect": {
+        "status": "error",
+        "error_code": "INVALID_ARGUMENTS",
+        "attributes": {},
+        "unchanged": true
+      },
+      "command": {
+        "device_id": "living_room_air_conditioner",
+        "action": "set_temperature",
+        "arguments": {
+          "temperature": 31
+        }
+      },
+      "setup": []
+    },
+    {
+      "id": "W15-12",
+      "path": "direct",
+      "category": "bool_is_not_temperature_integer",
+      "expect": {
+        "status": "error",
+        "error_code": "INVALID_ARGUMENTS",
+        "attributes": {},
+        "unchanged": true
+      },
+      "command": {
+        "device_id": "living_room_air_conditioner",
+        "action": "set_temperature",
+        "arguments": {
+          "temperature": true
+        }
+      },
+      "setup": []
+    },
+    {
+      "id": "W15-13",
+      "path": "direct",
+      "category": "unexpected_argument",
+      "expect": {
+        "status": "error",
+        "error_code": "INVALID_ARGUMENTS",
+        "attributes": {},
+        "unchanged": true
+      },
+      "command": {
+        "device_id": "living_room_light",
+        "action": "turn_on",
+        "arguments": {
+          "surprise": 1
+        }
+      },
+      "setup": []
+    },
+    {
+      "id": "W15-14",
+      "path": "direct",
+      "category": "out_of_range_speed",
+      "expect": {
+        "status": "error",
+        "error_code": "INVALID_ARGUMENTS",
+        "attributes": {},
+        "unchanged": true
+      },
+      "command": {
+        "device_id": "living_room_fan",
+        "action": "set_speed",
+        "arguments": {
+          "speed": 0
+        }
+      },
+      "setup": []
+    },
+    {
+      "id": "W15-15",
+      "path": "direct",
+      "category": "offline_write_state_preserved",
+      "expect": {
+        "status": "error",
+        "error_code": "DEVICE_OFFLINE",
+        "attributes": {},
+        "unchanged": true
+      },
+      "command": {
+        "device_id": "living_room_light",
+        "action": "turn_on",
+        "arguments": {}
+      },
+      "setup": [
+        {
+          "availability": {
+            "device_id": "living_room_light",
+            "value": false
+          }
+        }
+      ]
+    },
+    {
+      "id": "W15-16",
+      "path": "direct",
+      "category": "offline_query_not_execution_success",
+      "expect": {
+        "status": "error",
+        "error_code": "DEVICE_OFFLINE",
+        "attributes": {},
+        "unchanged": true
+      },
+      "command": {
+        "device_id": "living_room_light",
+        "action": "query_state",
+        "arguments": {}
+      },
+      "setup": [
+        {
+          "availability": {
+            "device_id": "living_room_light",
+            "value": false
+          }
+        }
+      ]
+    },
+    {
+      "id": "W15-17",
+      "path": "direct",
+      "category": "recovery_after_failed_write",
+      "expect": {
+        "status": "completed",
+        "error_code": null,
+        "attributes": {
+          "living_room_air_conditioner": {
+            "power": true,
+            "temperature": 25
+          }
+        },
+        "unchanged": false
+      },
+      "command": {
+        "device_id": "living_room_air_conditioner",
+        "action": "set_temperature",
+        "arguments": {
+          "temperature": 25
+        }
+      },
+      "setup": [
+        {
+          "availability": {
+            "device_id": "living_room_air_conditioner",
+            "value": false
+          }
+        },
+        {
+          "command": {
+            "device_id": "living_room_air_conditioner",
+            "action": "set_temperature",
+            "arguments": {
+              "temperature": 25
+            }
+          },
+          "expected_error_code": "DEVICE_OFFLINE"
+        },
+        {
+          "availability": {
+            "device_id": "living_room_air_conditioner",
+            "value": true
+          }
+        }
+      ]
+    },
+    {
+      "id": "W15-18",
+      "path": "direct",
+      "category": "query_does_not_update_attribute_timestamp",
+      "expect": {
+        "status": "completed",
+        "error_code": null,
+        "attributes": {},
+        "unchanged": true,
+        "timestamp": "unchanged"
+      },
+      "command": {
+        "device_id": "living_room_light",
+        "action": "query_state",
+        "arguments": {}
+      },
+      "setup": [
+        {
+          "command": {
+            "device_id": "living_room_light",
+            "action": "set_brightness",
+            "arguments": {
+              "brightness": 50
+            }
+          },
+          "expected_error_code": null
+        }
+      ]
+    },
+    {
+      "id": "W15-19",
+      "path": "direct",
+      "category": "no_op_does_not_update_attribute_timestamp",
+      "expect": {
+        "status": "completed",
+        "error_code": null,
+        "attributes": {},
+        "unchanged": true,
+        "timestamp": "unchanged"
+      },
+      "command": {
+        "device_id": "living_room_light",
+        "action": "turn_off",
+        "arguments": {}
+      },
+      "setup": []
+    },
+    {
+      "id": "W15-20",
+      "path": "direct",
+      "category": "camera_privacy_state_conflict",
+      "expect": {
+        "status": "error",
+        "error_code": "DEVICE_STATE_CONFLICT",
+        "attributes": {},
+        "unchanged": true
+      },
+      "command": {
+        "device_id": "living_room_camera",
+        "action": "start_recording",
+        "arguments": {}
+      },
+      "setup": []
+    },
+    {
+      "id": "W15-21",
+      "path": "text",
+      "category": "text_control_readback",
+      "expect": {
+        "status": "executed",
+        "error_code": null,
+        "attributes": {
+          "living_room_light": {
+            "power": true,
+            "brightness": 50
+          }
+        },
+        "unchanged": false
+      },
+      "text": "把客厅灯亮度设置为50",
+      "setup": []
+    },
+    {
+      "id": "W15-22",
+      "path": "text",
+      "category": "w13_out_of_range_fidelity",
+      "expect": {
+        "status": "request_rejected",
+        "error_code": "REQUEST_ARGUMENT_INVALID",
+        "attributes": {},
+        "unchanged": true
+      },
+      "text": "把客厅空调温度设置成31度",
+      "setup": []
+    },
+    {
+      "id": "W15-23",
+      "path": "text",
+      "category": "w13_missing_argument_no_guess",
+      "expect": {
+        "status": "clarification_required",
+        "error_code": "REQUEST_ARGUMENT_MISSING",
+        "attributes": {},
+        "unchanged": true
+      },
+      "text": "把客厅灯亮度设置一下",
+      "setup": []
+    },
+    {
+      "id": "W15-24",
+      "path": "text",
+      "category": "w13_query_real_mock_read",
+      "expect": {
+        "status": "executed",
+        "error_code": null,
+        "attributes": {
+          "living_room_sensor": {
+            "temperature": 27.2,
+            "humidity": 58,
+            "occupancy": true
+          }
+        },
+        "unchanged": true
+      },
+      "text": "查询客厅环境状态",
+      "setup": []
+    },
+    {
+      "id": "W15-25",
+      "path": "voice",
+      "category": "w14_synthetic_transcript_control",
+      "expect": {
+        "status": "executed",
+        "error_code": null,
+        "attributes": {
+          "living_room_curtain": {
+            "position": "open",
+            "position_percent": 100
+          }
+        },
+        "unchanged": false
+      },
+      "text": "打开客厅窗帘",
+      "setup": []
+    },
+    {
+      "id": "W15-26",
+      "path": "voice",
+      "category": "w14_synthetic_transcript_rejection",
+      "expect": {
+        "status": "request_rejected",
+        "error_code": "REQUEST_ARGUMENT_INVALID",
+        "attributes": {},
+        "unchanged": true
+      },
+      "text": "把客厅空调温度设置成31度",
+      "setup": []
+    },
+    {
+      "id": "W15-27",
+      "path": "voice",
+      "category": "w14_synthetic_transcript_offline",
+      "expect": {
+        "status": "device_error",
+        "error_code": "DEVICE_OFFLINE",
+        "attributes": {},
+        "unchanged": true
+      },
+      "text": "打开客厅灯",
+      "setup": [
+        {
+          "availability": {
+            "device_id": "living_room_light",
+            "value": false
+          }
+        }
+      ]
+    },
+    {
+      "id": "W15-28",
+      "path": "scene",
+      "category": "scene_partial_failure_is_not_atomic",
+      "expect": {
+        "status": "partial_failure",
+        "error_code": "EXECUTION_PARTIAL_FAILURE",
+        "attributes": {
+          "living_room_tv": {
+            "power": false
+          },
+          "living_room_light": {
+            "power": false,
+            "brightness": 0
+          },
+          "living_room_set_top_box": {
+            "power": true,
+            "app": "IPTV"
+          }
+        },
+        "unchanged": false,
+        "scene_error_codes": [
+          "DEVICE_OFFLINE"
+        ]
+      },
+      "text": "开启观影模式",
+      "setup": [
+        {
+          "command": {
+            "device_id": "living_room_light",
+            "action": "turn_on",
+            "arguments": {}
+          },
+          "expected_error_code": null
+        },
+        {
+          "availability": {
+            "device_id": "living_room_tv",
+            "value": false
+          }
+        }
+      ]
+    },
+    {
+      "id": "W15-29",
+      "path": "text",
+      "category": "unknown_qualified_target_must_not_default",
+      "expect": {
+        "status": "request_rejected",
+        "error_code": "UNKNOWN_DEVICE",
+        "attributes": {},
+        "unchanged": true
+      },
+      "text": "打开书房灯",
+      "setup": []
+    },
+    {
+      "id": "W15-30",
+      "path": "text",
+      "category": "unknown_qualified_target_must_not_default",
+      "expect": {
+        "status": "request_rejected",
+        "error_code": "UNKNOWN_DEVICE",
+        "attributes": {},
+        "unchanged": true
+      },
+      "text": "把书房灯亮度设置为50",
+      "setup": []
+    },
+    {
+      "id": "W15-31",
+      "path": "text",
+      "category": "unknown_qualified_target_must_not_default",
+      "expect": {
+        "status": "request_rejected",
+        "error_code": "UNKNOWN_DEVICE",
+        "attributes": {},
+        "unchanged": true
+      },
+      "text": "打开不存在的灯",
+      "setup": []
+    },
+    {
+      "id": "W15-32",
+      "path": "text",
+      "category": "unknown_qualified_target_must_not_default",
+      "expect": {
+        "status": "request_rejected",
+        "error_code": "UNKNOWN_DEVICE",
+        "attributes": {},
+        "unchanged": true
+      },
+      "text": "打开阳台灯",
+      "setup": []
+    },
+    {
+      "id": "W15-33",
+      "path": "voice",
+      "category": "unknown_qualified_target_must_not_default",
+      "expect": {
+        "status": "request_rejected",
+        "error_code": "UNKNOWN_DEVICE",
+        "attributes": {},
+        "unchanged": true
+      },
+      "text": "打开书房空调",
+      "setup": []
+    },
+    {
+      "id": "W15-34",
+      "path": "voice",
+      "category": "unknown_qualified_target_must_not_default",
+      "expect": {
+        "status": "request_rejected",
+        "error_code": "UNKNOWN_DEVICE",
+        "attributes": {},
+        "unchanged": true
+      },
+      "text": "把书房电视音量设置为30",
+      "setup": []
+    }
+  ],
+  "discovered_regression_expansion": {
+    "authored_on": "2026-11-13",
+    "prior_case_count": 28,
+    "prior_file_sha256": "ec421417d6d7ece65e93048f774ae7caa841ae2abca0b7a5ee06344471275432",
+    "prior_case_prefix_unchanged": true,
+    "additional_case_count": 6,
+    "reason": "Read-only audit observed qualified/nonexistent text targets falling through generic aliases into configured default devices. Add failing text/synthetic-voice oracles before the clean formal run; do not change the prior 28 oracles."
+  }
+}

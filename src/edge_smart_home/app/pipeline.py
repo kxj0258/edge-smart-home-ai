@@ -170,7 +170,9 @@ class TextControlPipeline:
                 DeviceBackendError,
                 DuplicateCommandError,
             ) as error:
-                results.append(CommandExecutionResult(command, error=str(error)))
+                results.append(CommandExecutionResult(command, error=str(error), error_code=getattr(error, "error_code", None),
+                                                     request_accepted=getattr(error, "request_accepted", None),
+                                                     observed_state=getattr(error, "observed_state", None)))
             else:
                 results.append(CommandExecutionResult(command, state=state))
         return SceneExecutionResult(scene_id, tuple(results))
@@ -180,7 +182,12 @@ class TextControlPipeline:
                   device_id=command.device_id, action=command.action,
                   backend=type(self.backend).__name__,
                   completion_semantics="backend_return_not_physical_confirmation"):
-            return self.backend.execute(command)
+            state = self.backend.execute(command)
+            if not isinstance(state, DeviceState) or state.device_id != command.device_id:
+                raise DeviceBackendError("backend returned a different or invalid device state", error_code="DEVICE_RESPONSE_INVALID")
+            if not state.available:
+                raise DeviceBackendError("backend returned an unavailable device", error_code="DEVICE_OFFLINE", observed_state=state)
+            return state
 
     def build_agent_commands(
         self,
@@ -219,7 +226,9 @@ class TextControlPipeline:
                 self.deduplicator.check(command)
                 state = self._execute_backend(command)
             except (DeviceBackendError, DuplicateCommandError) as error:
-                results.append(CommandExecutionResult(command, error=str(error)))
+                results.append(CommandExecutionResult(command, error=str(error), error_code=getattr(error, "error_code", None),
+                                                     request_accepted=getattr(error, "request_accepted", None),
+                                                     observed_state=getattr(error, "observed_state", None)))
             else:
                 results.append(CommandExecutionResult(command, state=state))
         return SceneExecutionResult("agent_plan", tuple(results))

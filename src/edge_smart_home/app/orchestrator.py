@@ -19,7 +19,7 @@ from edge_smart_home.agent import (
     StubIntelligentPath,
     UrllibJsonTransport,
 )
-from edge_smart_home.common import DeviceCommand, EventSource, PerceptionEvent
+from edge_smart_home.common import DeviceCommand, DeviceState, EventSource, PerceptionEvent
 from edge_smart_home.agent.error_codes import IntentErrorCode, assistant_error_code
 from edge_smart_home.device import ConfirmationRequiredError, DeviceBackendError
 from edge_smart_home.router import DuplicateCommandError, UnsupportedCommandError
@@ -41,6 +41,8 @@ class AssistantResponse:
     llm_latency_ms: float | None = None
     confirmation_message: str | None = None
     error_code: str | None = None
+    request_accepted: bool | None = None
+    observed_state: DeviceState | None = None
 
     def __post_init__(self):
         result_code = self.intelligent_result.error_code if self.intelligent_result else None
@@ -602,4 +604,6 @@ class AssistantOrchestrator:
             processing_ms=round((perf_counter() - started) * 1000, 3),
             confirmation_message=confirmation_message,
             error_code=getattr(error, "error_code", None),
+            request_accepted=getattr(error, "request_accepted", None),
+            observed_state=getattr(error, "observed_state", None),
         )
