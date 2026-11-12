@@ -1,0 +1,114 @@
+{
+  "schema_version": 1,
+  "kind": "w11_thinking_selection",
+  "selected_request_think": false,
+  "reason": "Reuse product false request; bounded true candidate produced no visible response within fixed256 budget. Metadata supports onlytrue; internal disabling not certified.",
+  "comparison_not_performance_AB": "false was initially nonresident and true had prefix reuse; do not derive relative speed from this diagnostic.",
+  "source_path": "edge-smart-home-ai/evaluation/20261112-w11-thinking-pilot/summary.json",
+  "source_sha256": "ba4b474209d946e6a481479beec314548cdcf8c43c960b5e226ae1dab982ca0d",
+  "source_helper_sha256": "0e5c60dcf7a68e4dc8fc78343617216e5fa79f9330062f60b9a2e4e942fc599c",
+  "candidate_source_commit": "723a61acbcaff33a08926ad1c7e7e9b647bbbc33",
+  "candidate_was_clean_committed_helper": false,
+  "cases": [
+    {
+      "passed": true,
+      "error": null,
+      "timings": {
+        "first_event_ms": 2830.299674,
+        "first_thinking_ms": null,
+        "first_response_ms": 2830.299674,
+        "done_ms": 3426.779583,
+        "finish_ms": 3426.828855
+      },
+      "final": {
+        "model": "qwen3:4b",
+        "created_at": "2026-11-12T15:09:44.916557359Z",
+        "done": true,
+        "done_reason": "stop",
+        "total_duration": 3419547168,
+        "load_duration": 1770732445,
+        "prompt_eval_count": 3752,
+        "prompt_eval_cached_count": 0,
+        "prompt_eval_duration": 1039665999,
+        "eval_count": 48,
+        "eval_duration": 589588000
+      },
+      "contents": {
+        "response": {
+          "chars": 98,
+          "bytes": 192,
+          "sha256": "9f349430e2be2161fda5072e0d8cdb66448c63bf36dcd33a247f2d425c72fdde"
+        },
+        "thinking": {
+          "chars": 0,
+          "bytes": 0,
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        }
+      },
+      "rates": {
+        "server_generation_tps": 81.41278316383644,
+        "server_uncached_prompt_tps": 3608.851307640003,
+        "prompt_cache_count_observed": true,
+        "prompt_cache_count_valid": true,
+        "invalid_fields": [],
+        "counter_units": "Ollama tokenizer counts; duration nanoseconds",
+        "output_token_scope": "eval_count may include thinking; not visible-response token count or client throughput",
+        "source": "https://github.com/ollama/ollama/blob/v0.40.2/api/types.go",
+        "status": "COMPLETED_COUNTERS"
+      },
+      "think": false
+    },
+    {
+      "passed": false,
+      "error": {
+        "type": "ValueError",
+        "message": "Generation did not complete normally: done_reason=length",
+        "deadline_expired": false
+      },
+      "timings": {
+        "first_event_ms": 311.174962,
+        "first_thinking_ms": 311.174962,
+        "first_response_ms": null,
+        "done_ms": 4059.306445,
+        "finish_ms": 4059.317285
+      },
+      "final": {
+        "model": "qwen3:4b",
+        "created_at": "2026-11-12T15:09:48.975736415Z",
+        "done": true,
+        "done_reason": "length",
+        "total_duration": 4048246987,
+        "load_duration": 1808299,
+        "prompt_eval_count": 3752,
+        "prompt_eval_cached_count": 3751,
+        "prompt_eval_duration": 7338000,
+        "eval_count": 256,
+        "eval_duration": 3737402000
+      },
+      "contents": {
+        "response": {
+          "chars": 0,
+          "bytes": 0,
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        },
+        "thinking": {
+          "chars": 474,
+          "bytes": 1162,
+          "sha256": "77ba1b74f21a958c5bef40329badb0af88eed075b0a5db451ef055e3339f4a0f"
+        }
+      },
+      "rates": {
+        "server_generation_tps": 68.49677931354454,
+        "server_uncached_prompt_tps": 136.2769146906514,
+        "prompt_cache_count_observed": true,
+        "prompt_cache_count_valid": true,
+        "invalid_fields": [],
+        "counter_units": "Ollama tokenizer counts; duration nanoseconds",
+        "output_token_scope": "eval_count may include thinking; not visible-response token count or client throughput",
+        "source": "https://github.com/ollama/ollama/blob/v0.40.2/api/types.go",
+        "status": "COMPLETED_COUNTERS"
+      },
+      "think": true
+    }
+  ]
+}

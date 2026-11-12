@@ -81,3 +81,5 @@ git diff --check
 - 离线重建核对 SHA256、由协议重建的 schedule、连续且无重复序号、ledger 与 raw 一一对应、实际发送 payload、原始 NDJSON 合并文本/最终计数以及时间戳导出的 TTFT。不平均各轮 P95，不与 W10 单次非流式 wall time 计算提速。
 
 `evaluation/` raw 保持本地忽略。可提交小型结果报告、表格和 SHA256 清单，不提交模型、原始大响应或实验目录。工程性能证据与用户个人理解验收分别维护，本工具通过不能替代个人笔算、解释或讲解录屏。
+
+本次实际结果见 [W11结果](stages/L1-w11-results.md)、[机器基线](../baselines/20261112-w11-local-llm-v1.json)和[资源表](llm_evidence/20261112-w11-resource-table.csv)。上面是历史运行的精确路径，已有目录会被拒绝；复现时为每个目录/协议选择新名称。若仅有Git中的材料，`--references` 可指向已提交的 `docs/llm_evidence/20261112-w11-thinking-selection.json`；原始完整thinking预检仍只在本机evaluation中，不能假定Git包含它。模型包与固定0.40.2服务须已准备；工具不自动下载或更换服务。

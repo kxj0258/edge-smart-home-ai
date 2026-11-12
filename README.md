@@ -12,6 +12,12 @@
 
 非流式产品调用的完整HTTP耗时不等于客户端TTFT；工程复用与 [个人机制理解](../ai-learning/docs/LLM_UNDERSTANDING_CHECK.md)分别验收。阶段记录见 [L0a实现](docs/stages/L0-w10-implementation.md)、[L0b结果](docs/stages/L0-w10-results.md)及[运行证据索引](docs/llm_evidence/20261112-w10-results.json)。
 
+## W11：流式性能与独立模型进程RAM
+
+已完成同一3752-token输入的4096/8192容量对比：3轮、每组60正式样本，另排除12预热；实际客户端TTFT、服务TPS和daemon+runner采样RSS均报告P50/P95。固定原产品false请求策略，true在256预算截断的预检保留；模型声明与实际输出分别说明。120条正式输入均缓存3751token，结果适用于本次重复前缀场景；两组输出59/65token不同，完整wall不能全部归因容量。PSS权限不足、实际最大采样gap79.18ms、GPU边界诊断及个人理解待验收保留。
+
+运行入口 [W11 Benchmark](docs/W11_BENCHMARK.md)，交付 [阶段结果](docs/stages/L1-w11-results.md)、[机器基线](baselines/20261112-w11-local-llm-v1.json)、[资源表](docs/llm_evidence/20261112-w11-resource-table.csv)与[证据索引](docs/llm_evidence/20261112-w11-results.json)。201项离线测试通过、进程内网络尝试0，产品配置和后端未改；未测CPU-only、ARM/中兴目标芯片或多样指令语义质量。
+
 ## 2026-09-09 增量负载诊断与队列修复
 
 已新增五阶段音频负载诊断入口、固定口令协议和 JSON/CSV 对比，
