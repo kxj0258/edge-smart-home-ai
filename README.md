@@ -36,6 +36,12 @@
 
 [W14结果](docs/stages/A0-w14-results.md) · [边界与复现命令](docs/W14_ASR.md) · [逐段识别表](docs/asr_evidence/20261113-w14-transcripts.csv) · [模型来源/许可缺口](configs/asr-model-source-v1.json) · [机器基线](baselines/20261113-w14-streaming-asr-v0.json)。公开真人朗读不代替家庭口令自录与现场采集；不以本次或历史RTF证明overflow解决。
 
+## W15：设备控制与状态回读
+
+复用25设备/9场景，统一动作参数、Mock离线/候选提交/状态时钟和快照；未知房间/设备限定不再被泛称替换成客厅目标。453项离线测试/0网络；clean版本34/34固定回归、103/103能力示例，9场景46命令静态检查通过，预期错误与部分失败分别保留。Voice为合成文本，HA仅Fake HTTP；HA请求接受、目标观察与物理完成明确区分，未连接真实设备，个人理解及request_id幂等仍待验收。
+
+[W15结果](docs/stages/D0-w15-results.md) · [设备合同/复现](docs/W15_DEVICES.md) · [137项结果表](docs/device_evidence/20261113-w15-cases.csv) · [能力/参数/字段清单](docs/device_evidence/20261113-w15-catalog.json) · [机器基线](baselines/20261113-w15-device-simulator-v0.json)。HA配置仍缺14动作映射边/16初始字段映射边，不用实体数或Mock成绩代替实机验收。
+
 ## 2026-09-09 增量负载诊断与队列修复
 
 已新增五阶段音频负载诊断入口、固定口令协议和 JSON/CSV 对比，

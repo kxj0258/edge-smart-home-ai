@@ -1,0 +1,261 @@
+{
+  "schema_version": 1,
+  "kind": "w15_mock_devices_readback_baseline",
+  "created_at": "2026-11-12T17:19:25.179124+00:00",
+  "local_work_date": "2026-11-13",
+  "timezone": "Asia/Shanghai",
+  "engineering_evidence_passed": true,
+  "real_ha_accepted": false,
+  "physical_completion_accepted": false,
+  "personal_understanding_accepted": false,
+  "request_id_idempotency_implemented": false,
+  "root_implementation_commit": "d2704ffcac6b884b6d38e90f37575e4c6d8913e2",
+  "runtime_source_commit": "5f2178ad29be0388fe89e03eeda895a1aafc7b26",
+  "protocol_sha256": "cc3f4a899d8c36f7622a1020cc1941a3532427f13e5a2836f5c9c851701f3449",
+  "case_json_sha256": "6584d3f2732af3fc5bdd613b2aaa6a3f027163b6dd3204070f11224ad562c0ce",
+  "tests": {
+    "full_unit": 453,
+    "new_vs_w14": 76,
+    "network_attempts": 0,
+    "mock": 24,
+    "evaluation": 17,
+    "fake_ha": 23,
+    "explicit_targets": 12,
+    "tested_source_files": 165
+  },
+  "measurement": {
+    "schema_version": 1,
+    "kind": "w15_mock_device_results",
+    "passed": true,
+    "gates": {
+      "exact_case_order_and_count": true,
+      "all_fixed_oracles_passed": true,
+      "scene_catalog_valid": true,
+      "zero_network_attempts": true,
+      "no_global_failure": true
+    },
+    "runtime_source_commit": "5f2178ad29be0388fe89e03eeda895a1aafc7b26",
+    "devices": 25,
+    "scenes": {
+      "scenes": 9,
+      "commands": 46,
+      "all_references_and_parameters_valid": true,
+      "errors": []
+    },
+    "authored_cases": 34,
+    "authored_passed": 34,
+    "capability_examples": 103,
+    "capability_passed": 103,
+    "status_counts": {
+      "completed": 11,
+      "error": 9,
+      "executed": 3,
+      "request_rejected": 8,
+      "clarification_required": 1,
+      "device_error": 1,
+      "partial_failure": 1
+    },
+    "error_code_counts": {
+      "OK_OR_NOT_APPLICABLE": 14,
+      "UNKNOWN_DEVICE": 7,
+      "UNSUPPORTED_ACTION": 1,
+      "INVALID_ARGUMENTS": 4,
+      "DEVICE_OFFLINE": 3,
+      "DEVICE_STATE_CONFLICT": 1,
+      "REQUEST_ARGUMENT_INVALID": 2,
+      "REQUEST_ARGUMENT_MISSING": 1,
+      "EXECUTION_PARTIAL_FAILURE": 1
+    },
+    "mock_execute_attempts": 132,
+    "mock_setup_execute_attempts": 11,
+    "mock_successful_readbacks": 121,
+    "network_attempts": 0,
+    "real_ha_calls": 0,
+    "physical_device_calls": 0,
+    "asr_model_calls": 0,
+    "ollama_calls": 0,
+    "microphone_calls": 0,
+    "backend_kind": "mock",
+    "completion_scope": "mock_state_readback",
+    "physical_completion_accepted": false,
+    "personal_understanding_accepted": false,
+    "limitations": [
+      "Mock in-memory state and explicit readback only; no real HA or physical completion acceptance.",
+      "Voice input is a synthetic transcript, not ASR accuracy, live microphone, VAD or overflow validation.",
+      "No Ollama/model service or request_id idempotency; scene execution may partially succeed and is not atomic.",
+      "A returned/request-accepted snapshot is not proof of a physical target; metadata scope stays explicit.",
+      "Fixed development cases and one valid example per capability are not exhaustive safety or personal-understanding acceptance."
+    ]
+  },
+  "ha_mapping_audit": {
+    "entity_mappings": 25,
+    "unmapped_action_edges": [
+      {
+        "device_id": "front_door_camera",
+        "action": "show_feed"
+      },
+      {
+        "device_id": "front_door_camera",
+        "action": "enable_privacy"
+      },
+      {
+        "device_id": "front_door_camera",
+        "action": "disable_privacy"
+      },
+      {
+        "device_id": "front_door_camera",
+        "action": "start_recording"
+      },
+      {
+        "device_id": "front_door_camera",
+        "action": "stop_recording"
+      },
+      {
+        "device_id": "living_room_camera",
+        "action": "show_feed"
+      },
+      {
+        "device_id": "living_room_camera",
+        "action": "enable_privacy"
+      },
+      {
+        "device_id": "living_room_camera",
+        "action": "disable_privacy"
+      },
+      {
+        "device_id": "living_room_camera",
+        "action": "start_recording"
+      },
+      {
+        "device_id": "living_room_camera",
+        "action": "stop_recording"
+      },
+      {
+        "device_id": "living_room_fan",
+        "action": "speed_up"
+      },
+      {
+        "device_id": "living_room_fan",
+        "action": "speed_down"
+      },
+      {
+        "device_id": "bathroom_fan",
+        "action": "speed_up"
+      },
+      {
+        "device_id": "bathroom_fan",
+        "action": "speed_down"
+      }
+    ],
+    "unmapped_initial_state_fields": [
+      {
+        "device_id": "home_gateway",
+        "field": "guest_wifi_enabled"
+      },
+      {
+        "device_id": "home_gateway",
+        "field": "downlink_mbps"
+      },
+      {
+        "device_id": "home_gateway",
+        "field": "uplink_mbps"
+      },
+      {
+        "device_id": "home_gateway",
+        "field": "mesh_nodes_online"
+      },
+      {
+        "device_id": "home_gateway",
+        "field": "restarting"
+      },
+      {
+        "device_id": "home_gateway",
+        "field": "restart_count"
+      },
+      {
+        "device_id": "home_gateway",
+        "field": "last_restart_at"
+      },
+      {
+        "device_id": "living_room_set_top_box",
+        "field": "position_seconds"
+      },
+      {
+        "device_id": "front_door_camera",
+        "field": "privacy_mode"
+      },
+      {
+        "device_id": "front_door_camera",
+        "field": "motion_detected"
+      },
+      {
+        "device_id": "front_door_camera",
+        "field": "recording"
+      },
+      {
+        "device_id": "living_room_camera",
+        "field": "privacy_mode"
+      },
+      {
+        "device_id": "living_room_camera",
+        "field": "motion_detected"
+      },
+      {
+        "device_id": "living_room_camera",
+        "field": "recording"
+      },
+      {
+        "device_id": "living_room_speaker",
+        "field": "track"
+      },
+      {
+        "device_id": "kitchen_smart_plug",
+        "field": "power_watts"
+      }
+    ],
+    "baseline_unmapped_initial_state_fields": 21,
+    "note": "Static placeholder mapping coverage is not real HA supported_features, entity existence, driver or physical completion acceptance."
+  },
+  "oracle_expansion": {
+    "schema_version": 1,
+    "kind": "w15_oracle_expansion_before_run",
+    "created_at": "2026-11-12T17:13:25.371671+00:00",
+    "before_file": "evaluation/20261113-w15-evaluation-checks/before28.json",
+    "before_sha256": "ec421417d6d7ece65e93048f774ae7caa841ae2abca0b7a5ee06344471275432",
+    "after_file": "configs/evaluation/w15-device-regressions-v1.json",
+    "after_sha256": "6584d3f2732af3fc5bdd613b2aaa6a3f027163b6dd3204070f11224ad562c0ce",
+    "before_case_count": 28,
+    "after_case_count": 34,
+    "original_28_case_objects_unchanged": true,
+    "added_case_ids": [
+      "W15-29",
+      "W15-30",
+      "W15-31",
+      "W15-32",
+      "W15-33",
+      "W15-34"
+    ],
+    "formal_clean_run_performed_by_this_agent": false,
+    "tests_after_expansion": "not run yet; waiting for target guard integration"
+  },
+  "negative_and_rebuild_proof": {
+    "passed": true,
+    "negative_existing_output_exit": 2,
+    "all_run_files_sha_unchanged": 143,
+    "missing_protocol_not_read": true,
+    "extra_mock_execute_attempts": 0,
+    "report_rebuilt_byte_identical": true
+  },
+  "call_scope": "Formal run Mock only; Fake HTTP belongs to unit tests. Voice injects synthetic text; no ASR, Ollama, microphone, real HA or physical device call.",
+  "catalog": "docs/device_evidence/20261113-w15-catalog.json",
+  "cases_table": "docs/device_evidence/20261113-w15-cases.csv",
+  "evidence_index": "docs/device_evidence/20261113-w15-results.json",
+  "reproduce": "docs/W15_DEVICES.md",
+  "limits": [
+    "Mock in-memory state and explicit readback only; no real HA or physical completion acceptance.",
+    "Voice input is a synthetic transcript, not ASR accuracy, live microphone, VAD or overflow validation.",
+    "No Ollama/model service or request_id idempotency; scene execution may partially succeed and is not atomic.",
+    "A returned/request-accepted snapshot is not proof of a physical target; metadata scope stays explicit.",
+    "Fixed development cases and one valid example per capability are not exhaustive safety or personal-understanding acceptance."
+  ]
+}
