@@ -1,5 +1,7 @@
 # Edge AI Smart Home Assistant
 
+> 2026-11-12 整合更新：开发优先级按[工作区统一学习与开发规划](../ai-learning/docs/INTEGRATED_DEVELOPMENT_PLAN.md)执行。11–12月优先模型部署基础，家庭助手复用并补最小可靠性缺口。S0候选已归档；默认单测已隔离Ollama，见[阶段记录](docs/stages/S0-offline-unit-tests.md)。
+
 面向智慧中屏的端侧语音、手势与 Agent 家庭控制 PoC。项目重点不是训练新的
 大模型，而是跑通“本地感知 → 统一事件 → 确定性/Agent 路由 → 安全校验 →
 设备执行 → 状态反馈 → 真实评测”的产品闭环。
@@ -104,7 +106,7 @@ python -m pip install -e '.[vision]'
 项目不会自动安装、下载模型或运行耗时评测。手动运行：
 
 ```bash
-PYTHONPATH=src python -m unittest discover -s tests -v
+python scripts/run_unit_tests.py --verbosity 2
 PYTHONPATH=src python scripts/benchmark_text_e2e.py
 ```
 

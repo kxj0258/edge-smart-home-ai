@@ -2,7 +2,10 @@ from __future__ import annotations
 
 import json
 from pathlib import Path
+import shutil
+from tempfile import TemporaryDirectory
 import unittest
+from unittest.mock import patch
 
 from edge_smart_home.agent import (
     AgentPlanValidationError,
@@ -10,6 +13,7 @@ from edge_smart_home.agent import (
     IntelligentPathResult,
     IntelligentResultKind,
     PlannedDeviceCommand,
+    RuleBasedIntelligentPath,
 )
 from edge_smart_home.app import AssistantOrchestrator
 from edge_smart_home.app.cli import serialize_response
@@ -42,6 +46,22 @@ class FixedPlanPath:
 
 class IntelligentPathTest(unittest.TestCase):
     def setUp(self) -> None:
+        fixture = TemporaryDirectory()
+        self.addCleanup(fixture.cleanup)
+        fixture_root = Path(fixture.name)
+        self.config_dir = fixture_root / "configs"
+        shutil.copytree(PROJECT_ROOT / "configs", self.config_dir)
+        shutil.copytree(PROJECT_ROOT / "schemas", fixture_root / "schemas")
+        agent_path = self.config_dir / "agent.json"
+        agent_config = json.loads(agent_path.read_text(encoding="utf-8"))
+        agent_config["provider"] = "rule_based"
+        agent_path.write_text(json.dumps(agent_config), encoding="utf-8")
+        transport = patch(
+            "edge_smart_home.app.orchestrator.UrllibJsonTransport.post_json",
+            side_effect=AssertionError("Rule-based unit tests must not call Ollama"),
+        )
+        self.http_request = transport.start()
+        self.addCleanup(transport.stop)
         self.intelligent = RecordingIntelligentPath()
         self.orchestrator = AssistantOrchestrator(
             TextControlPipeline.from_config_dir(PROJECT_ROOT / "configs"),
@@ -71,21 +91,29 @@ class IntelligentPathTest(unittest.TestCase):
         self.assertEqual(plan.commands[0].device_id, "living_room_light")
 
     def test_configured_rule_plan_executes_through_backend(self) -> None:
-        orchestrator = AssistantOrchestrator.from_config_dir(PROJECT_ROOT / "configs")
+        orchestrator = AssistantOrchestrator.from_config_dir(self.config_dir)
+        self.assertIsInstance(orchestrator.intelligent_path, RuleBasedIntelligentPath)
         response = orchestrator.handle_text("客厅有点暗，帮我处理一下")
         self.assertEqual(response.status, "executed")
         self.assertEqual(response.outcome.scene_id, "agent_plan")
         self.assertTrue(response.outcome.results[0].state.attributes["power"])
         self.assertEqual(response.intelligent_result.kind, IntelligentResultKind.PLAN)
+        self.assertEqual(response.provider, "rule_based")
+        self.assertEqual(response.llm_calls, 0)
+        self.http_request.assert_not_called()
 
     def test_response_and_clarification_do_not_access_backend(self) -> None:
-        orchestrator = AssistantOrchestrator.from_config_dir(PROJECT_ROOT / "configs")
+        orchestrator = AssistantOrchestrator.from_config_dir(self.config_dir)
+        self.assertIsInstance(orchestrator.intelligent_path, RuleBasedIntelligentPath)
         greeting = orchestrator.handle_text("你好")
         clarification = orchestrator.handle_text("这里有点暗")
         self.assertEqual(greeting.status, "responded")
         self.assertEqual(clarification.status, "clarification_required")
         self.assertIsNone(greeting.outcome)
         self.assertIsNone(clarification.outcome)
+        self.assertEqual(clarification.provider, "rule_based")
+        self.assertEqual(clarification.llm_calls, 0)
+        self.http_request.assert_not_called()
 
     def test_validator_rejects_unknown_action_before_execution(self) -> None:
         devices = json.loads(

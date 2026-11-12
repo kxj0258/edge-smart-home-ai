@@ -4,6 +4,8 @@ from pathlib import Path
 import unittest
 
 from edge_smart_home.app import AssistantOrchestrator
+from edge_smart_home.agent import RuleBasedIntelligentPath
+from edge_smart_home.app.pipeline import TextControlPipeline
 from edge_smart_home.common import EventSource, PerceptionEvent
 
 
@@ -12,8 +14,9 @@ PROJECT_ROOT = Path(__file__).resolve().parents[1]
 
 class AssistantOrchestratorTest(unittest.TestCase):
     def setUp(self) -> None:
-        self.orchestrator = AssistantOrchestrator.from_config_dir(
-            PROJECT_ROOT / "configs"
+        self.orchestrator = AssistantOrchestrator(
+            TextControlPipeline.from_config_dir(PROJECT_ROOT / "configs"),
+            RuleBasedIntelligentPath([]),
         )
 
     def test_text_and_gesture_share_response_contract(self) -> None:
