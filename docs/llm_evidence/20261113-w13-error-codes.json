@@ -1,0 +1,176 @@
+{
+  "schema_version": 1,
+  "source_commit": "c55dc7d02939bad5b7b7c2a3b30ed0dc11f3af64",
+  "source_path": "src/edge_smart_home/agent/error_codes.py",
+  "source_sha256": "1035ce4368601392e68b3c51144b19f3d88a4a5db1592d2c7ad378e58851c273",
+  "codes": [
+    {
+      "name": "CLARIFICATION_REQUIRED",
+      "value": "CLARIFICATION_REQUIRED"
+    },
+    {
+      "name": "REQUEST_REJECTED",
+      "value": "REQUEST_REJECTED"
+    },
+    {
+      "name": "CAPABILITY_UNAVAILABLE",
+      "value": "CAPABILITY_UNAVAILABLE"
+    },
+    {
+      "name": "SCHEDULING_DEFERRED",
+      "value": "SCHEDULING_DEFERRED"
+    },
+    {
+      "name": "REQUEST_INPUT_INVALID",
+      "value": "REQUEST_INPUT_INVALID"
+    },
+    {
+      "name": "REQUEST_ARGUMENT_MISSING",
+      "value": "REQUEST_ARGUMENT_MISSING"
+    },
+    {
+      "name": "REQUEST_ARGUMENT_INVALID",
+      "value": "REQUEST_ARGUMENT_INVALID"
+    },
+    {
+      "name": "REQUEST_TARGET_AMBIGUOUS",
+      "value": "REQUEST_TARGET_AMBIGUOUS"
+    },
+    {
+      "name": "REQUEST_PLAN_MISMATCH",
+      "value": "REQUEST_PLAN_MISMATCH"
+    },
+    {
+      "name": "QUERY_PLAN_REQUIRED",
+      "value": "QUERY_PLAN_REQUIRED"
+    },
+    {
+      "name": "JSON_SYNTAX",
+      "value": "JSON_SYNTAX"
+    },
+    {
+      "name": "JSON_ENCODING",
+      "value": "JSON_ENCODING"
+    },
+    {
+      "name": "JSON_DUPLICATE_KEY",
+      "value": "JSON_DUPLICATE_KEY"
+    },
+    {
+      "name": "JSON_NONFINITE",
+      "value": "JSON_NONFINITE"
+    },
+    {
+      "name": "JSON_ROOT_TYPE",
+      "value": "JSON_ROOT_TYPE"
+    },
+    {
+      "name": "JSON_INPUT_TYPE",
+      "value": "JSON_INPUT_TYPE"
+    },
+    {
+      "name": "WIRE_CONTRACT_INVALID",
+      "value": "WIRE_CONTRACT_INVALID"
+    },
+    {
+      "name": "UNKNOWN_DEVICE",
+      "value": "UNKNOWN_DEVICE"
+    },
+    {
+      "name": "UNSUPPORTED_ACTION",
+      "value": "UNSUPPORTED_ACTION"
+    },
+    {
+      "name": "INVALID_ARGUMENTS",
+      "value": "INVALID_ARGUMENTS"
+    },
+    {
+      "name": "PLAN_VALIDATION_FAILED",
+      "value": "PLAN_VALIDATION_FAILED"
+    },
+    {
+      "name": "MODEL_HTTP_ERROR",
+      "value": "MODEL_HTTP_ERROR"
+    },
+    {
+      "name": "MODEL_TRANSPORT_ERROR",
+      "value": "MODEL_TRANSPORT_ERROR"
+    },
+    {
+      "name": "MODEL_TIMEOUT",
+      "value": "MODEL_TIMEOUT"
+    },
+    {
+      "name": "MODEL_OUTER_JSON_INVALID",
+      "value": "MODEL_OUTER_JSON_INVALID"
+    },
+    {
+      "name": "MODEL_RESPONSE_INCOMPLETE",
+      "value": "MODEL_RESPONSE_INCOMPLETE"
+    },
+    {
+      "name": "MODEL_RESPONSE_TRUNCATED",
+      "value": "MODEL_RESPONSE_TRUNCATED"
+    },
+    {
+      "name": "MODEL_RESPONSE_EMPTY",
+      "value": "MODEL_RESPONSE_EMPTY"
+    },
+    {
+      "name": "MODEL_IDENTITY_MISMATCH",
+      "value": "MODEL_IDENTITY_MISMATCH"
+    },
+    {
+      "name": "MODEL_THINKING_POLICY",
+      "value": "MODEL_THINKING_POLICY"
+    },
+    {
+      "name": "MODEL_SERVER_ERROR",
+      "value": "MODEL_SERVER_ERROR"
+    },
+    {
+      "name": "STATE_CONTEXT_UNAVAILABLE",
+      "value": "STATE_CONTEXT_UNAVAILABLE"
+    },
+    {
+      "name": "ROUTE_UNSUPPORTED",
+      "value": "ROUTE_UNSUPPORTED"
+    },
+    {
+      "name": "CONFIRMATION_REQUIRED",
+      "value": "CONFIRMATION_REQUIRED"
+    },
+    {
+      "name": "CONFIRMATION_CANCELLED",
+      "value": "CONFIRMATION_CANCELLED"
+    },
+    {
+      "name": "CONFIRMATION_EXPIRED",
+      "value": "CONFIRMATION_EXPIRED"
+    },
+    {
+      "name": "EXECUTION_FAILED",
+      "value": "EXECUTION_FAILED"
+    },
+    {
+      "name": "EXECUTION_PARTIAL_FAILURE",
+      "value": "EXECUTION_PARTIAL_FAILURE"
+    },
+    {
+      "name": "DUPLICATE_SUPPRESSED",
+      "value": "DUPLICATE_SUPPRESSED"
+    },
+    {
+      "name": "INTENT_INTERNAL_ERROR",
+      "value": "INTENT_INTERNAL_ERROR"
+    },
+    {
+      "name": "UNCLASSIFIED_ERROR",
+      "value": "UNCLASSIFIED_ERROR"
+    }
+  ],
+  "success": "null, not a generated wirefield or HTTP status",
+  "query_plan_required": "successful correction diagnostic only; valid query plan error_code remainsnull",
+  "api": "existing IntelligentPathResult/AssistantResponse/serialize_response; additive optionalerror_code; modelwireSchema unchanged",
+  "input_limit_characters": 512
+}

@@ -1,0 +1,1211 @@
+{
+  "schema_version": 1,
+  "kind": "w13_stage_evidence_index",
+  "created_at": "2026-11-12T16:32:53.147611+00:00",
+  "engineering_acceptance_passed": true,
+  "bounded_guarded_semantics_passed": true,
+  "raw_model_all_semantics_passed": false,
+  "comprehensive_production_safety_accepted": false,
+  "personal_understanding_accepted": false,
+  "jan_personal_summary_completed": false,
+  "root_implementation_commit": "0114986100fdda737437e071fe6e911c59722154",
+  "runtime_source_commit": "c55dc7d02939bad5b7b7c2a3b30ed0dc11f3af64",
+  "protocol_sha256": "7b1a97fdeeeec86f4a1effec7218d8e4b7f1d3e56d6880dd3e4f7d36bd7be359",
+  "model_manifest_digest": "359d7dd4bcdab3d86b87d73ac27966f4dbb9f5efdfcc75d34a8764a09474fae7",
+  "server_version": "0.40.2",
+  "corpus_sha256": "a3add7c45c7345e683293f77d22b6a89b57a87ccfeec450d516925fc9fdd910a",
+  "baseline": "edge-smart-home-ai/baselines/20261113-w13-intent-pipeline-v0.json",
+  "tests": {
+    "full_unit": 325,
+    "new_vs_w12": 71,
+    "network_attempts": 0,
+    "tested_source_files": 149,
+    "request_consistency_tests": 22,
+    "error_code_tests": 23,
+    "evaluation_tests": 15,
+    "product_boundary_tests": 11
+  },
+  "scores": {
+    "observations": 87,
+    "distinct_cases": 29,
+    "rounds": 3,
+    "raw_exact": 60,
+    "guarded_exact": 87,
+    "four_rule_exact": 12,
+    "raw_unsafe_plans": 24,
+    "guarded_unsafe_plans": 0,
+    "four_target_raw_matches": 0,
+    "four_target_guarded_matches": 12
+  },
+  "stability": {
+    "case_count": 29,
+    "raw_semantic_stable_cases": 29,
+    "guarded_semantic_stable_cases": 29,
+    "raw_full_text_stable_cases": 29,
+    "guarded_code_stable_cases": 29,
+    "scope": "Only three observed repetitions; stable wrong output is not correctness; no future determinism guarantee"
+  },
+  "generation_counts": {
+    "model": 87,
+    "warmup": 0,
+    "hidden_retries": 0,
+    "device_execution": 0,
+    "explicit_load_unload": 0
+  },
+  "payload_reuse_proof": {
+    "passed": true,
+    "all_87_payloads_equal_repeated_frozen_w12_payloads": true,
+    "config_devices_schema_corpus_model_identity_equal": true,
+    "corpus_sha256": "a3add7c45c7345e683293f77d22b6a89b57a87ccfeec450d516925fc9fdd910a",
+    "w13_protocol_sha256": "7b1a97fdeeeec86f4a1effec7218d8e4b7f1d3e56d6880dd3e4f7d36bd7be359",
+    "prepared_git": {
+      "commit": "c55dc7d02939bad5b7b7c2a3b30ed0dc11f3af64",
+      "status": ""
+    }
+  },
+  "negative_existing_output": {
+    "expected_actual_exit": 2,
+    "all_102_raw_files_sha_unchanged": true,
+    "extra_api_generation": 0
+  },
+  "independent_audits": [
+    {
+      "path": "edge-smart-home-ai/evaluation/20261113-w13-evaluation-audit/findings.json",
+      "sha256": "8cddb4a6eab8086f109412cf3a49719cbd29c4bab147e95cc714c0007595758c"
+    },
+    {
+      "path": "edge-smart-home-ai/evaluation/20261113-w13-interface-audit/findings.json",
+      "sha256": "aaa59d2798e5ad9bd42436c8bbd0d2e362f76db7b50cd47134ab570ede3dabc6"
+    },
+    {
+      "path": "edge-smart-home-ai/evaluation/20261113-w13-consistency-audit/findings.json",
+      "sha256": "4e60195cf435c23ec62b5a25d705406ad9ed29e5f488a1d91628b15db73cdc82"
+    }
+  ],
+  "external_full_file_identity_after": {
+    "passed": true,
+    "created_at": "2026-11-12T16:26:33.251411+00:00",
+    "inventory_sha256": "44450c97713a878730ded935fca83cc3fa54fc188b8e0af56bf36bebb43e3d84",
+    "items": [
+      {
+        "path": "/var/snap/ollama/common/models/manifests/registry.ollama.ai/library/qwen3/4b",
+        "bytes": 859,
+        "sha256": "359d7dd4bcdab3d86b87d73ac27966f4dbb9f5efdfcc75d34a8764a09474fae7",
+        "matches_w10": true
+      },
+      {
+        "path": "/var/snap/ollama/common/models/blobs/sha256-e18a783aae5525fd2852fc94c985541a77e791e034abc2d3056474d59de336fc",
+        "bytes": 487,
+        "sha256": "e18a783aae5525fd2852fc94c985541a77e791e034abc2d3056474d59de336fc",
+        "matches_w10": true
+      },
+      {
+        "path": "/var/snap/ollama/common/models/blobs/sha256-3e4cb14174460404e7a233e531675303b2fbf7749c02f91864fe311ab6344e4f",
+        "bytes": 2497280480,
+        "sha256": "3e4cb14174460404e7a233e531675303b2fbf7749c02f91864fe311ab6344e4f",
+        "matches_w10": true
+      },
+      {
+        "path": "/var/snap/ollama/common/models/blobs/sha256-2d54db2b9bb29ce7db54fea63a891f5859603813c555b1f88b5e0994652897f9",
+        "bytes": 1506,
+        "sha256": "2d54db2b9bb29ce7db54fea63a891f5859603813c555b1f88b5e0994652897f9",
+        "matches_w10": true
+      },
+      {
+        "path": "/var/snap/ollama/common/models/blobs/sha256-d18a5cc71b84bc4af394a31116bd3932b42241de70c77d2b76d69a314ec8aa12",
+        "bytes": 11338,
+        "sha256": "d18a5cc71b84bc4af394a31116bd3932b42241de70c77d2b76d69a314ec8aa12",
+        "matches_w10": true
+      },
+      {
+        "path": "/var/snap/ollama/common/models/blobs/sha256-cff3f395ef3756ab63e58b0ad1b32bb6f802905cae1472e6a12034e4246fbbdb",
+        "bytes": 120,
+        "sha256": "cff3f395ef3756ab63e58b0ad1b32bb6f802905cae1472e6a12034e4246fbbdb",
+        "matches_w10": true
+      },
+      {
+        "path": "/snap/ollama/141/bin/ollama",
+        "bytes": 29872208,
+        "sha256": "8ff456e3f8c08b7fb211857c634d4df8e1a84cacaaf5b9e7b6bbf89e0f9ae8e0",
+        "matches_w10": true
+      }
+    ],
+    "product_configuration_unchanged": true,
+    "config_sha256": "2698607ea327b44b9b5b49d1003825ae1f621dbc6f1c48e298ca56bf98c059ff",
+    "mapped_executable_inode_verified": false,
+    "filesystem_cold_claim": false,
+    "note": "Full file hashing itself reads/warm OS file cache. No unload/reload/remote model operation."
+  },
+  "artifact_count": 211,
+  "artifact_bytes": 13624651,
+  "artifacts": [
+    {
+      "path": "edge-smart-home-ai/README.md",
+      "bytes": 13331,
+      "sha256": "15ec12db08241d15db8eeb2600c10803a98b7ae17bcc79459290744677fa2f64"
+    },
+    {
+      "path": "edge-smart-home-ai/baselines/20261113-w13-intent-pipeline-v0.json",
+      "bytes": 41569,
+      "sha256": "ced9be62bc9c478b59162bfb25add2857f86aaedc441acf237ea3268f40fe9f2"
+    },
+    {
+      "path": "edge-smart-home-ai/configs/evaluation/w12-home-intents-v1.json",
+      "bytes": 29561,
+      "sha256": "a3add7c45c7345e683293f77d22b6a89b57a87ccfeec450d516925fc9fdd910a"
+    },
+    {
+      "path": "edge-smart-home-ai/configs/llm-model-source-v1.json",
+      "bytes": 19773,
+      "sha256": "44450c97713a878730ded935fca83cc3fa54fc188b8e0af56bf36bebb43e3d84"
+    },
+    {
+      "path": "edge-smart-home-ai/docs/W13_EVALUATION.md",
+      "bytes": 7948,
+      "sha256": "0d4e259635b351b94c9c99b5ec525cd598d5c7a30c68998f53840bb693a06bd6"
+    },
+    {
+      "path": "edge-smart-home-ai/docs/W13_INTERFACE.md",
+      "bytes": 8186,
+      "sha256": "007b167455c279f6136311360c118c5dc2c1a0233e119fb00f9fdfea54476896"
+    },
+    {
+      "path": "edge-smart-home-ai/docs/W13_REQUEST_CONSISTENCY.md",
+      "bytes": 5476,
+      "sha256": "cfa591639d4e28fefffe724d43820523881665dce2e4c212bfa353a14b1f6e14"
+    },
+    {
+      "path": "edge-smart-home-ai/docs/llm_evidence/20261113-w13-cases.csv",
+      "bytes": 24863,
+      "sha256": "72523294f1e72253ff5b97059ccd6595daac05660c8f661324eaaaf14f3fb1d1"
+    },
+    {
+      "path": "edge-smart-home-ai/docs/llm_evidence/20261113-w13-error-codes.json",
+      "bytes": 4200,
+      "sha256": "fbe00f0dbe9ec79ddc7a2cc115aba5692fa75e85612edbd3f423106e7738718d"
+    },
+    {
+      "path": "edge-smart-home-ai/docs/llm_evidence/20261113-w13-stability.csv",
+      "bytes": 1563,
+      "sha256": "507b5dca92eb23bd84eba4251fe13a82dbc7c7b1e3f825866d75f703def524fa"
+    },
+    {
+      "path": "edge-smart-home-ai/docs/stages/L3-w13-implementation.md",
+      "bytes": 3738,
+      "sha256": "afb167a2a26e480d57589f44656e8397f41e0af642e2cab46189454dee910533"
+    },
+    {
+      "path": "edge-smart-home-ai/docs/stages/L3-w13-results.md",
+      "bytes": 7343,
+      "sha256": "cdd68238107a76b75b531c6081da95b5b58f7c9e69296edc6f906ca60c10e372"
+    },
+    {
+      "path": "edge-smart-home-ai/evaluation/20261113-w13-archive/build_baseline.py",
+      "bytes": 5447,
+      "sha256": "71f6d62f6973c1ff1c989adfdd0d73c93c7778db28beb01ebad96f9a1706d2d8"
+    },
+    {
+      "path": "edge-smart-home-ai/evaluation/20261113-w13-archive/build_index.py",
+      "bytes": 3500,
+      "sha256": "583022852f5f504c0139be01ebdbd096a3652680ac113548591c26889656c435"
+    },
+    {
+      "path": "edge-smart-home-ai/evaluation/20261113-w13-before/four-errors.json",
+      "bytes": 2685,
+      "sha256": "f6208fa4f6b5ad92c9c8e8ebd060be7296095f75d63dc33e79e86f61a25dafb1"
+    },
+    {
+      "path": "edge-smart-home-ai/evaluation/20261113-w13-consistency/abbreviated-gap-and-fix.json",
+      "bytes": 857,
+      "sha256": "85a6168e64d1b1bdd835e3fbc5ac21d3d1dc2653ea294d7c505ac4767efe752c"
+    },
+    {
+      "path": "edge-smart-home-ai/evaluation/20261113-w13-consistency/cpython-v3.10.21-re.py",
+      "bytes": 15860,
+      "sha256": "018b1a2c70e8ef537cc328d1026afdeca5839392ce47235a7b8d22e1b788cdc7"
+    },
+    {
+      "path": "edge-smart-home-ai/evaluation/20261113-w13-consistency/cpython-v3.10.21-re.rst",
+      "bytes": 70128,
+      "sha256": "aa03196b29628f25a36f61080e17254adf3818f565ca92eb11bbbd136866a45d"
+    },
+    {
+      "path": "edge-smart-home-ai/evaluation/20261113-w13-consistency/focused-abbreviated-final.stderr",
+      "bytes": 158,
+      "sha256": "c437292a9e3a89666f6efc9a9482fc00c98b96e3e21f0a070dd43b30485b0b2e"
+    },
+    {
+      "path": "edge-smart-home-ai/evaluation/20261113-w13-consistency/focused-abbreviated-final.stdout",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "edge-smart-home-ai/evaluation/20261113-w13-consistency/focused-abbreviated.stderr",
+      "bytes": 158,
+      "sha256": "c437292a9e3a89666f6efc9a9482fc00c98b96e3e21f0a070dd43b30485b0b2e"
+    },
+    {
+      "path": "edge-smart-home-ai/evaluation/20261113-w13-consistency/focused-abbreviated.stdout",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "edge-smart-home-ai/evaluation/20261113-w13-consistency/focused-final.stderr",
+      "bytes": 155,
+      "sha256": "3437afeebf8ba8315ee15153d203357d06104884765b87820654a63b9fb8ac56"
+    },
+    {
+      "path": "edge-smart-home-ai/evaluation/20261113-w13-consistency/focused-final.stdout",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "edge-smart-home-ai/evaluation/20261113-w13-consistency/focused-v2.stderr",
+      "bytes": 154,
+      "sha256": "98d7336ae5f30e38ba50830d2b11bac4e5a633b77bd28ad496fa0f1b29cddc79"
+    },
+    {
+      "path": "edge-smart-home-ai/evaluation/20261113-w13-consistency/focused-v2.stdout",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "edge-smart-home-ai/evaluation/20261113-w13-consistency/focused.stderr",
+      "bytes": 153,
+      "sha256": "b2de23c819c3a3000e7f3a21466ac23553b3498cfe10182f757f1f447aaf1ed9"
+    },
+    {
+      "path": "edge-smart-home-ai/evaluation/20261113-w13-consistency/focused.stdout",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "edge-smart-home-ai/evaluation/20261113-w13-consistency/official-sources.json",
+      "bytes": 883,
+      "sha256": "db1fba888cfaa6ca92290bb6b563523d7ff65eeb1351323a728bcb4fc0fbab67"
+    },
+    {
+      "path": "edge-smart-home-ai/evaluation/20261113-w13-consistency/replay-abbreviated.py",
+      "bytes": 2477,
+      "sha256": "4aaf29069ac69dfac9702c65d844c59208d4e2b3a3354a0f7e02b0497c90a180"
+    },
+    {
+      "path": "edge-smart-home-ai/evaluation/20261113-w13-consistency/replay-findings-abbreviated.json",
+      "bytes": 8329,
+      "sha256": "0b6eb07003c0ae34300fc95d5cf2f73c6e631ab3bc0428830cee7c7b6612bf66"
+    },
+    {
+      "path": "edge-smart-home-ai/evaluation/20261113-w13-consistency/replay-findings.json",
+      "bytes": 8308,
+      "sha256": "840261e3e5c83a100aabfa982987c259feeee19f8b19c29556994fc180b28106"
+    },
+    {
+      "path": "edge-smart-home-ai/evaluation/20261113-w13-consistency/replay-v2.py",
+      "bytes": 2465,
+      "sha256": "91a3e0f2040c629c24ff7bff64aab8763ce130936588ec4f1ab44166e2e6a5bd"
+    },
+    {
+      "path": "edge-smart-home-ai/evaluation/20261113-w13-consistency/replay.py",
+      "bytes": 2438,
+      "sha256": "fa1ef916546e15890e3e895f8e0edf29c7654e0c7565a5dabc64caf61a8cd18f"
+    },
+    {
+      "path": "edge-smart-home-ai/evaluation/20261113-w13-consistency-audit/audit.py",
+      "bytes": 12674,
+      "sha256": "f93228c3eca0b0497786fdb5247a0e576bc90713a1a8d535507d646bb8bb6ece"
+    },
+    {
+      "path": "edge-smart-home-ai/evaluation/20261113-w13-consistency-audit/audit.stderr",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "edge-smart-home-ai/evaluation/20261113-w13-consistency-audit/audit.stdout",
+      "bytes": 7777,
+      "sha256": "4e60195cf435c23ec62b5a25d705406ad9ed29e5f488a1d91628b15db73cdc82"
+    },
+    {
+      "path": "edge-smart-home-ai/evaluation/20261113-w13-consistency-audit/findings.json",
+      "bytes": 7777,
+      "sha256": "4e60195cf435c23ec62b5a25d705406ad9ed29e5f488a1d91628b15db73cdc82"
+    },
+    {
+      "path": "edge-smart-home-ai/evaluation/20261113-w13-evaluation-audit/audit.py",
+      "bytes": 15276,
+      "sha256": "90ddc254d1955264c18f5c32e06c257c07532d243d2bbda4df2e48fdbb831638"
+    },
+    {
+      "path": "edge-smart-home-ai/evaluation/20261113-w13-evaluation-audit/audit.stderr",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "edge-smart-home-ai/evaluation/20261113-w13-evaluation-audit/audit.stdout",
+      "bytes": 2275,
+      "sha256": "8cddb4a6eab8086f109412cf3a49719cbd29c4bab147e95cc714c0007595758c"
+    },
+    {
+      "path": "edge-smart-home-ai/evaluation/20261113-w13-evaluation-audit/findings.json",
+      "bytes": 2275,
+      "sha256": "8cddb4a6eab8086f109412cf3a49719cbd29c4bab147e95cc714c0007595758c"
+    },
+    {
+      "path": "edge-smart-home-ai/evaluation/20261113-w13-evaluator-tests/final.stderr",
+      "bytes": 282,
+      "sha256": "434d6bd21df3940c72b56dc3b9ff7ca2c8addc457e04efcc5dc457d00feedbbd"
+    },
+    {
+      "path": "edge-smart-home-ai/evaluation/20261113-w13-evaluator-tests/final.stdout",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "edge-smart-home-ai/evaluation/20261113-w13-evaluator-tests/initial-integration-pending.json",
+      "bytes": 1009,
+      "sha256": "21cc62b86fe6ff42091ad9586e7fad96bbad06a93bed692882903249eabf08a4"
+    },
+    {
+      "path": "edge-smart-home-ai/evaluation/20261113-w13-evaluator-tests/second.stderr",
+      "bytes": 281,
+      "sha256": "b5ea227f236d12018a59b7476f60795238e378349295941aaf40bde0f67bfe88"
+    },
+    {
+      "path": "edge-smart-home-ai/evaluation/20261113-w13-evaluator-tests/second.stdout",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "edge-smart-home-ai/evaluation/20261113-w13-executions/evaluator-help.json",
+      "bytes": 339,
+      "sha256": "08245791c5f69b7512fbe22811dfaff7a78e5067061ebee032c33226814c0ac3"
+    },
+    {
+      "path": "edge-smart-home-ai/evaluation/20261113-w13-executions/evaluator-help.stderr",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "edge-smart-home-ai/evaluation/20261113-w13-executions/evaluator-help.stdout",
+      "bytes": 742,
+      "sha256": "c1929cad9406c08c8de8b1639ea30ef692a7e7ec50a190c6c5f11525d7aaace9"
+    },
+    {
+      "path": "edge-smart-home-ai/evaluation/20261113-w13-executions/existing-output-proof.json",
+      "bytes": 9751,
+      "sha256": "bd0f260acbc1319ad75d01387dca463f00f06e4fa5e19dabe2047f008a74a375"
+    },
+    {
+      "path": "edge-smart-home-ai/evaluation/20261113-w13-executions/existing-output.json",
+      "bytes": 462,
+      "sha256": "6b9effc6551723e5d6c1cd27dd3bf29ec12e2b274319977b69d4203cb5be2764"
+    },
+    {
+      "path": "edge-smart-home-ai/evaluation/20261113-w13-executions/existing-output.stderr",
+      "bytes": 151,
+      "sha256": "c892fa27b291b30ee1b8eab1bf143a87774322dacd7e833cc2080e050d597978"
+    },
+    {
+      "path": "edge-smart-home-ai/evaluation/20261113-w13-executions/existing-output.stdout",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "edge-smart-home-ai/evaluation/20261113-w13-executions/full-tests-v2.json",
+      "bytes": 341,
+      "sha256": "2b3fc50931ce223337c9a48f7c31d56fef9df593b2bb67b9e0c4b686304d824a"
+    },
+    {
+      "path": "edge-smart-home-ai/evaluation/20261113-w13-executions/full-tests-v2.stderr",
+      "bytes": 433,
+      "sha256": "a59b3e49d79493f7eb8a25fa1882eb86fbd5933f67c6cc7854ec4ec3bb24013f"
+    },
+    {
+      "path": "edge-smart-home-ai/evaluation/20261113-w13-executions/full-tests-v2.stdout",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "edge-smart-home-ai/evaluation/20261113-w13-executions/full-tests.json",
+      "bytes": 341,
+      "sha256": "23b79154ce7face8a72b835390f2d8ba202633fb63a08db1648cef79e9ac48d0"
+    },
+    {
+      "path": "edge-smart-home-ai/evaluation/20261113-w13-executions/full-tests.stderr",
+      "bytes": 5592,
+      "sha256": "d090ce2501ec46ee880e4da2447edf621971bd8f230de862ec793b1bcdbc0a62"
+    },
+    {
+      "path": "edge-smart-home-ai/evaluation/20261113-w13-executions/full-tests.stdout",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "edge-smart-home-ai/evaluation/20261113-w13-executions/model.json",
+      "bytes": 458,
+      "sha256": "fb686402879db4f4b4854ffaf284dadacc97f56624dd3c62289ace79b147940f"
+    },
+    {
+      "path": "edge-smart-home-ai/evaluation/20261113-w13-executions/model.stderr",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "edge-smart-home-ai/evaluation/20261113-w13-executions/model.stdout",
+      "bytes": 207,
+      "sha256": "917e68a4e43d4628546e1a08ece03c49672497d2a1f3b1fc1ac8b2d974b0d083"
+    },
+    {
+      "path": "edge-smart-home-ai/evaluation/20261113-w13-executions/payload-reuse-proof.json",
+      "bytes": 424,
+      "sha256": "aaa180f16fe0a2cbfcf99b9abed39affdef47eed95c83479ad93861f35aa0402"
+    },
+    {
+      "path": "edge-smart-home-ai/evaluation/20261113-w13-executions/prepare.json",
+      "bytes": 396,
+      "sha256": "e5d85569d73465c6d26366bb925f48dc295b336e5914c860846ce2096e718f85"
+    },
+    {
+      "path": "edge-smart-home-ai/evaluation/20261113-w13-executions/prepare.stderr",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "edge-smart-home-ai/evaluation/20261113-w13-executions/prepare.stdout",
+      "bytes": 199,
+      "sha256": "fc13787d47c76eb97deda017622af0806e13815bcc1117bd82cd500656f413f7"
+    },
+    {
+      "path": "edge-smart-home-ai/evaluation/20261113-w13-executions/product-boundary-tests.json",
+      "bytes": 396,
+      "sha256": "8ba6179b71b2b8dd5ee33babb599f8e170f2432b3d1ccd41340426ac8641838f"
+    },
+    {
+      "path": "edge-smart-home-ai/evaluation/20261113-w13-executions/product-boundary-tests.stderr",
+      "bytes": 147,
+      "sha256": "e5d52a142b79983f507c15f021ec8c9e01af48a6fd45acacb259d1f5dff79362"
+    },
+    {
+      "path": "edge-smart-home-ai/evaluation/20261113-w13-executions/product-boundary-tests.stdout",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "edge-smart-home-ai/evaluation/20261113-w13-executions/report.json",
+      "bytes": 451,
+      "sha256": "ea23e43f31f2757682da9fd3abd2850d55f2f1422673b521418c211e8152ce37"
+    },
+    {
+      "path": "edge-smart-home-ai/evaluation/20261113-w13-executions/report.stderr",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "edge-smart-home-ai/evaluation/20261113-w13-executions/report.stdout",
+      "bytes": 111,
+      "sha256": "295651134bb32eb3093491349e76c608af44eafd5892e783ccfcc128cadbbbdd"
+    },
+    {
+      "path": "edge-smart-home-ai/evaluation/20261113-w13-executions/run.py",
+      "bytes": 671,
+      "sha256": "d515adca0f39ae3552e54ad5697d05581f0b37450259fd07d00e6884c92e77a3"
+    },
+    {
+      "path": "edge-smart-home-ai/evaluation/20261113-w13-executions/tested-source-sha256.json",
+      "bytes": 15965,
+      "sha256": "414ddd53d636fa348436a49745a15c4d807e40a055707d31795fd6f4998ab9f8"
+    },
+    {
+      "path": "edge-smart-home-ai/evaluation/20261113-w13-identity-checks/after.json",
+      "bytes": 2279,
+      "sha256": "6ec8dc9e7099841118010192803376475a24feb843e04c549dd884397d5cb89e"
+    },
+    {
+      "path": "edge-smart-home-ai/evaluation/20261113-w13-identity-checks/before.json",
+      "bytes": 2279,
+      "sha256": "a4c24e88ba3b12f0099e799d0c099c5e4bde891b9cbea44ac01d8b15e00ef808"
+    },
+    {
+      "path": "edge-smart-home-ai/evaluation/20261113-w13-identity-checks/check.py",
+      "bytes": 1499,
+      "sha256": "4ca247b27312f15c5aa539223a627cc4e2233538cd9e14a9b5825bd9e4feb172"
+    },
+    {
+      "path": "edge-smart-home-ai/evaluation/20261113-w13-interface-audit/audit.py",
+      "bytes": 12412,
+      "sha256": "2380bd7087d2d151a68d0e7b63e2c87d5b1717a15c0c27ffbed847fb7c6e3f8f"
+    },
+    {
+      "path": "edge-smart-home-ai/evaluation/20261113-w13-interface-audit/audit.stderr",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "edge-smart-home-ai/evaluation/20261113-w13-interface-audit/audit.stdout",
+      "bytes": 188,
+      "sha256": "b06538a8969297bc9f9cf38635e9125b2235e8c848b8cb8b0cb53982ab7e355d"
+    },
+    {
+      "path": "edge-smart-home-ai/evaluation/20261113-w13-interface-audit/findings.json",
+      "bytes": 12367,
+      "sha256": "aaa59d2798e5ad9bd42436c8bbd0d2e362f76db7b50cd47134ab570ede3dabc6"
+    },
+    {
+      "path": "edge-smart-home-ai/evaluation/20261113-w13-interface-checks/final-tests.stderr",
+      "bytes": 135,
+      "sha256": "59636c02946f3ed3a7026b4b56ae95455a8efbc39c647b35ff31a2f8e8f6b728"
+    },
+    {
+      "path": "edge-smart-home-ai/evaluation/20261113-w13-interface-checks/final-tests.stdout",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "edge-smart-home-ai/evaluation/20261113-w13-interface-checks/input-tests.stderr",
+      "bytes": 159,
+      "sha256": "d89e1aacd965b952e5f045da6946707249a29f8f8a7bc713610aba1dd169e5ed"
+    },
+    {
+      "path": "edge-smart-home-ai/evaluation/20261113-w13-interface-checks/input-tests.stdout",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "edge-smart-home-ai/evaluation/20261113-w13-interface-checks/product-review.json",
+      "bytes": 1882,
+      "sha256": "624cd187e92753868a6e657e22758a0902cb46d26bfd6f9a2fed2231b435a0ca"
+    },
+    {
+      "path": "edge-smart-home-ai/evaluation/20261113-w13-interface-checks/query-multi-target-status.json",
+      "bytes": 184,
+      "sha256": "de74be36ca034dcf51c05737c78fa18fbd0f1cfa8f213250744809cfb3af9fc9"
+    },
+    {
+      "path": "edge-smart-home-ai/evaluation/20261113-w13-interface-checks/source-input-sha256.json",
+      "bytes": 854,
+      "sha256": "baf2fca5bc34440b0a07050f3ed39a552945dd29cbd20e5957a55f6cf66dec32"
+    },
+    {
+      "path": "edge-smart-home-ai/evaluation/20261113-w13-interface-checks/source-sha256.json",
+      "bytes": 849,
+      "sha256": "a208a48abc0a9febab9b04106771a3514977f353811e1b95bed93e405dbb51f0"
+    },
+    {
+      "path": "edge-smart-home-ai/evaluation/20261113-w13-interface-checks/tests.stderr",
+      "bytes": 157,
+      "sha256": "e011aeeafa0682ef03bdf02e235407646495cb29f182c4247ac14a93a5b9751d"
+    },
+    {
+      "path": "edge-smart-home-ai/evaluation/20261113-w13-interface-checks/tests.stdout",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "edge-smart-home-ai/evaluation/20261113-w13-interface-references/python-enum-v3.10.21.rst",
+      "bytes": 36819,
+      "sha256": "687e349a5145f415d80e6a7bf9d1711b68cdaabc615f9078bd4d17c04d04e991"
+    },
+    {
+      "path": "edge-smart-home-ai/evaluation/20261113-w13-interface-references/python-exceptions-v3.10.21.rst",
+      "bytes": 30573,
+      "sha256": "0144ae54c407de25ffaa1f9b330733a62ea3f2155335be706cf92cb1107dbbc3"
+    },
+    {
+      "path": "edge-smart-home-ai/evaluation/20261113-w13-interface-references/rfc9457.txt",
+      "bytes": 34106,
+      "sha256": "f2b3db92fb0bf3489cb3841a0da0c0d88dff40797b64d40b6123085183886c7b"
+    },
+    {
+      "path": "edge-smart-home-ai/evaluation/20261113-w13-interface-references/sources.json",
+      "bytes": 938,
+      "sha256": "dbb5a3a69f0849d22db6a2d1315289001f8e9a91afe191964e4225112ae13769"
+    },
+    {
+      "path": "edge-smart-home-ai/evaluation/20261113-w13-model/after/ps.json",
+      "bytes": 577,
+      "sha256": "b63fed4d7f6c11965b2fc3d0fc688d025acfa4f6baba49807778cbad4ec5bc86"
+    },
+    {
+      "path": "edge-smart-home-ai/evaluation/20261113-w13-model/after/show.json",
+      "bytes": 28717,
+      "sha256": "8d07d8e1794506ec724bca099008c41a45ce7b1d85d965899a28a572dcae976d"
+    },
+    {
+      "path": "edge-smart-home-ai/evaluation/20261113-w13-model/after/tags.json",
+      "bytes": 674,
+      "sha256": "40b9e7cbed2e674184e6f0aaafe16f94969b8b3f1433946501327b5ba1dc8000"
+    },
+    {
+      "path": "edge-smart-home-ai/evaluation/20261113-w13-model/after/version.json",
+      "bytes": 26,
+      "sha256": "6239a21d6bbeabd33d6ef1a1e301f5e8bce642d879662854ae13485fa18bdf09"
+    },
+    {
+      "path": "edge-smart-home-ai/evaluation/20261113-w13-model/before/ps.json",
+      "bytes": 19,
+      "sha256": "c8cdda2058dfad73596cb9baef30bb2a825485859ad54c8d9cf5a10a457b0c8c"
+    },
+    {
+      "path": "edge-smart-home-ai/evaluation/20261113-w13-model/before/show.json",
+      "bytes": 28717,
+      "sha256": "8d07d8e1794506ec724bca099008c41a45ce7b1d85d965899a28a572dcae976d"
+    },
+    {
+      "path": "edge-smart-home-ai/evaluation/20261113-w13-model/before/tags.json",
+      "bytes": 674,
+      "sha256": "40b9e7cbed2e674184e6f0aaafe16f94969b8b3f1433946501327b5ba1dc8000"
+    },
+    {
+      "path": "edge-smart-home-ai/evaluation/20261113-w13-model/before/version.json",
+      "bytes": 26,
+      "sha256": "6239a21d6bbeabd33d6ef1a1e301f5e8bce642d879662854ae13485fa18bdf09"
+    },
+    {
+      "path": "edge-smart-home-ai/evaluation/20261113-w13-model/calls.jsonl",
+      "bytes": 1631416,
+      "sha256": "5e48910c97488985846500b43b03215034889eb70e9a0964f106b06664fe2e14"
+    },
+    {
+      "path": "edge-smart-home-ai/evaluation/20261113-w13-model/offline-diagnostic-fixtures.json",
+      "bytes": 40279,
+      "sha256": "0f0b76fdaa15429d91919159152e28b9d5f345ffdb172b46e325fc0f9330fa1f"
+    },
+    {
+      "path": "edge-smart-home-ai/evaluation/20261113-w13-model/protocol.json",
+      "bytes": 2058742,
+      "sha256": "7b1a97fdeeeec86f4a1effec7218d8e4b7f1d3e56d6880dd3e4f7d36bd7be359"
+    },
+    {
+      "path": "edge-smart-home-ai/evaluation/20261113-w13-model/raw-index.json",
+      "bytes": 9308,
+      "sha256": "0d4aa4984fe2a0a890c3bdd343540e6bc19ac30235fc9da85cfd587a1061461c"
+    },
+    {
+      "path": "edge-smart-home-ai/evaluation/20261113-w13-model/records/00000.json",
+      "bytes": 80085,
+      "sha256": "91ce614ef94acadc8cbb1375449761102d1b94a9a2ebf1272e23a11512fb33b1"
+    },
+    {
+      "path": "edge-smart-home-ai/evaluation/20261113-w13-model/records/00001.json",
+      "bytes": 80308,
+      "sha256": "05b856a8da8cac0cc963991191cd882dae009271e7f95271629c4f1338e1c214"
+    },
+    {
+      "path": "edge-smart-home-ai/evaluation/20261113-w13-model/records/00002.json",
+      "bytes": 80403,
+      "sha256": "cb804ac924bb75732dcd15d908150086bdb07cf1a94fa36e7509c5381c558369"
+    },
+    {
+      "path": "edge-smart-home-ai/evaluation/20261113-w13-model/records/00003.json",
+      "bytes": 80394,
+      "sha256": "04c21c802471f4ce95f8ec6849461278472a821eceb3ec8822f70a7f9ade46c8"
+    },
+    {
+      "path": "edge-smart-home-ai/evaluation/20261113-w13-model/records/00004.json",
+      "bytes": 80414,
+      "sha256": "9af32f7b45372f83845aca62e0851d2f72c30b1d406caa2f98796e963d47c23a"
+    },
+    {
+      "path": "edge-smart-home-ai/evaluation/20261113-w13-model/records/00005.json",
+      "bytes": 80457,
+      "sha256": "8f47ccd61436903770991f9f8d83250836e9d3bef07d837904b4152fe4fb2000"
+    },
+    {
+      "path": "edge-smart-home-ai/evaluation/20261113-w13-model/records/00006.json",
+      "bytes": 80459,
+      "sha256": "7fe12b033371c0e374f947280da617f64217a4fa74d3d8838ec7bb14ab334f96"
+    },
+    {
+      "path": "edge-smart-home-ai/evaluation/20261113-w13-model/records/00007.json",
+      "bytes": 79758,
+      "sha256": "bdd159e32df2d0951cb79f0c4213fe1f92d6f28767a1fc87ff8110b74bc35c4e"
+    },
+    {
+      "path": "edge-smart-home-ai/evaluation/20261113-w13-model/records/00008.json",
+      "bytes": 80084,
+      "sha256": "ea5359dc5a52f0e5a512af6167d9fa080ea9f979952f4c9367eea16c4f93a3c7"
+    },
+    {
+      "path": "edge-smart-home-ai/evaluation/20261113-w13-model/records/00009.json",
+      "bytes": 79231,
+      "sha256": "803bae74ae64ea5b34136e7cd679b0f62a9c80b9141a8307eb1579e027a160c9"
+    },
+    {
+      "path": "edge-smart-home-ai/evaluation/20261113-w13-model/records/00010.json",
+      "bytes": 79565,
+      "sha256": "50d41e075e30c4eb72ac0e820dab5244f88d32887cf7b5d3af4e875052a556e8"
+    },
+    {
+      "path": "edge-smart-home-ai/evaluation/20261113-w13-model/records/00011.json",
+      "bytes": 79112,
+      "sha256": "f336c7c526766db0aa9ca229399436dfb38801b0752aa4f7f3272b53b0a53bc7"
+    },
+    {
+      "path": "edge-smart-home-ai/evaluation/20261113-w13-model/records/00012.json",
+      "bytes": 81211,
+      "sha256": "accdb0143f9337efaac99e2a88246a9a042c08b2e0793d26c9fca861318197cc"
+    },
+    {
+      "path": "edge-smart-home-ai/evaluation/20261113-w13-model/records/00013.json",
+      "bytes": 80892,
+      "sha256": "b601d919f780d53e167a43ff88bf68c825d7c0deb2c1fd4c12d832f61965d816"
+    },
+    {
+      "path": "edge-smart-home-ai/evaluation/20261113-w13-model/records/00014.json",
+      "bytes": 80437,
+      "sha256": "b4adf7183b17639ddbe6bb9379c11982e8aacb691c40403fb7b9cfad8a5bef9e"
+    },
+    {
+      "path": "edge-smart-home-ai/evaluation/20261113-w13-model/records/00015.json",
+      "bytes": 79477,
+      "sha256": "96b98f7333822af1c66f7408b317d299872d5f49e908fa12fff3aaeca1c906a8"
+    },
+    {
+      "path": "edge-smart-home-ai/evaluation/20261113-w13-model/records/00016.json",
+      "bytes": 80558,
+      "sha256": "fee8683f373b3225fedfa76d41abc6bf5ebb92746c62b7d9c011690b1ee8ebeb"
+    },
+    {
+      "path": "edge-smart-home-ai/evaluation/20261113-w13-model/records/00017.json",
+      "bytes": 79518,
+      "sha256": "9b3ccd46ef31cbf0763037723c48fa4748a43b932b7712856cda8c2d2046f77d"
+    },
+    {
+      "path": "edge-smart-home-ai/evaluation/20261113-w13-model/records/00018.json",
+      "bytes": 79286,
+      "sha256": "ca26d981197774beb889224634f1cbf24bca918ec90216a61729bec9e90157c1"
+    },
+    {
+      "path": "edge-smart-home-ai/evaluation/20261113-w13-model/records/00019.json",
+      "bytes": 79367,
+      "sha256": "3fe3f0c04aa57233a73cc2733cc0ecd94e58e62757d30b9afa854503eeb3b128"
+    },
+    {
+      "path": "edge-smart-home-ai/evaluation/20261113-w13-model/records/00020.json",
+      "bytes": 79354,
+      "sha256": "612332cb0c1688caf134cb47ed8698bb21bdbb21ecd435f018a6400d6fac1a6b"
+    },
+    {
+      "path": "edge-smart-home-ai/evaluation/20261113-w13-model/records/00021.json",
+      "bytes": 80015,
+      "sha256": "7413f812ab4b35a55913d5389087a11b715444b72bb1777bce5be38829867edd"
+    },
+    {
+      "path": "edge-smart-home-ai/evaluation/20261113-w13-model/records/00022.json",
+      "bytes": 79198,
+      "sha256": "7930386eb797a53535471593bd2a1a932f1043aa7f9eb0b821550b3b9fbe2644"
+    },
+    {
+      "path": "edge-smart-home-ai/evaluation/20261113-w13-model/records/00023.json",
+      "bytes": 79384,
+      "sha256": "33dee3491bf1f4c936689269ecae63c325343afda162d8dd6130f5c81e6b243e"
+    },
+    {
+      "path": "edge-smart-home-ai/evaluation/20261113-w13-model/records/00024.json",
+      "bytes": 79310,
+      "sha256": "4fb3006806559353ee5dbb2ec8311b0259955de32f7f3663ae130edc93226a51"
+    },
+    {
+      "path": "edge-smart-home-ai/evaluation/20261113-w13-model/records/00025.json",
+      "bytes": 80682,
+      "sha256": "a0291b8059126b629ef98ea2639925bc3fe220b5067e4c4e4cdd1a891260242d"
+    },
+    {
+      "path": "edge-smart-home-ai/evaluation/20261113-w13-model/records/00026.json",
+      "bytes": 80720,
+      "sha256": "869a6beaef7192eb25e95a4447edc42d4516db72b6a810a8dec3a1fe4a601e52"
+    },
+    {
+      "path": "edge-smart-home-ai/evaluation/20261113-w13-model/records/00027.json",
+      "bytes": 80346,
+      "sha256": "729b15a7622774cb49e90c90b74a0eb3402be0e80c4182462efd230a72e9742c"
+    },
+    {
+      "path": "edge-smart-home-ai/evaluation/20261113-w13-model/records/00028.json",
+      "bytes": 80482,
+      "sha256": "7d2085719a8c64d46e478c3c326b1f9a2eb840dc4be1f86415a6ae289256695d"
+    },
+    {
+      "path": "edge-smart-home-ai/evaluation/20261113-w13-model/records/00029.json",
+      "bytes": 80081,
+      "sha256": "3cfa64d577978b452015c619384682606c99b41f7e1b3a56d60124912c6dd724"
+    },
+    {
+      "path": "edge-smart-home-ai/evaluation/20261113-w13-model/records/00030.json",
+      "bytes": 80310,
+      "sha256": "a5e1fea115ac94114147b92c3baa57eeb9cc146c53ead95680da6fbd9c1d5b4d"
+    },
+    {
+      "path": "edge-smart-home-ai/evaluation/20261113-w13-model/records/00031.json",
+      "bytes": 80405,
+      "sha256": "c02b91a6e5d01adbae228215e641521be041611e7d53fe29a481e3b4f7e838b3"
+    },
+    {
+      "path": "edge-smart-home-ai/evaluation/20261113-w13-model/records/00032.json",
+      "bytes": 80391,
+      "sha256": "1710cbc7eeede5dd91f3385fa0f8e5deca53d360f3eb9e139ac6c4beec7a6224"
+    },
+    {
+      "path": "edge-smart-home-ai/evaluation/20261113-w13-model/records/00033.json",
+      "bytes": 80416,
+      "sha256": "34ac9ec458831899ab7dc7a37a87a75ff0549ac2339ad4cb9e946d3ac1d86678"
+    },
+    {
+      "path": "edge-smart-home-ai/evaluation/20261113-w13-model/records/00034.json",
+      "bytes": 80460,
+      "sha256": "0dc778a8938776d03c7b821ca4572efa62f4428be8d0863b568676e4791422f0"
+    },
+    {
+      "path": "edge-smart-home-ai/evaluation/20261113-w13-model/records/00035.json",
+      "bytes": 80462,
+      "sha256": "dea867dc66a753d080c85396d6f1b0f85e0bc531e9924d5b81ef27d0734e13f5"
+    },
+    {
+      "path": "edge-smart-home-ai/evaluation/20261113-w13-model/records/00036.json",
+      "bytes": 79761,
+      "sha256": "640db2df1d04d0bd71b3d2ee1d9dd2380aa92f911b316ad78441f9bd25a9e8cf"
+    },
+    {
+      "path": "edge-smart-home-ai/evaluation/20261113-w13-model/records/00037.json",
+      "bytes": 80086,
+      "sha256": "f57ed8552cee3cd39138f66456205eb28b4e0f144b1bbb5483bb9e31540107cb"
+    },
+    {
+      "path": "edge-smart-home-ai/evaluation/20261113-w13-model/records/00038.json",
+      "bytes": 79231,
+      "sha256": "98dbb0abc415e9a37b3bf82f9d3269b5df2f9b34e35cf3126c082c9affe3a6f8"
+    },
+    {
+      "path": "edge-smart-home-ai/evaluation/20261113-w13-model/records/00039.json",
+      "bytes": 79563,
+      "sha256": "0db64b34033c0b626d164654aba07f80674826d372ec2b7641e9e8611e7bcb59"
+    },
+    {
+      "path": "edge-smart-home-ai/evaluation/20261113-w13-model/records/00040.json",
+      "bytes": 79113,
+      "sha256": "3faa57166c958c4b69e0af97402678bcfc2e46a22e7a8ab3afd7210e99ea5a94"
+    },
+    {
+      "path": "edge-smart-home-ai/evaluation/20261113-w13-model/records/00041.json",
+      "bytes": 81210,
+      "sha256": "e8cf81219700883b957ececaec015b2030b69ea14e313dab294d02f6c05bea85"
+    },
+    {
+      "path": "edge-smart-home-ai/evaluation/20261113-w13-model/records/00042.json",
+      "bytes": 80890,
+      "sha256": "37ba3bc73caabb5f27b5cdba5acfd4088a5c292ff63a642b752f9f61a97e8ee9"
+    },
+    {
+      "path": "edge-smart-home-ai/evaluation/20261113-w13-model/records/00043.json",
+      "bytes": 80438,
+      "sha256": "13296ab6239b6177dd173e899c235b2dd1f17d9c8cc9cb7efa1e963e2262cfc0"
+    },
+    {
+      "path": "edge-smart-home-ai/evaluation/20261113-w13-model/records/00044.json",
+      "bytes": 79476,
+      "sha256": "50cf96506954a879a395d8bfae638a94525770f8e92e11c7f27644c400359a81"
+    },
+    {
+      "path": "edge-smart-home-ai/evaluation/20261113-w13-model/records/00045.json",
+      "bytes": 80557,
+      "sha256": "6945cc8d1ea7631c569aec58014c6d49774ff7241373bfe27a198c302ade36d7"
+    },
+    {
+      "path": "edge-smart-home-ai/evaluation/20261113-w13-model/records/00046.json",
+      "bytes": 79515,
+      "sha256": "56ac89effcf58d0a26ba6ec77460e54035a2739154ee68c7507c1bbcfb040d9c"
+    },
+    {
+      "path": "edge-smart-home-ai/evaluation/20261113-w13-model/records/00047.json",
+      "bytes": 79285,
+      "sha256": "258dbdaa940d4758d8ad5b2631473028b5b58d32ea114315c4738a2966e3cb88"
+    },
+    {
+      "path": "edge-smart-home-ai/evaluation/20261113-w13-model/records/00048.json",
+      "bytes": 79367,
+      "sha256": "1882fedce222e6d685c11f87ce4031b6007259a62ebd72006ec09314859b7adb"
+    },
+    {
+      "path": "edge-smart-home-ai/evaluation/20261113-w13-model/records/00049.json",
+      "bytes": 79354,
+      "sha256": "d2f53b57af5dd48794fcdb5eec0d76423f93294946fd81c7234ce591f08f6e23"
+    },
+    {
+      "path": "edge-smart-home-ai/evaluation/20261113-w13-model/records/00050.json",
+      "bytes": 80015,
+      "sha256": "6523810048c5ee68d308fa479875b51549b1acd3e49949509dde85834ab38790"
+    },
+    {
+      "path": "edge-smart-home-ai/evaluation/20261113-w13-model/records/00051.json",
+      "bytes": 79198,
+      "sha256": "29d9c98f8c265327f4058faf68ee7c67fdeda8d6ce0e96a247989a83bbeeb37e"
+    },
+    {
+      "path": "edge-smart-home-ai/evaluation/20261113-w13-model/records/00052.json",
+      "bytes": 79387,
+      "sha256": "7df31bc0e0396c7ab7f51e365857ee2cfa7b8748fd273dd7b4a54132dc7be202"
+    },
+    {
+      "path": "edge-smart-home-ai/evaluation/20261113-w13-model/records/00053.json",
+      "bytes": 79309,
+      "sha256": "b651592b39390ecbac9aba68f89201143edfce35f807f46ee957e7813e5339e5"
+    },
+    {
+      "path": "edge-smart-home-ai/evaluation/20261113-w13-model/records/00054.json",
+      "bytes": 80682,
+      "sha256": "014415fa4fdab88ca4a6296de40e0cd3dec677ee40364bc45a583d2aa81b8386"
+    },
+    {
+      "path": "edge-smart-home-ai/evaluation/20261113-w13-model/records/00055.json",
+      "bytes": 80720,
+      "sha256": "cece53b29424eda6a353c351c37e4a3d41d9708692d4f3454227cc17e216dec8"
+    },
+    {
+      "path": "edge-smart-home-ai/evaluation/20261113-w13-model/records/00056.json",
+      "bytes": 80347,
+      "sha256": "f6037b092217c0038139b4120bdb85a571cc9f27cf79fe9d10ded0280cf645aa"
+    },
+    {
+      "path": "edge-smart-home-ai/evaluation/20261113-w13-model/records/00057.json",
+      "bytes": 80482,
+      "sha256": "d41b9281996894e8954367f9b01cc815cf4d9d6d8daef5d5c380b0ecce93c0e6"
+    },
+    {
+      "path": "edge-smart-home-ai/evaluation/20261113-w13-model/records/00058.json",
+      "bytes": 80082,
+      "sha256": "2d95d2861e3fb626f186e329e70f25935b833c05ed39873837e2aee21df936a9"
+    },
+    {
+      "path": "edge-smart-home-ai/evaluation/20261113-w13-model/records/00059.json",
+      "bytes": 80310,
+      "sha256": "5529e4b74125cb6d1f4db6c3bc27df5ff458dd81e8465e61eb9e90377d85e7d9"
+    },
+    {
+      "path": "edge-smart-home-ai/evaluation/20261113-w13-model/records/00060.json",
+      "bytes": 80405,
+      "sha256": "52e234abc9d5783afcffd371ef962799157d7a1e121f95c9d8d9a228962b7072"
+    },
+    {
+      "path": "edge-smart-home-ai/evaluation/20261113-w13-model/records/00061.json",
+      "bytes": 80395,
+      "sha256": "3711dfd5ad2bafb33241eb918d3f558cf87a0d48e4d3bcb6f0d14f5999debc00"
+    },
+    {
+      "path": "edge-smart-home-ai/evaluation/20261113-w13-model/records/00062.json",
+      "bytes": 80416,
+      "sha256": "283358f7b43e159a4638ae7f70495e006446d975ffe63080edb84e35df077d56"
+    },
+    {
+      "path": "edge-smart-home-ai/evaluation/20261113-w13-model/records/00063.json",
+      "bytes": 80459,
+      "sha256": "7229d857dcf97c0a6a5274ee605f42690f0c08ffa2df8147a230b0f954a75a43"
+    },
+    {
+      "path": "edge-smart-home-ai/evaluation/20261113-w13-model/records/00064.json",
+      "bytes": 80462,
+      "sha256": "367a70d869f84260874f14396b2515d8bff68be4f7c7389b2521ffbdaea678cc"
+    },
+    {
+      "path": "edge-smart-home-ai/evaluation/20261113-w13-model/records/00065.json",
+      "bytes": 79761,
+      "sha256": "695a19d602ddaa2afbe478c07c578ed109c9c6865601661c3fa4a7a25adb7d53"
+    },
+    {
+      "path": "edge-smart-home-ai/evaluation/20261113-w13-model/records/00066.json",
+      "bytes": 80086,
+      "sha256": "5f6c1e58a8410dcc5be126e450b16fdaccb2709a97c8bf51ca151a48cc9081b8"
+    },
+    {
+      "path": "edge-smart-home-ai/evaluation/20261113-w13-model/records/00067.json",
+      "bytes": 79232,
+      "sha256": "7f31bff445d8c3dedf7211429a07fbb61d9d926d36753614bb46fc476d47eb3e"
+    },
+    {
+      "path": "edge-smart-home-ai/evaluation/20261113-w13-model/records/00068.json",
+      "bytes": 79565,
+      "sha256": "09fa72fefddf5153aee0da40b52bd33eb938db9494792360962ed77c5fd6e3dd"
+    },
+    {
+      "path": "edge-smart-home-ai/evaluation/20261113-w13-model/records/00069.json",
+      "bytes": 79114,
+      "sha256": "a6c19d6e37b34ebb9bfe3a70256014163941e133ee10fedda3558b990af43ce5"
+    },
+    {
+      "path": "edge-smart-home-ai/evaluation/20261113-w13-model/records/00070.json",
+      "bytes": 81211,
+      "sha256": "ad4cfd1e0fbd08de4d1ec19ed8994a27e02f9223262422b00f6c4677b41e809a"
+    },
+    {
+      "path": "edge-smart-home-ai/evaluation/20261113-w13-model/records/00071.json",
+      "bytes": 80889,
+      "sha256": "73bd4809280182820e6deeb342e2beab04bbcc5384bad041847e29fa48ac51bf"
+    },
+    {
+      "path": "edge-smart-home-ai/evaluation/20261113-w13-model/records/00072.json",
+      "bytes": 80439,
+      "sha256": "a618aedd196efd3859df1cb2f13349e31d82af7b8191b97423f5c26d97dfc3e1"
+    },
+    {
+      "path": "edge-smart-home-ai/evaluation/20261113-w13-model/records/00073.json",
+      "bytes": 79476,
+      "sha256": "9b53e1302849dec3dc3576fad06f271623003a6347de26e65ac163e95f5f5605"
+    },
+    {
+      "path": "edge-smart-home-ai/evaluation/20261113-w13-model/records/00074.json",
+      "bytes": 80558,
+      "sha256": "8e169ca61a381af36cae50525ff1adc6b21eb8dbb1cd4b722d448349b77fe5ca"
+    },
+    {
+      "path": "edge-smart-home-ai/evaluation/20261113-w13-model/records/00075.json",
+      "bytes": 79517,
+      "sha256": "5c8e384b6dadd03cf9399a547f30f896f0d2ba58c0d0d45aa4b399dec0754d65"
+    },
+    {
+      "path": "edge-smart-home-ai/evaluation/20261113-w13-model/records/00076.json",
+      "bytes": 79286,
+      "sha256": "ce327878588949a24393837b0ac04c6ea52bfe17260dbadc7354fc7666a898e0"
+    },
+    {
+      "path": "edge-smart-home-ai/evaluation/20261113-w13-model/records/00077.json",
+      "bytes": 79367,
+      "sha256": "b05e98a34172b926a5445b19a85d6f537ae209ec7e397a88794b85599cd8a580"
+    },
+    {
+      "path": "edge-smart-home-ai/evaluation/20261113-w13-model/records/00078.json",
+      "bytes": 79354,
+      "sha256": "4f1b5eae19f8d8f94163012834a79727ace011be006bb74858ebec35932dfc1e"
+    },
+    {
+      "path": "edge-smart-home-ai/evaluation/20261113-w13-model/records/00079.json",
+      "bytes": 80015,
+      "sha256": "56af51890f1a3d5d4c618f7f1a57ea538c843a266cbd5bc6f02ac73ab92b6fc9"
+    },
+    {
+      "path": "edge-smart-home-ai/evaluation/20261113-w13-model/records/00080.json",
+      "bytes": 79197,
+      "sha256": "2ac6ead94024dad7db054c40a2b44c20a9af4108b5d638d3d4962441bed22ad9"
+    },
+    {
+      "path": "edge-smart-home-ai/evaluation/20261113-w13-model/records/00081.json",
+      "bytes": 79385,
+      "sha256": "5209095f48200870127860e2f3ba2f111df3044b6b2ce2a8c54c20b1412eb71f"
+    },
+    {
+      "path": "edge-smart-home-ai/evaluation/20261113-w13-model/records/00082.json",
+      "bytes": 79309,
+      "sha256": "f7ae7af6deaaada94a50252080467d23f54e51a8260ca3b048f2a96203ae5088"
+    },
+    {
+      "path": "edge-smart-home-ai/evaluation/20261113-w13-model/records/00083.json",
+      "bytes": 80683,
+      "sha256": "fa1df39c5a77eeec055c95651d5185b08e842f6c6a6595509b9b4b5e0559e976"
+    },
+    {
+      "path": "edge-smart-home-ai/evaluation/20261113-w13-model/records/00084.json",
+      "bytes": 80720,
+      "sha256": "1faf08f2f8bc79d1420449e9f3a59354e9ab7fa3d68aa0a25e3cd2dca254b70e"
+    },
+    {
+      "path": "edge-smart-home-ai/evaluation/20261113-w13-model/records/00085.json",
+      "bytes": 80345,
+      "sha256": "e05f60985c0c40963c6a1bb5511430e7fd1ea231860dec561ee858536c282405"
+    },
+    {
+      "path": "edge-smart-home-ai/evaluation/20261113-w13-model/records/00086.json",
+      "bytes": 80482,
+      "sha256": "750054589d0f4f98c446a67af3cea854f1bdac4cd62435e8fc33116124e05bad"
+    },
+    {
+      "path": "edge-smart-home-ai/evaluation/20261113-w13-model/report.md",
+      "bytes": 1133,
+      "sha256": "2d89fe2b006454f69626f4c0501d8a7d5469c40e09d998c16cd2aacd24a89301"
+    },
+    {
+      "path": "edge-smart-home-ai/evaluation/20261113-w13-model/run-status.json",
+      "bytes": 495,
+      "sha256": "e3655e8dd767eb085b2d27c5444b73aa5b5ba3b5ce580a089b42cabc55d51402"
+    },
+    {
+      "path": "edge-smart-home-ai/evaluation/20261113-w13-model/summary.json",
+      "bytes": 35842,
+      "sha256": "6922459066f56ee4b4baed51e9541e0adc8979bd9b410156b683d61310677bf2"
+    },
+    {
+      "path": "edge-smart-home-ai/evaluation/20261113-w13-protocol/identity/ps.json",
+      "bytes": 19,
+      "sha256": "c8cdda2058dfad73596cb9baef30bb2a825485859ad54c8d9cf5a10a457b0c8c"
+    },
+    {
+      "path": "edge-smart-home-ai/evaluation/20261113-w13-protocol/identity/show.json",
+      "bytes": 28717,
+      "sha256": "8d07d8e1794506ec724bca099008c41a45ce7b1d85d965899a28a572dcae976d"
+    },
+    {
+      "path": "edge-smart-home-ai/evaluation/20261113-w13-protocol/identity/tags.json",
+      "bytes": 674,
+      "sha256": "40b9e7cbed2e674184e6f0aaafe16f94969b8b3f1433946501327b5ba1dc8000"
+    },
+    {
+      "path": "edge-smart-home-ai/evaluation/20261113-w13-protocol/identity/version.json",
+      "bytes": 26,
+      "sha256": "6239a21d6bbeabd33d6ef1a1e301f5e8bce642d879662854ae13485fa18bdf09"
+    },
+    {
+      "path": "edge-smart-home-ai/evaluation/20261113-w13-protocol/protocol.json",
+      "bytes": 2058742,
+      "sha256": "7b1a97fdeeeec86f4a1effec7218d8e4b7f1d3e56d6880dd3e4f7d36bd7be359"
+    },
+    {
+      "path": "edge-smart-home-ai/evaluation/20261113-w13-recomputed/report.md",
+      "bytes": 1133,
+      "sha256": "2d89fe2b006454f69626f4c0501d8a7d5469c40e09d998c16cd2aacd24a89301"
+    },
+    {
+      "path": "edge-smart-home-ai/evaluation/20261113-w13-recomputed/summary.json",
+      "bytes": 35842,
+      "sha256": "6922459066f56ee4b4baed51e9541e0adc8979bd9b410156b683d61310677bf2"
+    },
+    {
+      "path": "edge-smart-home-ai/evaluation/20261113-w13-references/cpython-enum.py",
+      "bytes": 39831,
+      "sha256": "59a62af0e129ae688f5549d6a273c51c5db80b534521f98dae2e4ceb485d9f75"
+    },
+    {
+      "path": "edge-smart-home-ai/evaluation/20261113-w13-references/jsonschema-validation.xml",
+      "bytes": 82430,
+      "sha256": "dcba094c316c17922cb95cc36affc53b9d9521139bfd5a3afdd1cc810ab39773"
+    },
+    {
+      "path": "edge-smart-home-ai/evaluation/20261113-w13-references/ollama-api.md",
+      "bytes": 54614,
+      "sha256": "96db03080e385dbabf5d70e75f298d41b75983bc30975cae56f7119f848dd0f5"
+    },
+    {
+      "path": "edge-smart-home-ai/evaluation/20261113-w13-references/ollama-license.txt",
+      "bytes": 1058,
+      "sha256": "5934ed2ce0d15154bcdb9c85203210abac0da4314af34081e36df4599f90b226"
+    },
+    {
+      "path": "edge-smart-home-ai/evaluation/20261113-w13-references/ollama-structured-outputs.mdx",
+      "bytes": 5024,
+      "sha256": "58ff3c8fb28ff567157e33759ca258f5eeb369a3b58a2a1ee856b72c4fcd6194"
+    },
+    {
+      "path": "edge-smart-home-ai/evaluation/20261113-w13-references/sources.json",
+      "bytes": 1769,
+      "sha256": "1a73a8c821730c044c5f39c0e60634aac7655be02dd4d036ef55170342f1273e"
+    }
+  ],
+  "retention": {
+    "artifact_paths": "workspace-relative; rawlocalignored, hashes do notback upfiles",
+    "external_models_binary": "absoluteexternal paths in fullidentity checks, notcopiedintoGit",
+    "source_versions": "runtimecommitc55; trackedreports/docs subsequentlyversionedbyGit; futurecurrentcheckoutmaydifferfromarchivedhashes"
+  },
+  "limitations": [
+    "Frozen29-case development suite repeated3times, not held-out generalization or future determinism proof.",
+    "Raw-model, guarded and four-rule-only results remain separate; code projections are application diagnostics, not fields generated by the LLM.",
+    "All87 model calls are forced for evaluation even if production preflight can reject a request without a model call.",
+    "No Orchestrator execution/HA/ARM/scheduler/LoRA/new service or personal understanding acceptance.",
+    "Nonstreaming complete HTTP wall/server counts are diagnostics, not TTFT or a repeated performance Benchmark.",
+    "Unsafe-plan count has the W12 narrow definition, not comprehensive production safety acceptance."
+  ]
+}

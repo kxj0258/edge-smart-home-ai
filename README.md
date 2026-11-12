@@ -24,6 +24,12 @@
 
 [W12结果](docs/stages/L2-w12-results.md) · [复现命令](docs/W12_EVALUATION.md) · [题库与来源](docs/W12_CASESET.md) · [机器基线](baselines/20261112-w12-home-intents-v1.json)。254项离线测试通过，网络尝试0；58次版本化真实模型调用均只规划、不执行设备。W13优先补请求—计划一致性与当前错例，再整合接口/错误码；不自动进入新阶段。
 
+## W13：请求一致性与统一意图接口
+
+已修复W12四错例并统一现有结果/CLI的error_code，模型wire、配置、规范Schema与29题oracle不改，无新服务/调度器/LoRA。三轮各29题，原始模型每轮20/29、guard29/29、四规则4/29；合并60/87、87/87、12/87，四错例12次均修复、guard后非正常plan0。325项离线测试/0网络；有限开发集和三次重复不代表原始模型正确、未来确定性或全面生产安全。
+
+[W13结果](docs/stages/L3-w13-results.md) · [统一接口/错误码](docs/W13_INTERFACE.md) · [有限一致性边界](docs/W13_REQUEST_CONSISTENCY.md) · [复现命令](docs/W13_EVALUATION.md) · [机器基线](baselines/20261113-w13-intent-pipeline-v0.json)。个人理解与Jan本人复盘仍待验收，P0-3保留in_progress；下一工程阶段W14复用当前入口对接语音，未自动执行。
+
 ## 2026-09-09 增量负载诊断与队列修复
 
 已新增五阶段音频负载诊断入口、固定口令协议和 JSON/CSV 对比，

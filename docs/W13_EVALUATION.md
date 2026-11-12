@@ -70,3 +70,5 @@ prepare绑定Git、固定模型digest/服务版本、完整配置/Schema/设备/
 按 [Ollama0.40.2固定API](https://github.com/ollama/ollama/blob/b061384d90ff455462bc32745dd0de479de717a3/docs/api.md)的format、非流式response及纳秒counter适配，MIT源码不整体迁入；oneOf投影依据W12已固定的llama.cpp实现，边界见 [W12合同](W12_CONTRACT.md)。错误码用Python标准库字符串Enum表达稳定成员，参考 [Python3.10 Enum](https://docs.python.org/3.10/library/enum.html)，不建立HTTP Problem Details端点或新服务。
 
 完整生成、请求、日志和审计留在本地忽略的evaluation，Git保存代码、固定题库、小型报告/hash；hash不等于产物备份。无真实设备、HA、ARM或全面生产安全验收，个人理解和Jan个人学习总结仍需用户实际解释/复盘，自动开发及测试不代填学习工时。
+
+实际结果见 [L3b阶段](stages/L3-w13-results.md)、[机器基线](../baselines/20261113-w13-intent-pipeline-v0.json)、[逐次CSV](llm_evidence/20261113-w13-cases.csv)和[稳定性CSV](llm_evidence/20261113-w13-stability.csv)。实测c55dc7d，raw60/87、guard87/87、四规则12/87，四错例12/12修复；三轮观察不代表原始模型全对或未来保证。复现需用对应源码并选择新目录，不能覆盖已有路径。
