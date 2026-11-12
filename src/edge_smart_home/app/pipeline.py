@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 from edge_smart_home.common.observability import observed, span
+from edge_smart_home.common.timing_policy import DEFERRED_TIME_MESSAGE, is_deferred_time_request
 
 import json
 import os
@@ -30,6 +31,7 @@ from edge_smart_home.router import (
     DuplicateCommandError,
     FastPathRouter,
     SceneRouter,
+    UnsupportedCommandError,
 )
 
 
@@ -94,6 +96,8 @@ class TextControlPipeline:
         self, event: PerceptionEvent
     ) -> tuple[str | None, tuple[DeviceCommand, ...]]:
         """Resolve an event without validating safety or causing side effects."""
+        if is_deferred_time_request(event.label):
+            raise UnsupportedCommandError(DEFERRED_TIME_MESSAGE)
         scene = self.scene_router.match(event)
         if scene:
             return scene

@@ -20,6 +20,9 @@ from edge_smart_home.agent import (
     UrllibJsonTransport,
 )
 from edge_smart_home.common import DeviceCommand, EventSource, PerceptionEvent
+from edge_smart_home.common.timing_policy import (
+    DEFERRED_TIME_MESSAGE, DEFERRED_TIME_REASON, is_deferred_time_request,
+)
 from edge_smart_home.device import ConfirmationRequiredError, DeviceBackendError
 from edge_smart_home.router import DuplicateCommandError, UnsupportedCommandError
 
@@ -170,7 +173,17 @@ class AssistantOrchestrator:
         if confirmed:
             with self._confirmation_lock:
                 self._pending_confirmation = None
-        else:
+        if is_deferred_time_request(event.label):
+            return AssistantResponse(
+                event=event, status="unavailable", path="fast_path", provider=None,
+                llm_calls=0, llm_latency_ms=None,
+                processing_ms=round((perf_counter() - started) * 1000, 3),
+                intelligent_result=IntelligentPathResult(
+                    kind=IntelligentResultKind.UNAVAILABLE,
+                    message=DEFERRED_TIME_MESSAGE, reason=DEFERRED_TIME_REASON,
+                ),
+            )
+        if not confirmed:
             confirmation_response = self.confirm_pending(event)
             if confirmation_response is not None:
                 return confirmation_response

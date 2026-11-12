@@ -12,6 +12,9 @@ from typing import Any, Protocol
 from urllib.parse import urlsplit, urlunsplit
 
 from edge_smart_home.common import DeviceState, PerceptionEvent
+from edge_smart_home.common.timing_policy import (
+    DEFERRED_TIME_MESSAGE, DEFERRED_TIME_REASON, is_deferred_time_request,
+)
 
 from .contract import (
     MAX_AGENT_COMMANDS,
@@ -198,6 +201,12 @@ class LocalLlmRequestGuard:
             return IntelligentPathResult(
                 kind=IntelligentResultKind.REJECTED,
                 message="请求包含未授权或不安全内容，已拒绝。",
+            )
+        if is_deferred_time_request(text):
+            return IntelligentPathResult(
+                kind=IntelligentResultKind.UNAVAILABLE,
+                message=DEFERRED_TIME_MESSAGE,
+                reason=DEFERRED_TIME_REASON,
             )
         if any(phrase in text for phrase in self._UNAVAILABLE_PHRASES):
             return IntelligentPathResult(

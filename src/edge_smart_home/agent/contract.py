@@ -129,6 +129,7 @@ def parse_agent_response(
     try:
         payload = json.loads(
             raw_json,
+            object_pairs_hook=_json_object_without_duplicates,
             parse_constant=lambda value: (_ for _ in ()).throw(
                 ValueError(f"invalid JSON constant: {value}")
             ),
@@ -169,6 +170,16 @@ def parse_agent_response(
         commands=commands,
         message=message,
     )
+
+
+def _json_object_without_duplicates(pairs: list[tuple[str, Any]]) -> dict[str, Any]:
+    """Reject ambiguous wire objects before a decoder can overwrite a key."""
+    result: dict[str, Any] = {}
+    for name, value in pairs:
+        if name in result:
+            raise ValueError(f"duplicate JSON object key: {name}")
+        result[name] = value
+    return result
 
 
 def _parse_command(value: Any) -> PlannedDeviceCommand:
