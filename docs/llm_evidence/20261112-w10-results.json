@@ -1,0 +1,300 @@
+{
+  "schema_version": 1,
+  "created_at": "2026-11-12T15:00:23.446872+00:00",
+  "scope": "W10 existing Ollama/Qwen identity and one original-config planner-only functional call; no product/backend/model change, TTFT/distributions or personal-mastery acceptance.",
+  "baseline_commit": "42b9ef743ccd0d7f581e2a67ead36aa1c16bfd42",
+  "implementation_commits": [
+    "0718b0dee680f877dd00da4259d74f1649b3b3cc",
+    "f631d515b27666d73d3aab74eaea475ca8b10a68"
+  ],
+  "code_commit": "f631d515b27666d73d3aab74eaea475ca8b10a68",
+  "model_source_manifest": {
+    "path": "configs/llm-model-source-v1.json",
+    "sha256": "44450c97713a878730ded935fca83cc3fa54fc188b8e0af56bf36bebb43e3d84",
+    "bytes": 19773
+  },
+  "model_identity": {
+    "model_tag": "qwen3:4b",
+    "digest": "359d7dd4bcdab3d86b87d73ac27966f4dbb9f5efdfcc75d34a8764a09474fae7",
+    "expected_digest_checked": true,
+    "server_version": "0.40.2",
+    "show_identity_sha256": "d8fa8335897b4039a54f37daadcf892c2dbb233282b9e44e441ae92d8bef22eb",
+    "details": {
+      "parent_model": "",
+      "format": "gguf",
+      "family": "qwen3",
+      "families": [
+        "qwen3"
+      ],
+      "parameter_size": "4.0B",
+      "quantization_level": "Q4_K_M"
+    },
+    "tag_details": {
+      "parent_model": "",
+      "format": "gguf",
+      "family": "qwen3",
+      "families": [
+        "qwen3"
+      ],
+      "parameter_size": "4.0B",
+      "quantization_level": "Q4_K_M",
+      "context_length": 262144,
+      "embedding_length": 2560,
+      "runner": "ggml"
+    },
+    "dimensions": {
+      "layers": 36,
+      "embedding_length": 2560,
+      "query_heads": 32,
+      "kv_heads": 8,
+      "key_head_dim": 128,
+      "value_head_dim": 128,
+      "model_context_length": 262144
+    },
+    "thinking_support": {
+      "values": [
+        true
+      ],
+      "default": true
+    },
+    "model_provenance": {
+      "general.basename": "Qwen3",
+      "general.finetune": "Thinking",
+      "general.version": "2507",
+      "general.license": "apache-2.0",
+      "general.license.link": "https://huggingface.co/Qwen/Qwen3-4B-Thinking-2507/blob/main/LICENSE"
+    },
+    "kv_cache_dtype": null,
+    "kv_cache_dtype_status": "NOT_OBSERVED: weight quantization does not determine KV precision"
+  },
+  "official_registry_manifest_matches_local": true,
+  "licenses": {
+    "ollama_code": "MIT",
+    "qwen_model_declared_and_official": "Apache-2.0",
+    "hf_model_revision": "768f209d9ea81521153ed38c47d515654e938aea",
+    "bf16_to_gguf_bitwise_proven": false
+  },
+  "configuration": {
+    "endpoint": "http://127.0.0.1:11434/api/generate",
+    "model": "qwen3:4b",
+    "connect_timeout_seconds": 2.0,
+    "total_timeout_seconds": 30.0,
+    "max_output_tokens": 256,
+    "temperature": 0.0,
+    "seed": 42,
+    "think": false,
+    "keep_alive": "10m"
+  },
+  "product_configuration_changed": false,
+  "config_path": "configs/agent.json",
+  "config_sha256": "2698607ea327b44b9b5b49d1003825ae1f621dbc6f1c48e298ca56bf98c059ff",
+  "declared_thinking_request_supported": false,
+  "actual_request_passed": true,
+  "smoke": {
+    "passed": true,
+    "fixed_query": "你能做什么",
+    "planner_kind": "response",
+    "planner_reason": null,
+    "commands": [],
+    "device_execution_calls": 0,
+    "model_calls": 1,
+    "client_route_wall_ms": 3736.2324009955046,
+    "configured_think": false,
+    "observed_nonempty_thinking": false,
+    "observed_response_think_tag": false,
+    "thinking_effective_mode": "Only configured request and raw observed output are known; no disabling guarantee inferred",
+    "rates": {
+      "server_generation_tps": 78.98660189765312,
+      "server_uncached_prompt_tps": 3502.636779739972,
+      "client_ttft_ms": null,
+      "client_ttft_status": "NOT_MEASURED: stream=false returns one final object",
+      "counter_units": "Ollama duration nanoseconds and server tokenizer counts",
+      "source": "https://github.com/ollama/ollama/blob/v0.40.2/api/types.go",
+      "prompt_cache_count_observed": true,
+      "status": "Counter rates only where completed positive durations/counts permit; missing/zero/invalid fields remain null",
+      "output_token_scope": "Server eval_count may include thinking; not visible-response token count or client throughput"
+    },
+    "request_stream": false,
+    "scope": "One planner-only functional probe, no preload/warmup/repeats; no TTFT or P50/P95 benchmark",
+    "planner_message_sha256": "3743e8c3d5ec6bb6c6c2447fff28e4617ad4bcc31a19472af0a03263e3c9b930"
+  },
+  "client_final_wall_ms": 3735.621282001375,
+  "server_final_counters": {
+    "model": "qwen3:4b",
+    "done": true,
+    "done_reason": "stop",
+    "total_duration": 3728415394,
+    "load_duration": 2033586753,
+    "prompt_eval_count": 3752,
+    "prompt_eval_cached_count": 0,
+    "prompt_eval_duration": 1071193000,
+    "eval_count": 48,
+    "eval_duration": 607698000
+  },
+  "client_ttft_measured": false,
+  "p50_p95_measured": false,
+  "request_residency": {
+    "before": {
+      "models": []
+    },
+    "after": {
+      "models": [
+        {
+          "name": "qwen3:4b",
+          "model": "qwen3:4b",
+          "size": 3178149969,
+          "digest": "359d7dd4bcdab3d86b87d73ac27966f4dbb9f5efdfcc75d34a8764a09474fae7",
+          "details": {
+            "parent_model": "",
+            "format": "gguf",
+            "family": "qwen3",
+            "families": [
+              "qwen3"
+            ],
+            "parameter_size": "4.0B",
+            "quantization_level": "Q4_K_M"
+          },
+          "expires_at": "2026-11-12T23:03:42.838199666+08:00",
+          "size_vram": 3178149969,
+          "context_length": 4096,
+          "runner": "llamacpp"
+        }
+      ]
+    },
+    "scope": "Empty before means not resident; earlier hashing can warm filesystem cache. API allocation fields are not RSS/VRAM high-water or KV dtype."
+  },
+  "tests": {
+    "all_child_unit_tests": 161,
+    "new_w10_tests": 20,
+    "in_process_network_attempts": 0,
+    "source_files_matched_git": 107,
+    "independent_audit_passed": true,
+    "actual_existing_outdir_rejection_passed": true
+  },
+  "independent_audit": {
+    "path": "evaluation/20261112-w10-audit/audit.json",
+    "sha256": "a7502afac49435891c639074690d5a91cd78600bdedc7d10e98beccaee925c29",
+    "bytes": 32962
+  },
+  "independent_audit_script": {
+    "path": "evaluation/20261112-w10-audit/check.py",
+    "sha256": "c9223959fededf10c2cb5edb196a1266928a0c4a717fac8d754b0d2c8e32e06c",
+    "bytes": 14621
+  },
+  "initial_metadata_tool_error": {
+    "directory": "evaluation/20261112-w10-inspect",
+    "exit_code": 2,
+    "generation_calls": 0,
+    "cause": "Whole tag/show details equality incorrectly rejected valid tag-only fields; fixed with required-core/shared-field/dimension and drift checks."
+  },
+  "historical_results_scope": "September documentation lists same digest, but three historical raw JSON records lack digest/runtime version; historical quality and latency are not current measurements.",
+  "personal_understanding_verified": false,
+  "raw_artifact_path_base": "edge-smart-home-ai Git root; source-manifest nested records declare their own workspace/external path conventions",
+  "artifacts_sha256": {
+    "evaluation/20261112-w10-identity/agent-config-initial.json": "2698607ea327b44b9b5b49d1003825ae1f621dbc6f1c48e298ca56bf98c059ff",
+    "evaluation/20261112-w10-identity/api/cli-version.txt": "c52be7925b0b5a7d31964b1e73d14d48c6fc3bbbeadcee9cf91c0b435a282c85",
+    "evaluation/20261112-w10-identity/api/ps.json": "a6fe9ec6e26a38d99fca418b69826e0238b7a2bb319ff05eb153a6fcfd1fa28d",
+    "evaluation/20261112-w10-identity/api/retrievals.json": "477f63fd31e5b395e65453952f40b955d438b28b9a889b1cfdac8addc10cea6d",
+    "evaluation/20261112-w10-identity/api/show.json": "05d6a71b364e25a58c3e8cfe548606602107e54eae2543cf6507d1a739462907",
+    "evaluation/20261112-w10-identity/api/tags.json": "62e16d397febc1ff129002ecb84a87074d67f2da71452becb983976a2223837d",
+    "evaluation/20261112-w10-identity/api/version.json": "2657f6fff8018900025e47485e719c930017826b790e73ae28087cdcd93fe50e",
+    "evaluation/20261112-w10-identity/blob-identities.json": "b31b8d7271e1a5b97cce71bba55a205434aac64901782eed8abb1fec4884d45f",
+    "evaluation/20261112-w10-identity/historical-complete-key-scan.json": "47ee59aeca80a4675a23fb7d90e407e20a5ca50ca80149d8ebbe6400372fdad1",
+    "evaluation/20261112-w10-identity/historical-identity-v2.json": "60dcdfc782cbf1c0f219c70acf0354525180ca521f2d28ebb1a4c15e68ff83fb",
+    "evaluation/20261112-w10-identity/historical-identity.json": "60dcdfc782cbf1c0f219c70acf0354525180ca521f2d28ebb1a4c15e68ff83fb",
+    "evaluation/20261112-w10-identity/identity-crosschecks.json": "fae1a6400e8044472121351ce2c4dcf3498c5749f614aa7953ce155c981d2a36",
+    "evaluation/20261112-w10-identity/ollama-manifest.json": "359d7dd4bcdab3d86b87d73ac27966f4dbb9f5efdfcc75d34a8764a09474fae7",
+    "evaluation/20261112-w10-identity/runtime-binary.json": "9d0bf71e90897c84ccdfa6487ef4daee4569a0334c290a1cb033b5aefb2c7163",
+    "evaluation/20261112-w10-identity/runtime-build-metadata.json": "a7448d5390bf8961ac845175ae5c16cb690acd1eb5aa450f5e9522e1fc4403e7",
+    "evaluation/20261112-w10-identity/runtime-build-strings.json": "82a5e54b4a807a854d86cbc8dc73a3258b71f310fbe60aa6bcaa9d7d8bd07abc",
+    "evaluation/20261112-w10-identity/sha256-2d54db2b9bb29ce7db54fea63a891f5859603813c555b1f88b5e0994652897f9.original": "2d54db2b9bb29ce7db54fea63a891f5859603813c555b1f88b5e0994652897f9",
+    "evaluation/20261112-w10-identity/sha256-cff3f395ef3756ab63e58b0ad1b32bb6f802905cae1472e6a12034e4246fbbdb.original": "cff3f395ef3756ab63e58b0ad1b32bb6f802905cae1472e6a12034e4246fbbdb",
+    "evaluation/20261112-w10-identity/sha256-d18a5cc71b84bc4af394a31116bd3932b42241de70c77d2b76d69a314ec8aa12.original": "d18a5cc71b84bc4af394a31116bd3932b42241de70c77d2b76d69a314ec8aa12",
+    "evaluation/20261112-w10-identity/sha256-e18a783aae5525fd2852fc94c985541a77e791e034abc2d3056474d59de336fc.original": "e18a783aae5525fd2852fc94c985541a77e791e034abc2d3056474d59de336fc",
+    "evaluation/20261112-w10-identity/upstream/hf-model-api.json": "8c4e85a8cbd9fbc4dd0a09eec404717cf7ff24d46ec506fe66a88573208a4876",
+    "evaluation/20261112-w10-identity/upstream/installed-snap.yaml": "932e602a6c6abd535dc58770eb2acf65fe4cd512c1e5f4b726801868d8dd0c56",
+    "evaluation/20261112-w10-identity/upstream/ollama-api-types.go": "75369e029dcfc815013243b1e728fcff32514a3b38b26f3288eb1ee2b7fa4d1b",
+    "evaluation/20261112-w10-identity/upstream/ollama-commit.json": "37105316c74f0711b685356dda481401c45f5f49c70809c50b807398743d0d40",
+    "evaluation/20261112-w10-identity/upstream/ollama-doc-index.txt": "d679dcd8161d1d3b1fd692f3ab6c6e70fdf952b0ec5b3dab43a7a125aeb8a497",
+    "evaluation/20261112-w10-identity/upstream/ollama-gomod.txt": "c8330ba5f762c4bded1401cc8ecadbe85ebe8e5d159fd81da122da986b26cda5",
+    "evaluation/20261112-w10-identity/upstream/ollama-license-version.txt": "5934ed2ce0d15154bcdb9c85203210abac0da4314af34081e36df4599f90b226",
+    "evaluation/20261112-w10-identity/upstream/ollama-registry-tag-manifest.json": "359d7dd4bcdab3d86b87d73ac27966f4dbb9f5efdfcc75d34a8764a09474fae7",
+    "evaluation/20261112-w10-identity/upstream/ollama-server-model.go": "8d8bfcec35aa8e44da98c238196026325f6ff07549402442bec8c4111fbce717",
+    "evaluation/20261112-w10-identity/upstream/ollama-show-model-details.md": "c09c08bd77e70dd0eefbf742019e55a1d6618df20da130d0fbc25fcfffd8e89b",
+    "evaluation/20261112-w10-identity/upstream/ollama-thinking.html": "1f05fdc9e685c512a6b24aba29aa6ad6b5e8a0986eed5e6f1811a33e663ae454",
+    "evaluation/20261112-w10-identity/upstream/ollama-version-source.go": "ba257b479c143215239bf47a05d937ac93ae432b00dc9ade4d7d0d0a8467d440",
+    "evaluation/20261112-w10-identity/upstream/qwen-LICENSE.txt": "832dd9e00a68dd83b3c3fb9f5588dad7dcf337a0db50f7d9483f310cd292e92e",
+    "evaluation/20261112-w10-identity/upstream/qwen-README.md": "6a608c737decd22569edf9609499d142021a65e942999890704a880bc804d163",
+    "evaluation/20261112-w10-identity/upstream/qwen-config.json": "5beea1a4a34c62782bfb2f911c606741a3bab8f92d80a118fa053c28af12e8ba",
+    "evaluation/20261112-w10-identity/upstream/qwen-tokenizer-config.json": "60adcfc35f5f251e19a196ec977b4ca0fcfb534852911b3196d68d5e3b146aa0",
+    "evaluation/20261112-w10-identity/upstream/retrievals-identity-sources.json": "e5189d1aa72f1ace7a21ae99a5b7604f316c2f9a63818ce5fb8787bc8a1b410e",
+    "evaluation/20261112-w10-identity/upstream/retrievals-initial.json": "c5c1cf47344d83068655adb8db8feb725e29d5e1b8b7ee50227ccfde358b1c47",
+    "evaluation/20261112-w10-identity/upstream/retrievals-pinned.json": "f2381769577a41a6017df588647dba7659685dd5c730489871a847c58780256c",
+    "evaluation/20261112-w10-identity/version.json": "2657f6fff8018900025e47485e719c930017826b790e73ae28087cdcd93fe50e",
+    "evaluation/20261112-w10-tests-impl/0.stderr.txt": "0b1fc61aa81db88a13b7d5c5ab805e480cb152dbeaf34ee81714f722bbb0e53c",
+    "evaluation/20261112-w10-tests-impl/0.stdout.txt": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "evaluation/20261112-w10-tests-impl/1.stderr.txt": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "evaluation/20261112-w10-tests-impl/1.stdout.txt": "8d38d2672f2ab44064a9cc35bdccc7443ac18f646bd81b95c359973f29ae395f",
+    "evaluation/20261112-w10-tests-impl/executions.json": "ac9f01e8b2522a0f5a45721c5e018dca28fc7ebea517bf36583bff760fc22c61",
+    "evaluation/20261112-w10-tests-impl/tested-source-sha256.json": "36a89c494aaf221a76b6a5ffdfd9e39e7fd68f2f11dbc9a1d3e452d73be95f8d",
+    "evaluation/20261112-w10-tests-metadatafix/execution.json": "ea44ed5fbda60c9d04d0ce8e9183a9194d0f3f24cbbabd1af13263166ffef9ed",
+    "evaluation/20261112-w10-tests-metadatafix/stderr.txt": "59e6b305e3c6d9f2392477a6670bec5746e230f2d35b8ba5a927660b4c8e6269",
+    "evaluation/20261112-w10-tests-metadatafix/stdout.txt": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "evaluation/20261112-w10-tests-metadatafix/tested-source-sha256.json": "6364f54607681076d7ca4d9768c8b9abdee2024d7d00a325d4240333d727f800",
+    "evaluation/20261112-w10-executions/inspect.execution.json": "605f54e863705784dac39397878931cf4ebaa6f95358cea720b8c29a35e2823d",
+    "evaluation/20261112-w10-executions/inspect.stderr.txt": "2a14b5070d5c9ec5543c979c6a3555fd81bea19af077e1c961d77e95cc0205ee",
+    "evaluation/20261112-w10-executions/inspect.stdout.txt": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "evaluation/20261112-w10-executions-v2/executions.json": "8b81af7d805b20f30002e65dab987047581482b3765797a8258ee9de0e2f3780",
+    "evaluation/20261112-w10-executions-v2/inspect.execution.json": "8f4a96a10191c64c4b530f283039efaefbb33198012b1bb857df5863050514e1",
+    "evaluation/20261112-w10-executions-v2/inspect.stderr.txt": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "evaluation/20261112-w10-executions-v2/inspect.stdout.txt": "2283b890d0114ba12605e6b49d8000e170e6d1962a129eac35167932a975551a",
+    "evaluation/20261112-w10-executions-v2/original.execution.json": "9d78b2423f7afa81384d85b9262438fa058f759caa6b57701848ce3b43b1d1c6",
+    "evaluation/20261112-w10-executions-v2/original.stderr.txt": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "evaluation/20261112-w10-executions-v2/original.stdout.txt": "7b303e614e68a9924e87e43532060791ab6a0444818f18300a914c1b82a14fe4",
+    "evaluation/20261112-w10-inspect/before/ps.json": "c8cdda2058dfad73596cb9baef30bb2a825485859ad54c8d9cf5a10a457b0c8c",
+    "evaluation/20261112-w10-inspect/before/show.json": "8d07d8e1794506ec724bca099008c41a45ce7b1d85d965899a28a572dcae976d",
+    "evaluation/20261112-w10-inspect/before/tags.json": "40b9e7cbed2e674184e6f0aaafe16f94969b8b3f1433946501327b5ba1dc8000",
+    "evaluation/20261112-w10-inspect/before/version.json": "6239a21d6bbeabd33d6ef1a1e301f5e8bce642d879662854ae13485fa18bdf09",
+    "evaluation/20261112-w10-inspect/error.json": "fc545c91ef5a19c6c1b3cfe2bf682abc078e3a38d119f209cc4c0d12da8e7d68",
+    "evaluation/20261112-w10-inspect-v2/after/ps.json": "c8cdda2058dfad73596cb9baef30bb2a825485859ad54c8d9cf5a10a457b0c8c",
+    "evaluation/20261112-w10-inspect-v2/after/show.json": "8d07d8e1794506ec724bca099008c41a45ce7b1d85d965899a28a572dcae976d",
+    "evaluation/20261112-w10-inspect-v2/after/tags.json": "40b9e7cbed2e674184e6f0aaafe16f94969b8b3f1433946501327b5ba1dc8000",
+    "evaluation/20261112-w10-inspect-v2/after/version.json": "6239a21d6bbeabd33d6ef1a1e301f5e8bce642d879662854ae13485fa18bdf09",
+    "evaluation/20261112-w10-inspect-v2/before/ps.json": "c8cdda2058dfad73596cb9baef30bb2a825485859ad54c8d9cf5a10a457b0c8c",
+    "evaluation/20261112-w10-inspect-v2/before/show.json": "8d07d8e1794506ec724bca099008c41a45ce7b1d85d965899a28a572dcae976d",
+    "evaluation/20261112-w10-inspect-v2/before/tags.json": "40b9e7cbed2e674184e6f0aaafe16f94969b8b3f1433946501327b5ba1dc8000",
+    "evaluation/20261112-w10-inspect-v2/before/version.json": "6239a21d6bbeabd33d6ef1a1e301f5e8bce642d879662854ae13485fa18bdf09",
+    "evaluation/20261112-w10-inspect-v2/report.json": "0907b42d760f82db8b3efdcf97495a2b9285649f9e3496684ff433b6848bc25a",
+    "evaluation/20261112-w10-original/after/ps.json": "553bd3c7be2c7aa75b8f98b7bf5e114b1d7ced221a3d97ba181e9ade4b975956",
+    "evaluation/20261112-w10-original/after/show.json": "8d07d8e1794506ec724bca099008c41a45ce7b1d85d965899a28a572dcae976d",
+    "evaluation/20261112-w10-original/after/tags.json": "40b9e7cbed2e674184e6f0aaafe16f94969b8b3f1433946501327b5ba1dc8000",
+    "evaluation/20261112-w10-original/after/version.json": "6239a21d6bbeabd33d6ef1a1e301f5e8bce642d879662854ae13485fa18bdf09",
+    "evaluation/20261112-w10-original/before/ps.json": "c8cdda2058dfad73596cb9baef30bb2a825485859ad54c8d9cf5a10a457b0c8c",
+    "evaluation/20261112-w10-original/before/show.json": "8d07d8e1794506ec724bca099008c41a45ce7b1d85d965899a28a572dcae976d",
+    "evaluation/20261112-w10-original/before/tags.json": "40b9e7cbed2e674184e6f0aaafe16f94969b8b3f1433946501327b5ba1dc8000",
+    "evaluation/20261112-w10-original/before/version.json": "6239a21d6bbeabd33d6ef1a1e301f5e8bce642d879662854ae13485fa18bdf09",
+    "evaluation/20261112-w10-original/generation.json": "b71ec37d778223e0edcefcc75fd7da1e920de5557067a33a3532f758f5cd7de8",
+    "evaluation/20261112-w10-original/report.json": "af07ee5a7a5af1de926b035f5c1798b521467aa24d0569259f8777f98370c9bc",
+    "evaluation/20261112-w10-negative/result.json": "2ac7af8a5745e5392f10d3b5232f89ffc817da08509bf65bfb72886264245953",
+    "evaluation/20261112-w10-negative/stderr.txt": "3585e0d89db77266cf801313a174f315389ca6406953440235d60d6fa1cc79d2",
+    "evaluation/20261112-w10-negative/stdout.txt": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "evaluation/20261112-w10-audit/audit.json": "a7502afac49435891c639074690d5a91cd78600bdedc7d10e98beccaee925c29",
+    "evaluation/20261112-w10-audit/check.attempt1.py": "42ed4b33dc9f9157ec66f1508ea45a3c8a5b7577230b94316df5c824ea41267b",
+    "evaluation/20261112-w10-audit/check.py": "c9223959fededf10c2cb5edb196a1266928a0c4a717fac8d754b0d2c8e32e06c",
+    "evaluation/20261112-w10-audit/stderr.attempt1.txt": "e5f4980e83133e01c8082d39051d246dcaa720913f522c3a1b9946c91e793ed0",
+    "evaluation/20261112-w10-audit/stderr.txt": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "evaluation/20261112-w10-audit/stdout.attempt1.txt": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "evaluation/20261112-w10-audit/stdout.txt": "4557f60cd8d9173d8f91235e7d633a69fda9a217598ceae656d3df735796a0d5",
+    "configs/llm-model-source-v1.json": "44450c97713a878730ded935fca83cc3fa54fc188b8e0af56bf36bebb43e3d84"
+  },
+  "limitations": [
+    "Inspection success is not configuration compatibility or personal-understanding acceptance.",
+    "No tag/model creation, deletion, pull, forced unload, context/precision or product-option overrides.",
+    "Native GGUF weight precision, model maximum context and loaded /ps context are separate facts.",
+    "KV cache dtype, exact GPU layer allocation, RAM high-water and repeat latency distributions are not measured.",
+    "A nonstreaming final response cannot supply client TTFT; server counter TPS is not visible-text TPS.",
+    "API advertises only true, but this original false request completed with no thinking content; no universal disabling or compatibility conclusion.",
+    "No new tag/model/weight download or product setting override; upstream quantized model is reused, not self-quantized.",
+    "One query proves only this functional path; not current 38/30-case quality, no warmup/repeats or comparative benchmark."
+  ]
+}

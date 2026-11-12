@@ -8,9 +8,9 @@
 
 ## W10：现有模型身份与推理口径
 
-继续复用 Ollama 与 `LocalLlmIntelligentPath`。当前 `qwen3:4b` 包经本地/官方 registry 核对为 Thinking-2507 / Q4_K_M；模型、量化、许可证及初始配置能力差异见 [模型身份](docs/LLM_MODEL_IDENTITY.md)，显式元数据检查/单次只规划 smoke 和 TTFT/TPS 边界见 [测量协议](docs/LLM_MEASUREMENT_PROTOCOL.md)。初始 `think=false` 与当前API声明仅支持true不一致，实际验证将单独保留，不把9月成绩当作本轮验收。
+继续复用 Ollama 与 `LocalLlmIntelligentPath`。当前 `qwen3:4b` 包经本地/官方 registry 核对为 Thinking-2507 / Q4_K_M；模型、量化、许可证及配置能力差异见 [模型身份](docs/LLM_MODEL_IDENTITY.md)，显式元数据检查/单次只规划 smoke 和 TTFT/TPS 边界见 [测量协议](docs/LLM_MEASUREMENT_PROTOCOL.md)。原 `think=false` 虽不在API宣告的支持集合内，本轮一次真实请求仍返回合法response、设备执行0；声明与行为分别保留，不推定关闭思考或广泛语义质量，不修改产品配置。
 
-非流式产品调用的完整HTTP耗时不等于客户端TTFT；工程复用与 [个人机制理解](../ai-learning/docs/LLM_UNDERSTANDING_CHECK.md)分别验收。阶段记录见 [L0a](docs/stages/L0-w10-implementation.md)。
+非流式产品调用的完整HTTP耗时不等于客户端TTFT；工程复用与 [个人机制理解](../ai-learning/docs/LLM_UNDERSTANDING_CHECK.md)分别验收。阶段记录见 [L0a实现](docs/stages/L0-w10-implementation.md)、[L0b结果](docs/stages/L0-w10-results.md)及[运行证据索引](docs/llm_evidence/20261112-w10-results.json)。
 
 ## 2026-09-09 增量负载诊断与队列修复
 

@@ -52,3 +52,5 @@ smoke退出0要求返回完成、未因长度截断的合法 `response`，且无
 后续协议须记录模型digest、GGUF权重量化、KV cache dtype、实际加载context、parallel、CPU/GPU分配、完整prompt/模板/Schema/token数、输出上限与停止原因、thinking模式、服务版本、温度/seed，以及模型驻留/冷启动和prefix-cache状态。先定义预热与重复采样，再保存每次raw并计算P50/P95。TTFT包含加载/排队/网络和前缀处理等客户端路径，不能用 `load_duration + prompt_eval_duration` 等式替代；prefill并非整个客户端TTFT。
 
 W10的一次smoke不清缓存、无重复和预热，不报告P50/P95，不与9月历史Agent延迟直接算提速，也不当作LLM理解掌握。元数据、工程可复用状态和个人机制解释验收分别保存。
+
+本轮原配置的单次请求实际通过；`configured_thinking_request_supported=false`只记录API声明与请求值的差异，不是自动预测HTTP失败。原始请求/返回及实际加载4096窗口另存，产品配置保持原值；详细单次观察不当作稳定TPS或TTFT。

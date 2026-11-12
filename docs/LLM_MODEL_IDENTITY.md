@@ -63,3 +63,9 @@
 [旧模型说明](local_llm_agent.md)为9月baseline记录了同一完整digest，故没有证据称本轮刚发生模型替换。实际三份旧 raw JSON（baseline、guarded_v3、dialogue_guarded_v2）仅含`model=qwen3:4b`，没有digest或Ollama版本字段；其文件SHA和字段检查结果已保存。不能仅凭相同标签独立证明这些旧run都用了相同blob/运行时，也不将旧准确率/时延移作本轮新实测。
 
 本阶段可直接复用的是现有本地服务、已安装模型包、受约束请求和应用校验路径。后续实际运行应同时绑定当前配置、完整模型digest、运行时版本、请求/输入及原始返回；工程证据和 [个人理解验收](../../ai-learning/docs/LLM_UNDERSTANDING_CHECK.md)分别记录。
+
+## 6. W10 原配置的实际接口验证
+
+后续在子仓 `f631d515b27666d73d3aab74eaea475ca8b10a68` 上完成一次原planner请求，证据在 `evaluation/20261112-w10-original/`：保留原 `think=false`、token上限256、超时30s，返回完成的合法response、commands为空、设备执行0。虽然发现元数据只列true，本次实际请求没有被拒绝，也未返回独立thinking内容；能力声明与真实请求行为分别记录，不把这个结果扩大成“已证明关闭思考”或长期兼容保证。因此本轮没有修改产品配置，也没有另下载/替换模型。
+
+请求前 `/api/ps` 为空，请求后实际加载窗口为4096，模型声明上限仍为262144；`size`/`size_vram`是该接口的驻留报告字段，不当作RSS/VRAM峰值或精确逐层offload测量。KV dtype仍未观测。非流式请求没有客户端TTFT数据，一次成功也不是9月题库的当前语义质量复验。完整指标与界限见 [阶段结果](stages/L0-w10-results.md)。
