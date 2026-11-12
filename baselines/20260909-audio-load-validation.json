@@ -1,0 +1,20 @@
+{
+  "milestone": "audio-load-v1",
+  "tests_passed": 138,
+  "synthetic_runner_stages": [
+    "capture",
+    "asr",
+    "vision",
+    "tts",
+    "llm"
+  ],
+  "real_sensors_or_inference_run": false,
+  "candidate_manifest": "baselines/20260909-audio-load-v1.json",
+  "candidate_sha256": "95627a599a5a7670a6decd6d50a7c005a8d4ae08f9e53e865f0a02e96e4c96e5",
+  "changed_since_freeze": [],
+  "checks": [
+    "unittest",
+    "compileall",
+    "git diff --check"
+  ]
+}

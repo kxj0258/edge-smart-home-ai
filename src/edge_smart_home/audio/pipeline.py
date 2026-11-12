@@ -1,7 +1,10 @@
 from __future__ import annotations
 
 from collections.abc import Iterator
-from dataclasses import dataclass
+from dataclasses import dataclass, field
+from time import monotonic_ns
+from uuid import uuid4
+from edge_smart_home.common.observability import activate, Trace
 import re
 
 from edge_smart_home.app.orchestrator import AssistantOrchestrator
@@ -28,6 +31,7 @@ class VoiceControlResult:
     provider: str | None = None
     llm_calls: int = 0
     llm_latency_ms: float | None = None
+    trace: Trace | None = field(default=None, compare=False, repr=False)
 
 
 class VoiceControlPipeline:
@@ -45,6 +49,9 @@ class VoiceControlPipeline:
             control if isinstance(control, AssistantOrchestrator) else AssistantOrchestrator(control)
         )
         self.diagnostics = diagnostics
+        if diagnostics:
+            self.orchestrator.session_id = diagnostics.session_id
+            self.orchestrator.trace_sink = diagnostics.record_trace
         self.feedback = feedback
 
     def run(self) -> Iterator[VoiceControlResult]:
@@ -72,17 +79,25 @@ class VoiceControlPipeline:
         self, recognition: StreamingRecognition
     ) -> VoiceControlResult | None:
         """Route one already-decoded endpoint outside the audio consumer."""
-        try:
-            return self._handle_recognition(recognition)
-        except Exception as error:
-            return self._handle_processing_error(recognition, error)
-
-    def finish(self) -> Iterator[VoiceControlResult]:
-        for recognition in self.asr.finish():
+        trace = recognition.trace
+        trace.event_id = trace.event_id or str(uuid4())
+        trace.session_id = self.orchestrator.session_id
+        trace.sink = self.orchestrator.trace_sink
+        now = monotonic_ns()
+        if "recognition_ready" in trace.marks:
+            trace.add("recognition_dispatch_wait", trace.marks["recognition_ready"], now)
+        trace.mark("command_worker_start", now)
+        with activate(trace):
             try:
                 result = self._handle_recognition(recognition)
             except Exception as error:
                 result = self._handle_processing_error(recognition, error)
+            trace.emit("voice_result", status=result.status if result else "empty_transcript")
+            return result
+
+    def finish(self) -> Iterator[VoiceControlResult]:
+        for recognition in self.asr.finish():
+            result = self.process_recognition(recognition)
             if result:
                 yield result
 
@@ -101,6 +116,7 @@ class VoiceControlPipeline:
             audio_seconds=recognition.audio_seconds,
             decode_seconds=recognition.decode_seconds,
             rtf=recognition.rtf,
+            trace=recognition.trace,
         )
         if self.diagnostics:
             self.diagnostics.record_result(
@@ -108,6 +124,7 @@ class VoiceControlPipeline:
                 result.status,
                 {
                     "error": result.error,
+                    "trace": recognition.trace.snapshot(),
                     "processing_ms": result.processing_ms,
                     "audio_seconds": result.audio_seconds,
                     "decode_seconds": result.decode_seconds,
@@ -123,21 +140,15 @@ class VoiceControlPipeline:
         if not text:
             return None
         if len(text) < 2:
-            if self.feedback:
-                self.feedback.processing_error()
-            return VoiceControlResult(
-                text=text,
-                error="recognized transcript is too short to route safely",
-                status="processing_error",
-                audio_seconds=recognition.audio_seconds,
-                decode_seconds=recognition.decode_seconds,
-                rtf=recognition.rtf,
-            )
-        event = PerceptionEvent(source=EventSource.VOICE, label=text)
+            return self._handle_processing_error(
+                recognition, ValueError("recognized transcript is too short to route safely"))
+        event = PerceptionEvent(source=EventSource.VOICE, label=text, trace=recognition.trace,
+                                event_id=recognition.trace.event_id)
         metrics = {
             "audio_seconds": recognition.audio_seconds,
             "decode_seconds": recognition.decode_seconds,
             "rtf": recognition.rtf,
+            "trace": recognition.trace,
         }
         response = self.orchestrator.handle_event(event)
         if self.feedback:
@@ -176,7 +187,7 @@ class VoiceControlPipeline:
                         "provider": response.provider,
                         "llm_calls": response.llm_calls,
                         "llm_latency_ms": response.llm_latency_ms,
-                        **metrics,
+                        **{**metrics, "trace": recognition.trace.snapshot()},
                     },
                 )
             return result
@@ -210,7 +221,7 @@ class VoiceControlPipeline:
                 "provider": response.provider,
                 "llm_calls": response.llm_calls,
                 "llm_latency_ms": response.llm_latency_ms,
-                **metrics,
+                **{**metrics, "trace": recognition.trace.snapshot()},
             }
             self.diagnostics.record_result(text, response.status, detail)
         return result

@@ -1,5 +1,7 @@
 from __future__ import annotations
 
+from edge_smart_home.common.observability import observed, span
+
 import http.client
 import json
 import re
@@ -378,24 +380,25 @@ class LocalLlmIntelligentPath:
             self.last_call_count = 1
             llm_started = perf_counter()
             try:
-                response = self.transport.post_json(
-                    self.endpoint,
-                    {
-                        "model": self.model,
-                        "prompt": prompt,
-                        "format": self.response_schema,
-                        "stream": False,
-                        "think": self.think,
-                        "keep_alive": self.keep_alive,
-                        "options": {
-                            "temperature": self.temperature,
-                            "num_predict": self.max_output_tokens,
-                            "seed": self.seed,
+                with span("llm_request"):
+                    response = self.transport.post_json(
+                        self.endpoint,
+                        {
+                            "model": self.model,
+                            "prompt": prompt,
+                            "format": self.response_schema,
+                            "stream": False,
+                            "think": self.think,
+                            "keep_alive": self.keep_alive,
+                            "options": {
+                                "temperature": self.temperature,
+                                "num_predict": self.max_output_tokens,
+                                "seed": self.seed,
+                            },
                         },
-                    },
-                    connect_timeout_seconds=self.connect_timeout_seconds,
-                    total_timeout_seconds=self.total_timeout_seconds,
-                )
+                        connect_timeout_seconds=self.connect_timeout_seconds,
+                        total_timeout_seconds=self.total_timeout_seconds,
+                    )
             finally:
                 self.last_llm_latency_ms = round(
                     (perf_counter() - llm_started) * 1000, 3
@@ -416,6 +419,7 @@ class LocalLlmIntelligentPath:
         ) as error:
             return self._unavailable(str(error))
 
+    @observed("planner_state_read")
     def _read_states(self) -> tuple[DeviceState, ...]:
         if self.state_provider is None:
             return ()

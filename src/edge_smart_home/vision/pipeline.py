@@ -1,6 +1,8 @@
 from __future__ import annotations
 
 from typing import Any, Mapping
+from time import monotonic_ns
+from edge_smart_home.common.observability import Trace, activate, current_trace, span
 
 from edge_smart_home.app.orchestrator import AssistantOrchestrator, AssistantResponse
 from edge_smart_home.audio.feedback import AssistantFeedback
@@ -28,6 +30,7 @@ class GestureControlPipeline:
         activation_hold_seconds: float = 1.0,
     ) -> None:
         self.recognizer = recognizer
+        self.last_inference_ms = None
         self.temporal_filter = temporal_filter
         self._profiles = _normalize_profiles(mappings)
         self._profile = profile or next(iter(self._profiles))
@@ -88,14 +91,20 @@ class GestureControlPipeline:
         return self._profiles[self._profile]["dynamic"]
 
     def process_frame(
-        self, rgb_frame: Any, timestamp_ms: int
+        self, rgb_frame: Any, timestamp_ms: int, trace: Trace | None = None
     ) -> tuple[tuple[GestureObservation, AssistantResponse | None], ...]:
         if self.recognizer is None:
             raise RuntimeError("gesture recognizer is not configured")
-        return tuple(
-            (observation, self.process_observation(observation))
-            for observation in self.recognizer.recognize_rgb(rgb_frame, timestamp_ms)
-        )
+        trace = trace or Trace()
+        trace.session_id = self.orchestrator.session_id
+        trace.sink = self.orchestrator.trace_sink
+        with activate(trace):
+            start = monotonic_ns()
+            with span("gesture_inference"):
+                observations = tuple(self.recognizer.recognize_rgb(rgb_frame, timestamp_ms))
+            self.last_inference_ms = (monotonic_ns() - start) / 1e6
+            return tuple((observation, self.process_observation(observation))
+                         for observation in observations)
 
     def process_observation(
         self, observation: GestureObservation
@@ -153,6 +162,7 @@ class GestureControlPipeline:
             source=EventSource.GESTURE,
             label=intent_text,
             confidence=observation.score,
+            trace=current_trace() or Trace(),
             raw_payload={
                 "gesture": gesture,
                 "dynamic": dynamic,
@@ -163,6 +173,7 @@ class GestureControlPipeline:
                 "timestamp_ms": observation.timestamp_ms,
             },
         )
+        event.trace.mark("gesture_event")
         response = self.orchestrator.handle_event(event)
         if self.feedback:
             self.feedback.response(response)

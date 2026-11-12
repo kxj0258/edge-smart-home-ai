@@ -4,13 +4,16 @@ import argparse
 from collections import deque
 import json
 from pathlib import Path
-from queue import Empty, Full, Queue
+from queue import Empty, Queue
 from threading import Event, Thread
 from time import monotonic_ns, sleep
+from uuid import uuid4
+from edge_smart_home.common.observability import Trace, activate, span
 
 from edge_smart_home.app import AssistantOrchestrator
 from edge_smart_home.app.pipeline import _load_json
 from edge_smart_home.audio.diagnostics import AudioDiagnosticRecorder
+from edge_smart_home.audio.dispatch import EndpointDispatcher
 from edge_smart_home.audio.feedback import create_feedback
 from edge_smart_home.audio.microphone import SoundDeviceMicrophone
 from edge_smart_home.audio.pipeline import VoiceControlPipeline, VoiceControlResult
@@ -82,6 +85,13 @@ def main() -> None:
             _resolve(root, args.diagnostics_dir),
             {
                 "kind": "live_multimodal_voice_session",
+                "input_source": "real_mic_and_camera",
+                "config_dir": str(config_dir.resolve()),
+                "vision_config": vision_config,
+                "gesture_mappings": mappings,
+                "gesture_profile": gesture_profile,
+                "arguments": {key: str(value) if isinstance(value, Path) else value
+                              for key, value in vars(args).items()},
                 "backend": args.backend,
                 "camera": args.camera,
                 "mic_device": args.mic_device,
@@ -122,76 +132,77 @@ def main() -> None:
         feedback=feedback,
     )
     voice_results: Queue[VoiceControlResult] = Queue()
-    recognition_queue: Queue = Queue(maxsize=16)
     voice_errors: Queue[Exception] = Queue()
-    recognition_queue_drop_count = 0
     gesture_controller_ref = [None]
 
     def run_asr() -> None:
-        nonlocal recognition_queue_drop_count
         try:
             for recognition in voice_pipeline.iter_recognitions():
-                try:
-                    recognition_queue.put(recognition, timeout=0.5)
-                except Full:
-                    recognition_queue_drop_count += 1
-                    if recognition_queue_drop_count == 1 or recognition_queue_drop_count % 10 == 0:
-                        print(
-                            "voice recognition queue is behind; dropped "
-                            f"{recognition_queue_drop_count} endpoint(s)",
-                            flush=True,
-                        )
-        except Exception as error:  # keep the camera window usable for diagnosis
+                if not dispatcher.submit(recognition):
+                    recognition.trace.session_id = orchestrator.session_id
+                    recognition.trace.sink = orchestrator.trace_sink
+                    recognition.trace.emit("recognition_dropped", reason="queue_full_or_stopped")
+        except Exception as error:
             voice_errors.put(error)
-        finally:
-            recognition_queue.put(None)
 
-    def run_commands() -> None:
-        while True:
-            recognition = recognition_queue.get()
-            if recognition is None:
-                return
-            profile = _profile_command(recognition.text)
-            gesture_controller = gesture_controller_ref[0]
-            if profile and gesture_controller is not None and profile in gesture_controller.profiles:
-                gesture_controller.set_profile(profile)
-                result = VoiceControlResult(
-                    text=recognition.text.strip(),
-                    message=(
-                        "已切换到家居控制模式"
-                        if profile == "home"
-                        else "已切换到媒体控制模式"
-                    ),
-                    status="responded",
-                    path="gesture_mode",
-                    audio_seconds=recognition.audio_seconds,
-                    decode_seconds=recognition.decode_seconds,
-                    rtf=recognition.rtf,
-                )
+    def process_live_recognition(recognition) -> None:
+        profile = _profile_command(recognition.text)
+        gesture_controller = gesture_controller_ref[0]
+        if profile and gesture_controller is not None and profile in gesture_controller.profiles:
+            recognition.trace.event_id = str(uuid4())
+            recognition.trace.mark("command_worker_start")
+            gesture_controller.set_profile(profile)
+            recognition.trace.mark("response")
+            result = VoiceControlResult(
+                text=recognition.text.strip(),
+                message=(
+                    "已切换到家居控制模式"
+                    if profile == "home"
+                    else "已切换到媒体控制模式"
+                ),
+                status="responded",
+                path="gesture_mode",
+                trace=recognition.trace,
+                audio_seconds=recognition.audio_seconds,
+                decode_seconds=recognition.decode_seconds,
+                rtf=recognition.rtf,
+            )
+            recognition.trace.session_id = orchestrator.session_id
+            recognition.trace.sink = orchestrator.trace_sink
+            with activate(recognition.trace):
                 if feedback:
                     feedback.announce(result.message)
-            else:
-                result = voice_pipeline.process_recognition(recognition)
-            if result:
-                voice_results.put(result)
+            if diagnostics:
+                diagnostics.record_result(result.text, result.status, {
+                    "path": "gesture_mode", "trace": recognition.trace.snapshot(),
+                    "audio_seconds": recognition.audio_seconds,
+                    "decode_seconds": recognition.decode_seconds, "rtf": recognition.rtf,
+                })
+            recognition.trace.emit("gesture_mode", profile=profile)
+        else:
+            result = voice_pipeline.process_recognition(recognition)
+        if result:
+            voice_results.put(result)
+
+    dispatcher = EndpointDispatcher(process_live_recognition, on_error=voice_errors.put)
 
     asr_thread = Thread(target=run_asr, name="live-asr-consumer", daemon=True)
-    command_thread = Thread(target=run_commands, name="live-command-worker", daemon=True)
-    command_thread.start()
     asr_thread.start()
 
     camera = cv2.VideoCapture(args.camera)
     if not camera.isOpened():
         microphone.stop()
+        dispatcher.close(timeout=1.0)
         asr_thread.join(timeout=1.0)
-        command_thread.join(timeout=1.0)
         if feedback:
             feedback.close()
         if diagnostics:
             diagnostics.update_summary({
-                "portaudio_overflow_count": microphone.portaudio_overflow_count,
-                "queue_drop_count": microphone.queue_drop_count,
-                "recognition_queue_drop_count": recognition_queue_drop_count,
+                **microphone.metrics(),
+                "recognition_queue_drop_count": dispatcher.metrics()["dropped"],
+                "recognition_dispatch": dispatcher.metrics(),
+                "asr_worker_alive_at_close": asr_thread.is_alive(),
+                "command_worker_alive_at_close": dispatcher.metrics()["worker_alive"],
             })
             diagnostics.close()
         raise RuntimeError(f"unable to open camera {args.camera}")
@@ -263,18 +274,23 @@ def main() -> None:
             )
             gesture_controller_ref[0] = gesture_pipeline
             while True:
+                frame_trace = Trace()
+                read_start = monotonic_ns()
                 success, frame = camera.read()
+                frame_trace.mark("frame_received")
+                frame_trace.add("camera_read", read_start, monotonic_ns())
                 if not success:
                     continue
-                if vision_config.get("mirror_preview", True):
-                    frame = cv2.flip(frame, 1)
-                rgb_frame = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
+                with activate(frame_trace), span("vision_preprocess"):
+                    if vision_config.get("mirror_preview", True):
+                        frame = cv2.flip(frame, 1)
+                    rgb_frame = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
                 now_ms = monotonic_ns() // 1_000_000
                 last_timestamp_ms = max(last_timestamp_ms + 1, now_ms)
                 frame_times.append(last_timestamp_ms)
 
                 frame_observations = gesture_pipeline.process_frame(
-                    rgb_frame, last_timestamp_ms
+                    rgb_frame, last_timestamp_ms, trace=frame_trace
                 )
                 observations = tuple(observation for observation, _ in frame_observations)
                 for observation, response in frame_observations:
@@ -296,6 +312,7 @@ def main() -> None:
                                     "provider": response.provider,
                                     "llm_calls": response.llm_calls,
                                     "processing_ms": response.processing_ms,
+                                    "trace": response.event.trace.snapshot(),
                                     "gesture": response.event.raw_payload.get("gesture"),
                                     "dynamic": response.event.raw_payload.get("dynamic", False),
                                 },
@@ -379,15 +396,17 @@ def main() -> None:
         camera.release()
         cv2.destroyAllWindows()
         microphone.stop()
+        dispatcher.close(timeout=2.0)
         asr_thread.join(timeout=2.0)
-        command_thread.join(timeout=2.0)
         if feedback:
             feedback.close()
         if diagnostics:
             diagnostics.update_summary({
-                "portaudio_overflow_count": microphone.portaudio_overflow_count,
-                "queue_drop_count": microphone.queue_drop_count,
-                "recognition_queue_drop_count": recognition_queue_drop_count,
+                **microphone.metrics(),
+                "recognition_queue_drop_count": dispatcher.metrics()["dropped"],
+                "recognition_dispatch": dispatcher.metrics(),
+                "asr_worker_alive_at_close": asr_thread.is_alive(),
+                "command_worker_alive_at_close": dispatcher.metrics()["worker_alive"],
             })
             diagnostics.close()
 
@@ -636,6 +655,7 @@ def _voice_result_payload(result: VoiceControlResult) -> str:
             "llm_calls": result.llm_calls,
             "llm_latency_ms": result.llm_latency_ms,
             "processing_ms": result.processing_ms,
+            "trace": result.trace.snapshot() if result.trace else None,
             "error": result.error,
         },
         ensure_ascii=False,

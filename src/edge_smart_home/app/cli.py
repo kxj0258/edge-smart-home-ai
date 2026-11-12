@@ -55,6 +55,7 @@ def serialize_outcome(outcome: ControlOutcome) -> dict:
             {
                 "device_id": result.command.device_id,
                 "action": result.command.action,
+                "request_id": result.command.request_id,
                 "succeeded": result.succeeded,
                 "attributes": dict(result.state.attributes) if result.state else None,
                 "error": result.error,
@@ -74,6 +75,10 @@ def serialize_response(response: AssistantResponse) -> dict:
         "label": response.event.label,
         "event_id": response.event.event_id,
         "processing_ms": response.processing_ms,
+        "session_id": response.event.trace.session_id,
+        "trace_id": response.event.trace.trace_id,
+        "trace": response.event.trace.snapshot(),
+        "schema_version": 2,
         "path": response.path,
         "provider": response.provider,
         "llm_calls": response.llm_calls,

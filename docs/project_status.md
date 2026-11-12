@@ -1,5 +1,27 @@
 # 项目状态与验证基线
 
+## 2026-09-09 增量负载诊断与队列修复
+
+已新增五阶段音频负载诊断入口、固定口令协议和 JSON/CSV 对比，
+并将实时多模态识别结果投递改为非阻塞，移除依赖满队列 sentinel 的退出路径。
+完整回归 138 项通过，假传感器/假模型覆盖全部五个 runner 阶段；真实语音实验尚待按固定口令采集，
+不声称 PortAudio overflow 已解决。运行方法见 [音频负载实验](audio_load_experiments.md)。
+
+## 2026-09-09 阶段校准与观测验收
+
+- 修改前 commit `7919736d9f8dba6e158db4d3d563296cfaaa8219`，工作区干净；
+  `baselines/20260909-pre-observability.json` 保存 128 个跟踪文件、57 个本地模型文件、119 个历史 JSON 报告的校验值。
+- 新增独立的候选冻结清单，使用 edge_ai 环境记录依赖与数据 manifest；读取 Ollama `/api/tags` 固定模型 digest，不进行模型加载或推理。
+- 实际代码已有六类静态 + swipe/pinch 几何规则、home/media profile、激活和切换；没有动态时序模型训练验证。
+- safety 当前将 lock/unlock/restart 设为 high，需确认；本轮不改变业务权限，不声称已有统一 FORBIDDEN 枚举。
+- 接入跨层 trace、音频块时间与不连续记录、采集/识别队列、编排锁等待、规划/安全/设备动作、异步反馈，以及资源快照。
+- 修正 Gesture inference 将控制执行计算在内的旧口径；未观测完整 E2E 继续为 null。
+- edge_ai 中运行 `PYTHONPATH=src python -m unittest discover -s tests -q`，130 项全部通过。
+- 5 条纯 Mock 事件覆盖 Text、Voice 模拟识别、Gesture 模拟事件与高风险确认；报告正确汇总为 5 个 trace，缺失 E2E 为 null。
+  产物：`evaluation/observability_smoke/20260909T133711.105945Z`。这不是实时性能 benchmark。
+- 未启动摄像头、麦克风、真实 HA 或模型推理；真实 overflow 是否改善仍待后续受控复测。
+- 详细定义、运行方式和限制见 [基线与观测](baseline_observability.md)；技术方案比较见 [开源对标](opensource_technical_routes.md)。
+
 ## 完成状态
 
 | 模块 | 状态 | 说明 |

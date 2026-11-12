@@ -1,7 +1,8 @@
 from __future__ import annotations
 
 from abc import ABC, abstractmethod
-from dataclasses import dataclass
+from dataclasses import dataclass, field
+from edge_smart_home.common.observability import Trace
 from typing import Any, Iterable, Sequence
 
 
@@ -9,6 +10,11 @@ from typing import Any, Iterable, Sequence
 class AudioChunk:
     samples: Any
     sample_rate: int
+    sequence: int | None = None
+    callback_ns: int | None = None
+    dequeued_ns: int | None = None
+    discontinuity: bool = False
+    queue_depth: int | None = None
 
     def __post_init__(self) -> None:
         if self.sample_rate <= 0:
@@ -20,6 +26,7 @@ class StreamingRecognition:
     text: str
     audio_seconds: float
     decode_seconds: float
+    trace: Trace = field(default_factory=Trace, compare=False, repr=False)
 
     @property
     def rtf(self) -> float | None:

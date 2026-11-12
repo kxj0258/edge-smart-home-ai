@@ -1,5 +1,7 @@
 from __future__ import annotations
 
+from edge_smart_home.common.observability import observed, span
+
 import json
 import os
 from pathlib import Path
@@ -87,6 +89,7 @@ class TextControlPipeline:
             event, scene_id, commands, confirmed=confirmed
         )
 
+    @observed("router")
     def resolve_event(
         self, event: PerceptionEvent
     ) -> tuple[str | None, tuple[DeviceCommand, ...]]:
@@ -110,7 +113,7 @@ class TextControlPipeline:
             command = commands[0]
             self.safety.check(command, confirmed=confirmed)
             self.deduplicator.check(command)
-            return self.backend.execute(command)
+            return self._execute_backend(command)
 
         # Check the complete scene before the first side effect. A high-risk
         # command late in the scene must not leave a partially applied scene.
@@ -120,7 +123,7 @@ class TextControlPipeline:
         for command in commands:
             try:
                 self.deduplicator.check(command)
-                state = self.backend.execute(command)
+                state = self._execute_backend(command)
             except (
                 ConfirmationRequiredError,
                 DeviceBackendError,
@@ -130,6 +133,13 @@ class TextControlPipeline:
             else:
                 results.append(CommandExecutionResult(command, state=state))
         return SceneExecutionResult(scene_id, tuple(results))
+
+    def _execute_backend(self, command: DeviceCommand) -> DeviceState:
+        with span("backend", request_id=command.request_id,
+                  device_id=command.device_id, action=command.action,
+                  backend=type(self.backend).__name__,
+                  completion_semantics="backend_return_not_physical_confirmation"):
+            return self.backend.execute(command)
 
     def build_agent_commands(
         self,
@@ -162,7 +172,7 @@ class TextControlPipeline:
         for command in commands:
             try:
                 self.deduplicator.check(command)
-                state = self.backend.execute(command)
+                state = self._execute_backend(command)
             except (DeviceBackendError, DuplicateCommandError) as error:
                 results.append(CommandExecutionResult(command, error=str(error)))
             else:

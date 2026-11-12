@@ -7,6 +7,8 @@ from threading import Event, Thread
 from typing import Any, Callable, Protocol
 
 import numpy as np
+from time import monotonic_ns
+from edge_smart_home.common.observability import activate, current_trace, span
 
 
 class FeedbackSpeaker(Protocol):
@@ -36,7 +38,7 @@ class QueuedFeedbackSpeaker:
         after_speak: Callable[[], None] | None = None,
     ) -> None:
         self.delegate = delegate
-        self._queue: Queue[str | None] = Queue(maxsize=max_queue_size)
+        self._queue: Queue = Queue(maxsize=max_queue_size)
         self._closed = Event()
         self._before_speak = before_speak
         self._after_speak = after_speak
@@ -46,7 +48,10 @@ class QueuedFeedbackSpeaker:
     def speak(self, text: str) -> None:
         if self._closed.is_set():
             return
-        self._queue.put(text)
+        self._queue.put((text, current_trace(), monotonic_ns()))
+
+    def metrics(self) -> dict:
+        return {"queue_depth": self._queue.qsize(), "worker_alive": self._worker.is_alive()}
 
     def close(self, timeout: float | None = 3.0) -> None:
         if self._closed.is_set():
@@ -70,13 +75,21 @@ class QueuedFeedbackSpeaker:
             try:
                 if text is None:
                     return
-                if self._before_speak:
-                    self._before_speak()
-                try:
-                    self.delegate.speak(text)
-                finally:
-                    if self._after_speak:
-                        self._after_speak()
+                text, trace, enqueued_ns = text
+                with activate(trace):
+                    if trace:
+                        trace.add("feedback_queue_wait", enqueued_ns, monotonic_ns())
+                    if self._before_speak:
+                        self._before_speak()
+                    try:
+                        with span("feedback_speaker"):
+                            self.delegate.speak(text)
+                    finally:
+                        if self._after_speak:
+                            with span("echo_guard"):
+                                self._after_speak()
+                        if trace:
+                            trace.emit("feedback_complete")
             finally:
                 self._queue.task_done()
 
@@ -118,17 +131,14 @@ class SherpaOnnxFeedbackSpeaker:
             raise RuntimeError(
                 "sounddevice is required for real-time voice feedback"
             ) from error
-        audio = self.tts.synthesize(text, self.speaker_id, self.speed)
+        with span("tts_synthesis"):
+            audio = self.tts.synthesize(text, self.speaker_id, self.speed)
         output_rate = _select_output_sample_rate(
             sd, self.audio_device, audio.sample_rate
         )
         samples = _resample(audio.samples, audio.sample_rate, output_rate)
-        sd.play(
-            samples,
-            samplerate=output_rate,
-            device=self.audio_device,
-            blocking=True,
-        )
+        with span("tts_playback"):
+            sd.play(samples, samplerate=output_rate, device=self.audio_device, blocking=True)
 
 
 class ResilientFeedbackSpeaker:
@@ -162,6 +172,10 @@ class AssistantFeedback:
         if callable(close):
             close()
 
+    def metrics(self) -> dict:
+        metrics = getattr(self.speaker, "metrics", None)
+        return metrics() if callable(metrics) else {}
+
     def received(self, text: str) -> None:
         """Keep the legacy hook without speaking an acknowledgement.
 
@@ -176,6 +190,11 @@ class AssistantFeedback:
         self._speak(text)
 
     def response(self, assistant_response: Any) -> None:
+        event = getattr(assistant_response, "event", None)
+        with activate(getattr(event, "trace", None) or current_trace()), span("feedback_submit"):
+            self._response(assistant_response)
+
+    def _response(self, assistant_response: Any) -> None:
         status = assistant_response.status
         if status == "executed":
             self._speak(completion_message(assistant_response))

@@ -6,6 +6,7 @@ from enum import Enum
 from types import MappingProxyType
 from typing import Any, Mapping
 from uuid import uuid4
+from .observability import Trace
 
 
 def utc_now() -> datetime:
@@ -30,6 +31,7 @@ class PerceptionEvent:
     timestamp: datetime = field(default_factory=utc_now)
     raw_payload: Mapping[str, Any] = field(default_factory=dict)
     event_id: str = field(default_factory=lambda: str(uuid4()))
+    trace: Trace = field(default_factory=Trace, compare=False, repr=False)
 
     def __post_init__(self) -> None:
         if not self.label.strip():

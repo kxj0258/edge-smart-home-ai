@@ -6,6 +6,8 @@ import json
 from pathlib import Path
 from statistics import mean
 from typing import Any, Mapping
+from edge_smart_home.benchmark.run_record import build_run_record, metadata_artifacts, resource_sample
+from threading import RLock
 
 from edge_smart_home.benchmark.events import (
     BenchmarkEventRecord,
@@ -18,6 +20,9 @@ class GestureDiagnosticRecorder:
 
     def __init__(self, output_root: Path, metadata: Mapping[str, Any]) -> None:
         run_id = datetime.now(timezone.utc).strftime("%Y%m%dT%H%M%S.%fZ")
+        self.session_id = run_id
+        self._io_lock = RLock()
+        self._resources_start = resource_sample()
         self.session_dir = output_root / run_id
         self.session_dir.mkdir(parents=True, exist_ok=False)
         self._results = (self.session_dir / "frames.jsonl").open(
@@ -26,6 +31,9 @@ class GestureDiagnosticRecorder:
         self._events = (self.session_dir / "events.jsonl").open(
             "w", encoding="utf-8"
         )
+        _write_json(self.session_dir / "run_record.json", build_run_record(
+            Path(__file__).resolve().parents[3], run_id, dict(metadata), metadata_artifacts(dict(metadata))))
+        self._traces = (self.session_dir / "traces.jsonl").open("w", encoding="utf-8")
         self._latencies: list[float] = []
         self._statuses: Counter[str] = Counter()
         self._frames = 0
@@ -38,6 +46,12 @@ class GestureDiagnosticRecorder:
                 **metadata,
             },
         )
+
+    def record_trace(self, record: dict) -> None:
+        with self._io_lock:
+            if not self._traces.closed:
+                self._traces.write(json.dumps(record, ensure_ascii=False) + "\n")
+                self._traces.flush()
 
     def record_frame(
         self,
@@ -59,15 +73,17 @@ class GestureDiagnosticRecorder:
                 status=str(response["status"]),
                 perception_ms=inference_ms,
                 processing_ms=float(response.get("processing_ms", 0.0)),
-                end_to_end_ms=round(
-                    inference_ms + float(response.get("processing_ms", 0.0)), 3
-                ),
+                end_to_end_ms=None,
                 device_attempts=attempts,
                 device_successes=successes,
                 metrics={"timestamp_ms": timestamp_ms},
                 error=response.get("error"),
             )
-            self._events.write(json.dumps(event.to_dict(), ensure_ascii=False) + "\n")
+            row = event.to_dict()
+            row.update({"schema_version": 2, "session_id": response.get("session_id"),
+                        "trace_id": response.get("trace_id"), "event_id": response.get("event_id"),
+                        "trace": response.get("trace")})
+            self._events.write(json.dumps(row, ensure_ascii=False) + "\n")
         self._results.write(
             json.dumps(
                 {
@@ -92,8 +108,14 @@ class GestureDiagnosticRecorder:
             return
         self._results.close()
         self._events.close()
+        with self._io_lock:
+            self._traces.close()
         ordered = sorted(self._latencies)
         summary = {
+            "schema_version": 2,
+            "session_id": self.session_id,
+            "resources_start": self._resources_start,
+            "resources_end": resource_sample(),
             "frames": self._frames,
             "observations": self._observations,
             "elapsed_seconds": round(elapsed_seconds, 3),

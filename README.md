@@ -4,11 +4,26 @@
 大模型，而是跑通“本地感知 → 统一事件 → 确定性/Agent 路由 → 安全校验 →
 设备执行 → 状态反馈 → 真实评测”的产品闭环。
 
+## 2026-09-09 增量负载诊断与队列修复
+
+已新增五阶段音频负载诊断入口、固定口令协议和 JSON/CSV 对比，
+并将实时多模态识别结果投递改为非阻塞，移除依赖满队列 sentinel 的退出路径。
+完整回归 138 项通过，假传感器/假模型覆盖全部五个 runner 阶段；真实语音实验尚待按固定口令采集，
+不声称 PortAudio overflow 已解决。运行方法见 [音频负载实验](docs/audio_load_experiments.md)。
+
+## 2026-09-09 基线与技术对标
+
+已校准旧扩展规划，冻结修改前 commit `7919736`、代码/配置/模型与历史报告校验值，
+接入统一 trace、音频队列、事件锁等待、Agent/安全/逐动作执行和反馈观测。
+新观测版通过 130 项单元测试及 5 条纯 Mock 事件回放；这不代表真实音频故障已修复。
+详见 [基线冻结与跨层观测](docs/baseline_observability.md) 和
+[项目功能与开源技术路线对标](docs/opensource_technical_routes.md)。
+
 ## 当前完成度
 
 - Text Fast Path、多设备场景和 Mock Device 闭环；
 - sherpa-onnx streaming ASR、endpoint、原生重采样、热词和音频诊断；
-- MediaPipe Gesture Recognizer、temporal filter、latch、release 和 cooldown；
+- MediaPipe Gesture Recognizer、temporal filter、latch、release、cooldown，以及媒体/家居模式和滑动/捏合几何规则；
 - Text/Voice/Gesture 共用 `PerceptionEvent` 和 `AssistantOrchestrator`；
 - Fast Path 失败后的 Intelligent Path、可复现 rule-based planner 和 Ollama 本地模型 provider；
 - Agent plan allowlist、参数校验、高风险确认和执行前预检；

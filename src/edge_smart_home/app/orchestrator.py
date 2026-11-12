@@ -5,6 +5,8 @@ from pathlib import Path
 import re
 from threading import Lock
 from time import monotonic, perf_counter
+from uuid import uuid4
+from edge_smart_home.common.observability import activate, span
 
 from edge_smart_home.agent import (
     AgentPlanValidationError,
@@ -59,6 +61,8 @@ class AssistantOrchestrator:
         intelligent_path: IntelligentPath | None = None,
         plan_validator: AgentPlanValidator | None = None,
     ) -> None:
+        self.session_id = str(uuid4())
+        self.trace_sink = None
         self.control = control
         self.intelligent_path = intelligent_path
         self.plan_validator = plan_validator
@@ -135,8 +139,29 @@ class AssistantOrchestrator:
         # Camera and command-worker threads share one backend and one local
         # model provider. Serialize event handling to keep state transitions
         # and model requests deterministic.
-        with self._event_lock:
-            return self._handle_event(event, confirmed=confirmed)
+        trace = event.trace
+        trace.session_id = trace.session_id or self.session_id
+        trace.event_id = event.event_id
+        trace.sink = trace.sink or self.trace_sink
+        trace.mark("event_received")
+        with activate(trace):
+            try:
+                with span("orchestrator_lock_wait"):
+                    self._event_lock.acquire()
+                try:
+                    response = self._handle_event(event, confirmed=confirmed)
+                finally:
+                    self._event_lock.release()
+                trace.mark("response")
+                trace.emit("response", status=response.status, source=event.source.value,
+                           path=response.path, backend=type(self.control.backend).__name__,
+                           error=response.error, llm_calls=response.llm_calls,
+                           llm_latency_ms=response.llm_latency_ms)
+                return response
+            except Exception as error:
+                trace.mark("response")
+                trace.emit("processing_error", error_type=type(error).__name__)
+                raise
 
     def _handle_event(
         self, event: PerceptionEvent, confirmed: bool = False
@@ -175,7 +200,8 @@ class AssistantOrchestrator:
             return self._error_response(event, "duplicate_suppressed", error, started)
         except UnsupportedCommandError as error:
             if self.intelligent_path is not None:
-                result = self.intelligent_path.route(event)
+                with span("planner"):
+                    result = self.intelligent_path.route(event)
                 return self._handle_intelligent_result(
                     event, result, confirmed, started
                 )
@@ -207,7 +233,8 @@ class AssistantOrchestrator:
                     event, "plan_rejected", result, started, "plan validator is unavailable"
                 )
             try:
-                self.plan_validator.validate(result.commands)
+                with span("plan_validation"):
+                    self.plan_validator.validate(result.commands)
                 outcome = self.control.execute_agent_plan(
                     event, result.commands, confirmed=confirmed
                 )
@@ -319,6 +346,8 @@ class AssistantOrchestrator:
         if decision == "cancel":
             return self._confirmation_message_response(event, "已取消。")
 
+        event.trace.emit("confirmation", related_event_id=pending.event.event_id,
+                         related_trace_id=pending.event.trace.trace_id)
         try:
             outcome = self.control.execute_resolved(
                 pending.event,

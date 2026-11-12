@@ -1,5 +1,7 @@
 from __future__ import annotations
 
+from edge_smart_home.common.observability import observed
+
 from enum import IntEnum
 from typing import Mapping
 
@@ -25,6 +27,7 @@ class SafetyPolicy:
     def risk_for(self, command: DeviceCommand) -> RiskLevel:
         return self._action_risks.get(command.action, RiskLevel.LOW)
 
+    @observed("safety")
     def check(self, command: DeviceCommand, confirmed: bool = False) -> None:
         if self.risk_for(command) >= RiskLevel.HIGH and not confirmed:
             raise ConfirmationRequiredError(

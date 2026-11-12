@@ -1,5 +1,7 @@
 from __future__ import annotations
 
+from edge_smart_home.common.observability import observed
+
 from time import monotonic
 from typing import Any
 
@@ -16,6 +18,7 @@ class CommandDeduplicator:
         self.exempt_actions = exempt_actions or {"query_state", "show_feed"}
         self._last_seen: dict[tuple[Any, ...], float] = {}
 
+    @observed("dedup")
     def check(self, command: DeviceCommand) -> None:
         if command.source != EventSource.VOICE or command.action in self.exempt_actions:
             return

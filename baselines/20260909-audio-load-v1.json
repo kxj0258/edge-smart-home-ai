@@ -1,0 +1,491 @@
+{
+  "schema_version": 2,
+  "run_id": "20260909-audio-load-v1",
+  "session_id": "20260909-audio-load-v1",
+  "created_at": "2026-09-09T14:56:27.097433+00:00",
+  "git_commit": "7919736d9f8dba6e158db4d3d563296cfaaa8219",
+  "git_status": "M README.md\n M docs/optimization_roadmap.md\n M docs/project_status.md\n M scripts/run_gesture_demo.py\n M scripts/run_live_multimodal_demo.py\n M scripts/run_voice_demo.py\n M src/edge_smart_home/agent/local_llm.py\n M src/edge_smart_home/app/cli.py\n M src/edge_smart_home/app/orchestrator.py\n M src/edge_smart_home/app/pipeline.py\n M src/edge_smart_home/audio/diagnostics.py\n M src/edge_smart_home/audio/feedback.py\n M src/edge_smart_home/audio/interfaces.py\n M src/edge_smart_home/audio/microphone.py\n M src/edge_smart_home/audio/pipeline.py\n M src/edge_smart_home/audio/sherpa_onnx_adapters.py\n M src/edge_smart_home/common/schemas.py\n M src/edge_smart_home/device/safety.py\n M src/edge_smart_home/router/dedup.py\n M src/edge_smart_home/vision/diagnostics.py\n M src/edge_smart_home/vision/pipeline.py\n?? baselines/\n?? docs/audio_load_experiments.md\n?? docs/baseline_observability.md\n?? docs/opensource_technical_routes.md\n?? scripts/compare_audio_load_runs.py\n?? scripts/freeze_baseline.py\n?? scripts/run_audio_load_probe.py\n?? scripts/summarize_traces.py\n?? src/edge_smart_home/audio/dispatch.py\n?? src/edge_smart_home/benchmark/audio_load.py\n?? src/edge_smart_home/benchmark/run_record.py\n?? src/edge_smart_home/common/observability.py\n?? tests/test_audio_load.py\n?? tests/test_audio_load_runner.py\n?? tests/test_observability.py",
+  "files_sha256": {
+    "configs/agent.json": "2698607ea327b44b9b5b49d1003825ae1f621dbc6f1c48e298ca56bf98c059ff",
+    "configs/asr_test_commands.txt": "7a9c684bdf5f682455cedcf4ecb242015294936e84a1bc329c140a8075341315",
+    "configs/audio.json": "6302ca7081b1cebaed2c9bdfd19c1cfecda361a041fe33a356b16bf0ce3f88ca",
+    "configs/devices.json": "3b6fd0e57acd6c32e11af9b96d46af763148c867f04b3f2ce4f785ea92759a6a",
+    "configs/gestures.json": "adab0120a3010bc81de64e00a58e3a53c5135e384870b6ad15b89315bcef8c89",
+    "configs/hagrid_mapping.json": "ea07cacb0712bb3f3938306f649314e2256515df94b99fcbf898d62613ff499b",
+    "configs/home_assistant.json": "fe7b4698d0e536303f0b1513d45f99095d500c3d4ba48bc05da282a2b10e63db",
+    "configs/hotwords.txt": "c8b593caf7dd23bbad6ea2b6fd53246fc11d190ad734123e903d7ed89c90ab8a",
+    "configs/hotwords_v2.txt": "10a03213ead8e3da02b6a7683f3a3851298b877e2f0373a9b8912e6bf353dc37",
+    "configs/intents.json": "40929c45e4c99864965a245bff4ef48ad8d74f4ba9e18cfac43833007594f0f6",
+    "configs/routing.json": "331a3b80943ca8bd3b783fddbadcc770699559f9dfcc50696203e9abf56edd5e",
+    "configs/safety.json": "63af2c1b9c430e401639a6ef037988e31ffd92c7e9271035622db94496d2a4d2",
+    "configs/scenes.json": "128f88d98654e73eb2a08e90b398c57251ad7dfc0017baca1673d2cdc52a127b",
+    "configs/tts_pronunciation_overrides.txt": "bb8ef88539088b096b4b18f597aa83eb75308903bb7512e424921c690d87d97c",
+    "configs/vision.json": "5dfd41197b5afcdf1e204c7153c182adbe9f57b1645a5f474eade607518ffd2e",
+    "pyproject.toml": "27cbb68f792c44bb172cc83c8783c8a0852efaebfa8dbbb4ea38f65a484fcf4e",
+    "schemas/agent_response.schema.json": "b7b9e329e8fa1d770dacc690e439313bd541600b88b0d3c5b9d7b0cccc1d0cd2",
+    "scripts/benchmark_text_e2e.py": "0113e480f239e40836495d3a2b703fc6ff8fdb99d9b42e95fd1fd1fcbfc457da",
+    "scripts/build_hagrid_manifest.py": "c4d8be7955d3328e8b9b5b9c57d29d5a0d227de93b9b27914b63197052e201a3",
+    "scripts/compare_asr_runs.py": "6a7fdaed1d7ba8320db92bb19762c883c20fdd044a2c969a47da775eaf8c2e44",
+    "scripts/compare_audio_load_runs.py": "ec060a4fb09e03f5c7d9c26efd0b4aa9a21de936abdb86bb502d2573d3513bdc",
+    "scripts/create_gesture_ground_truth.py": "381e073180bbfa65c56f6b0ef1fe36db925ece5887232ff5ffffff525a7d69f4",
+    "scripts/evaluate_agent_dialogue.py": "75a032081e7ec91c59194e6b29aff076ac13d1be85cfa8cbf733aae3f1f266c1",
+    "scripts/evaluate_agent_planning.py": "70fb90ad2bb79c34f079e6eba9fa2de721cdc019267117cb2be514851671fb79",
+    "scripts/evaluate_asr_command_set.py": "bb18e897b7e40fbcb513de5dd204e6f66ad3b6a8f4e353715e472d0632116100",
+    "scripts/evaluate_gesture_ground_truth.py": "acb83ef752386d6cc06640bccbc2c588515afefb449e659097388346f7821264",
+    "scripts/evaluate_hagrid_mediapipe.py": "fa5aaea88a02570c857f7c340e44b594666ef05bcf4072c5742e4a4d78c0b146",
+    "scripts/freeze_baseline.py": "570b1d98fd01b48627fa9ef3ddba68d71120443a9d37182cfb386cf2237fefa6",
+    "scripts/generate_tts_command_set.py": "22e490dbef24f4a0aeaedad473db3d4b7eb19fd19d803b2f9c57d5780a6ab648",
+    "scripts/prepare_hagrid_smoke_subset.py": "8593b2afe014e6d112728dd0a933bc81e6f5e512ac9cf52cdded1d44f620d79f",
+    "scripts/record_asr_command_set.py": "2ce0759a8044646a36ad9099943d405afbfd522e029f6711dfb55fa71597cc4a",
+    "scripts/rescore_asr_run.py": "a13c7e360f71e2a2538cd7ff2fc49f280a078da328a567d1d721d6d6c31b6ad2",
+    "scripts/run_assistant_demo.py": "09639a2f5d0ff70f866a7fd4b23fa7317c6082008b834cf24a70de5d5c7bd44b",
+    "scripts/run_audio_load_probe.py": "0bd78a1cf95ea3e1a530bed7f9027d64e0588f80591913db6b6c709e86494a86",
+    "scripts/run_gesture_demo.py": "669abffeb70ba5a90b6c6300fb6267bc974aa11fba4e2eefbf7e601b4536a26f",
+    "scripts/run_gesture_simulation.py": "81e37d4ba965796cc41408952fe95f84be2ce0204b4e48eabcda027758ffa84f",
+    "scripts/run_live_multimodal_demo.py": "84c9fd39177e8642574a54367a135c5fecbf30e5386491e6c9888fd19f2330bf",
+    "scripts/run_multimodal_demo.py": "bc6107324d64aa4c9f946615abb2c9234281eaa11f1dc5f54a4ad12a6561ffe0",
+    "scripts/run_official_style_asr.py": "e1b906a08eb035581e839f45958ffca411fba0a4f1e2d511b5247af1ce6926e0",
+    "scripts/run_text_demo.py": "40a622adfdd6d6ab2caa75eba3b3859f47ce05516b0224078731a9089cadcfc4",
+    "scripts/run_voice_demo.py": "62922cac32d625ff5af876699ebcef3d7bd6c4ccf4a6275b92108a1aca5ed566",
+    "scripts/summarize_multimodal_benchmark.py": "ce4da20f1cc7d508c526afc6cb738a9fddc8ea9f6476321b2ce5706f12e0cb5d",
+    "scripts/summarize_traces.py": "5301e586d121d1a751f8870a229265c6d111afc4fcdfb367cdb5e12992b57b0f",
+    "scripts/sweep_hagrid_thresholds.py": "21d7280fe666fdc30fd8f8ab35d5a1650595baadb34b6977a9ce3afe389c7f79",
+    "src/edge_smart_home/__init__.py": "bc8811cac54d3e63c8530dc8b1d6a51d3a5310e792f7d54023a6ce0ab257e71b",
+    "src/edge_smart_home/agent/__init__.py": "c49fe6b9c14bc87db56d8a74af7ef7cb59c6ef7e06e5aa18423ab0c3db2d114e",
+    "src/edge_smart_home/agent/contract.py": "833e45aeb96857666b7994870928f877cec7a8a40120892c6b30070444efc26d",
+    "src/edge_smart_home/agent/interfaces.py": "b30eafbdec8984bf8245f5d96e0278a3cabb7d714c2a4f9d089eb358426cffaa",
+    "src/edge_smart_home/agent/local_llm.py": "eaba5c43924d3bfe846e65a39653f6ac6011c9abfb9d7aabaebd970286c2b825",
+    "src/edge_smart_home/agent/rule_based.py": "8a31c6e086629b7f2d0c8ca16f99fab53a0f90080c5767f632ad4bd28f4dfdd2",
+    "src/edge_smart_home/agent/stub.py": "a89be5c1198d51d3b0a8fa9108c39ee6d239e857cbca3a1d24123d3417308b04",
+    "src/edge_smart_home/agent/validation.py": "5dc22cfa63d19be3e7ac7b269e80a7efbc6338805cba1e378db148a86a6f26e3",
+    "src/edge_smart_home/app/__init__.py": "f840e41ed64c6a876ca6fbd0d0a4a5ef9ef8d6403d0cc6af83a4bd25f96d098e",
+    "src/edge_smart_home/app/cli.py": "230ed49174b5355483fcc6ea182fb889b8e218df36df2331cae7f73acce971d6",
+    "src/edge_smart_home/app/orchestrator.py": "a292b87f09714f0a6859cf07252b63dcd792816d17656f673e0764988e7eaa8a",
+    "src/edge_smart_home/app/pipeline.py": "d44f9f20f2322e7e33c9aad078cec0ed2cfee58c97af784191cb4d97a96c9a49",
+    "src/edge_smart_home/audio/__init__.py": "c7c1c51758ecc0e973366042b4d56c3c4dc01f58191e7da94c14a308772b52c5",
+    "src/edge_smart_home/audio/diagnostics.py": "0b0fd9d98e91c6445c26a67cefb2041f035f48011a22bdfb84758e019fa63869",
+    "src/edge_smart_home/audio/dispatch.py": "88c19cddf32166a1331245dd3a8b836f0ba000d065a26445f74275c7aaca94cf",
+    "src/edge_smart_home/audio/feedback.py": "91e43c5e63fd3dfe09a2ae23a9ff8daa561451ad5dd4f3e9595ee4f243faa824",
+    "src/edge_smart_home/audio/hotwords.py": "661c167dc2a249c259180bb0eb58d390d3a13f62df28fb561bb9e333e173a9dd",
+    "src/edge_smart_home/audio/interfaces.py": "4caa9b2dc5f0e5ec9ea8ba6fa833272325417528ba1f1f6fc0410795a60fbcf9",
+    "src/edge_smart_home/audio/microphone.py": "2fc361f3831c98889e9bdae86d08faaac44d26395aaa417b12cfc15aced8f651",
+    "src/edge_smart_home/audio/pipeline.py": "ae78ef8c541521ad2b61fc1b51331bb3d84964bcaf81da538ef20a9adad85b50",
+    "src/edge_smart_home/audio/sherpa_onnx_adapters.py": "5ddaeb3fc30124befe4171e98eac06e0e650a8b32f56e854a1236ccb48e5b300",
+    "src/edge_smart_home/audio/tts.py": "f1cabb966979b56701e999f09e32d442f781729e294071611475a03450f97d0a",
+    "src/edge_smart_home/benchmark/__init__.py": "4a0524b8449d2158fbc2062b3c80184f9f9450e23a207974d79eb2391678c4ea",
+    "src/edge_smart_home/benchmark/asr_command_set.py": "c9da4ed181fa0adf0f6b363ef29f222ff89299730bbdc77e0bbe18f6f2b30d2b",
+    "src/edge_smart_home/benchmark/asr_evaluation.py": "8eb8777ae2aa9da1eeba326fd892fa910b8e8e2b7291cf9be23bf5271217d0d2",
+    "src/edge_smart_home/benchmark/audio_load.py": "f2463ae9bb962d5a0d4785539168affc014e44a443701a2b42fa577fee316bc6",
+    "src/edge_smart_home/benchmark/e2e.py": "05f22e26f9788df84f7da9dcf40b65a8d1f9567c9ac4bbb50b09b9639eee6ac3",
+    "src/edge_smart_home/benchmark/events.py": "d2f02bb73e1591d23597a6af68fb874ea3e90a5d2adf8c6120ea34229fabef69",
+    "src/edge_smart_home/benchmark/gesture_ground_truth.py": "f8586a8cf9cd253b78271324a5ddf665012716294ffb8dd5d0a7b79c1ad1f1d2",
+    "src/edge_smart_home/benchmark/gesture_guided.py": "9a2a3fa9082a0af128861a6cc1bef5a630dd058bf9a46e03457fffd3dcbe7b6b",
+    "src/edge_smart_home/benchmark/hagrid.py": "3889fc3109232476c1fdd4e7f2b41cb0daab270d77a3ded65d805fae2bb419e6",
+    "src/edge_smart_home/benchmark/run_record.py": "12afd3fa5451596cf513ec6cddae2b698ed16f519c6ef43205e89679cb18b3df",
+    "src/edge_smart_home/common/__init__.py": "a2181856a7cf29a86f4991d51a5a8ee877013ceac7edbc455af1ccfbb2a9da3f",
+    "src/edge_smart_home/common/observability.py": "5b0c32b9e428bb6277184385c1f4b2a33cb3696b541a5c385be2789f985cefdf",
+    "src/edge_smart_home/common/schemas.py": "214b61e7c54b34b2217e41182fec2316d89017e669fe6a79bbced8c4bcf96244",
+    "src/edge_smart_home/device/__init__.py": "38b4b5ecf0f3c18146b7123f0be805167bebd9744c78534181cb7b81d402273c",
+    "src/edge_smart_home/device/base.py": "2d892d7879620e3902b2e2d177cf4d373d0b597822614eab65c4ccb10b352ea7",
+    "src/edge_smart_home/device/home_assistant.py": "da1b0d37dc2c63ce83fa7cb156d454d1c4c2299b9a03b273f54c8809d746ed5a",
+    "src/edge_smart_home/device/mock.py": "9456e9099bdd0cc5ceb744e96ee709b714ec08703b235f0dea6279ab6408ed3e",
+    "src/edge_smart_home/device/safety.py": "ffdc557b929bc19781f065c45b10a3da419817867dd7cb187916ad07f847771d",
+    "src/edge_smart_home/router/__init__.py": "4bc5ab0e14cb6fc8cc08b422cdada5b1b81e18a6c6a066b4d36ee5b797ff4efc",
+    "src/edge_smart_home/router/dedup.py": "e11f4a7f17eb66450c13c80fa0f9c2d50186686d6dfa1a0d35a7c63272b1f7e8",
+    "src/edge_smart_home/router/fast_path.py": "fdeb4b79a7076bab60ae98ee779b9dc73840e880ece04d5176838eb53520bc1b",
+    "src/edge_smart_home/router/scene_router.py": "9278bc0fbeb043976acc17f7eb60f2635a49c4e1dec1cc66d8496a64685e81cf",
+    "src/edge_smart_home/vision/__init__.py": "551c20cf91ee199ae25adb85e11a4b2cacee10bceef9ea8826378b2dd288eed5",
+    "src/edge_smart_home/vision/diagnostics.py": "d6c713eedb9338b27b7c7d39de15823cede4fc92efc1872e05043834cacf9c5c",
+    "src/edge_smart_home/vision/display.py": "bb9031ac3a0eeae9890a33462c925fdadf58b5cb8e5cae9f66194a54f0d4d09a",
+    "src/edge_smart_home/vision/dynamic.py": "f1a70477dceedf63fb8c7bab7d3ecbc02d95677a0a0b0bfdbf7ea97dff5c09d8",
+    "src/edge_smart_home/vision/interfaces.py": "b907498cb8475f5ab90b1ae095691c942a7bc46bdc80cf1e2a13f3ae28fad049",
+    "src/edge_smart_home/vision/mediapipe_adapter.py": "5ae59f116c470a8540c567d1cb46529709ab0cd24e94cfde94c0844e96dd4ee1",
+    "src/edge_smart_home/vision/pipeline.py": "c733e1a2575febd4e9a17a95a94ae0898be570c8862b116e31728c6ae528a165",
+    "src/edge_smart_home/vision/temporal_filter.py": "109ea9ed1bb7264f0dadf2a4e9a09f2fa2a0607b3990aba7c376fef41c13c152",
+    "src/edge_smart_home_ai.egg-info/PKG-INFO": "631c3ba4bfb8d0df1d91650ea4806c1a086162922784f2203c91987cd53eeeb0",
+    "src/edge_smart_home_ai.egg-info/SOURCES.txt": "7f8b4830599f771f370e08d1fc9eb6b3475a1298e5873e62338b93000474ebf9",
+    "src/edge_smart_home_ai.egg-info/dependency_links.txt": "01ba4719c80b6fe911b091a7c05124b64eeece964e09c058ef8f9805daca546b",
+    "src/edge_smart_home_ai.egg-info/entry_points.txt": "d0893a5847a3f97a49d508b9d22cc5651a61f018268e24e02f6d3778536ae1a5",
+    "src/edge_smart_home_ai.egg-info/requires.txt": "5a96eeeaed2bc9b9fcc45befb7fd8eadd762a94f3dd45d74caa5a2f29395fbf1",
+    "src/edge_smart_home_ai.egg-info/top_level.txt": "623f84cda7b0a73bcd5e09dc08a0714d1efd1a00f377678939f07670b360d5eb",
+    "tests/fixtures/agent_cases.json": "53752dcba00d12e7a8b3689c52ad7aeaa492ce25667cb4f4d2e73aa7232f8e6c",
+    "tests/fixtures/agent_dialogue_cases.json": "4e7a0a4874478a8689d83b87ecc348ce1e1d1d09cd0e59f3c62d386fd6ad8d78",
+    "tests/test_agent_contract.py": "cb1f72a32446692ef25b7d9a3152c3c9727cbb8bce7f2921e55167ab0b924c67",
+    "tests/test_asr_command_set.py": "7a5cc14ec4e412b97b4094c234b41fe73a050b57f554bf40d0b3b62316e71b2c",
+    "tests/test_asr_evaluation.py": "749b330f0046139287ee1d4a32a07c0610a2c78c0457d4eda6280f8a43abaa61",
+    "tests/test_assistant_demo.py": "19073c2d5d635993b3e452d65e14bfcf52fdaa202d2a2b119ab4bc3070d5112f",
+    "tests/test_audio_load.py": "3c0340bc5334e3af0f55b7528b7efe59a22bac4cc85c3143c9c02e1b296e0d3b",
+    "tests/test_audio_load_runner.py": "9a8eaad40508fcfef67cb622d08e633f401bbc09b6229860f3267d26d39cc06d",
+    "tests/test_benchmark_events.py": "6d95ebcf62540fa96ab842ba16177b40aabcf233525c92a8a505500812f0f2fc",
+    "tests/test_compare_asr_runs.py": "b44bb3d1a109483e67dbce14eabb78f9abd73e090e0f5735c942e9cb6655eadf",
+    "tests/test_e2e_benchmark.py": "b29811949c7ab8908c52075a7845efcbd086a1868da9033e0a16ca9b63e173c2",
+    "tests/test_extended_home.py": "021c05fef80545ba4b58d2d70c961bae5e942ad25dc64bf3daad5c1ec6658744",
+    "tests/test_feedback.py": "b813f74f4d2a222ee6b66d847d525a478716139a4d6eda6befadec9f634c9e58",
+    "tests/test_gesture_ground_truth.py": "624ab45d517f634abb6fcb2b139e0457b1fa4dc34db31e1a38cc26e9ed4bcae9",
+    "tests/test_gesture_pipeline.py": "58b05cc849ef4bb6fcb38220920426087de3281164286225cd2c335a98e3253a",
+    "tests/test_hagrid_evaluation.py": "9b7780911146a7eee7cf374fd2ef8f73388d651b9a337cb1b61e4e02cd59e9b9",
+    "tests/test_home_assistant_backend.py": "3e9a8c426c56a106140eaac893194a1849eaac4472c8fabea5a666a7bea39802",
+    "tests/test_hotwords.py": "1fc2e51aeb3750f9baa89cfca2258592e48fc9da1f58a84978d72356d2325c5a",
+    "tests/test_intelligent_path.py": "29c6b6da05749bff76ceab4a5e31dbfbe7f7c9e96edf07f550c3948ccdc81715",
+    "tests/test_local_llm.py": "e7ec55ab50168fbed36e9823bcf901fbe64c7d80c929498b9593894623860ec2",
+    "tests/test_observability.py": "5263eec9b9556dc61ebf7c6f5f42ecb2c3e641dbbf9454faee0c71b3b81fefaf",
+    "tests/test_orchestrator.py": "070b894ad17293292ed3edabd3e7c6558fa94b7c678ed48225c0e3680b82a2cc",
+    "tests/test_text_pipeline.py": "e2d8aead17cd388d6bae770c2e247f06d99c5df10eacd3228ae1bd90a50b1801",
+    "tests/test_tts_command_set.py": "cb45ae8ec4c9aed96288f9be97296bacd50c4d7d8718ef1cc95addc6b36d33c8",
+    "tests/test_vision_display.py": "6add92c3d0a0f310ace591e939ef3ed30819830130128441c7c4e461434e83f3",
+    "tests/test_voice_pipeline.py": "e142473b3eba045b114f1b338098c4e4c6caa1d0458556ac89038832404474d2"
+  },
+  "config_sha256": "1c07b46a0e41aa7ff824be9f74fe9b291a776b38509e24588e7acf647767906e",
+  "artifacts": {
+    "/home/kxj/zte_ws/edge-smart-home-ai/models/gesture_recognizer.task": {
+      "sha256": "97952348cf6a6a4915c2ea1496b4b37ebabc50cbbf80571435643c455f2b0482",
+      "bytes": 8373440
+    },
+    "/home/kxj/zte_ws/edge-smart-home-ai/models/sherpa-onnx-streaming-zipformer-bilingual-zh-en-2023-02-20/README.md": {
+      "sha256": "b6f9458f4208ae821beaaf11dc983486916a4089a2f3677b40f9ff06ec4e6440",
+      "bytes": 296
+    },
+    "/home/kxj/zte_ws/edge-smart-home-ai/models/sherpa-onnx-streaming-zipformer-bilingual-zh-en-2023-02-20/bpe.model": {
+      "sha256": "bcae393dbc5611be5ffa4c7ae0841558978a5a4f484008cb9dff3a2cc97ebe01",
+      "bytes": 244836
+    },
+    "/home/kxj/zte_ws/edge-smart-home-ai/models/sherpa-onnx-streaming-zipformer-bilingual-zh-en-2023-02-20/bpe.vocab": {
+      "sha256": "d0b642f3a2eacd5fadefdeff9e0e1358cab729647cbb7fe58cf738e1f7407029",
+      "bytes": 12564
+    },
+    "/home/kxj/zte_ws/edge-smart-home-ai/models/sherpa-onnx-streaming-zipformer-bilingual-zh-en-2023-02-20/decoder-epoch-99-avg-1.int8.onnx": {
+      "sha256": "1a70c593d71e53f023f5f55b0b4cfff5055abb786ee3992e5f63dc2e273cc4fa",
+      "bytes": 13091040
+    },
+    "/home/kxj/zte_ws/edge-smart-home-ai/models/sherpa-onnx-streaming-zipformer-bilingual-zh-en-2023-02-20/decoder-epoch-99-avg-1.onnx": {
+      "sha256": "2e3b5ec371f8899ee6acd829fd753ba45772df57a91bdf37cde3136354e7db7d",
+      "bytes": 13876452
+    },
+    "/home/kxj/zte_ws/edge-smart-home-ai/models/sherpa-onnx-streaming-zipformer-bilingual-zh-en-2023-02-20/encoder-epoch-99-avg-1.int8.onnx": {
+      "sha256": "8fa764187a261844f859d7143ebaa563af5d10adfece4c18a8f414c88cba2a9b",
+      "bytes": 181895032
+    },
+    "/home/kxj/zte_ws/edge-smart-home-ai/models/sherpa-onnx-streaming-zipformer-bilingual-zh-en-2023-02-20/encoder-epoch-99-avg-1.onnx": {
+      "sha256": "709f0ed53a734b7942f170127e7547b566cb29c4afc5e67719f314c3d63ccb10",
+      "bytes": 330083505
+    },
+    "/home/kxj/zte_ws/edge-smart-home-ai/models/sherpa-onnx-streaming-zipformer-bilingual-zh-en-2023-02-20/joiner-epoch-99-avg-1.int8.onnx": {
+      "sha256": "1ed689c5ed19dbaa725d9d191bb4822b5f4855a39e1ffd28cbc1f340d25b2ee0",
+      "bytes": 3228404
+    },
+    "/home/kxj/zte_ws/edge-smart-home-ai/models/sherpa-onnx-streaming-zipformer-bilingual-zh-en-2023-02-20/joiner-epoch-99-avg-1.onnx": {
+      "sha256": "5f2adc585dd1bec6421c8bb8660d2a73fc8b9ceb24491ef51399ba2a2f0fc31b",
+      "bytes": 12833618
+    },
+    "/home/kxj/zte_ws/edge-smart-home-ai/models/sherpa-onnx-streaming-zipformer-bilingual-zh-en-2023-02-20/test_wavs/0.wav": {
+      "sha256": "7d93384ca14702cc584a7a33fe2fed92e89e708549161cb12ea38c916882103b",
+      "bytes": 321744
+    },
+    "/home/kxj/zte_ws/edge-smart-home-ai/models/sherpa-onnx-streaming-zipformer-bilingual-zh-en-2023-02-20/test_wavs/1.wav": {
+      "sha256": "8bfb42c963e623ebab31b81ff4404867d07d3102507c87ac14577c4c61663b8c",
+      "bytes": 163244
+    },
+    "/home/kxj/zte_ws/edge-smart-home-ai/models/sherpa-onnx-streaming-zipformer-bilingual-zh-en-2023-02-20/test_wavs/2.wav": {
+      "sha256": "20805bcc696b9b65f3357a2508a419d4f33b81006d47e1312e219b0fad934d1d",
+      "bytes": 150124
+    },
+    "/home/kxj/zte_ws/edge-smart-home-ai/models/sherpa-onnx-streaming-zipformer-bilingual-zh-en-2023-02-20/test_wavs/3.wav": {
+      "sha256": "5851e31f3e8e5f741635da9466e19fccfbabd117ebcdc92db242c92483aee064",
+      "bytes": 282604
+    },
+    "/home/kxj/zte_ws/edge-smart-home-ai/models/sherpa-onnx-streaming-zipformer-bilingual-zh-en-2023-02-20/test_wavs/8k.wav": {
+      "sha256": "ad03b71750338810aa39534a42c0bda6c227488ab59e40da1ec8e4804d4ea5c7",
+      "bytes": 282284
+    },
+    "/home/kxj/zte_ws/edge-smart-home-ai/models/sherpa-onnx-streaming-zipformer-bilingual-zh-en-2023-02-20/tokens.txt": {
+      "sha256": "a8e0e4ec53810e433789b54a5c0134a7eaa2ffca595a6334d54c00da858841d3",
+      "bytes": 56317
+    },
+    "/home/kxj/zte_ws/edge-smart-home-ai/models/sherpa-onnx-streaming-zipformer-bilingual-zh-en-2023-02-20.tar.bz2": {
+      "sha256": "27ffbd9ee24ad186d99acc2f6354d7992b27bcab490812510665fa8f9389c5f8",
+      "bytes": 511274346
+    },
+    "/home/kxj/zte_ws/edge-smart-home-ai/models/sherpa-onnx-streaming-zipformer-zh-int8-2025-06-30/README.md": {
+      "sha256": "24a953594138ebd61a4e60637febcff1cecd4f79ed05632109a937b74f9ebcd7",
+      "bytes": 317
+    },
+    "/home/kxj/zte_ws/edge-smart-home-ai/models/sherpa-onnx-streaming-zipformer-zh-int8-2025-06-30/decoder.onnx": {
+      "sha256": "06522ad63cec0fdf6809f4e1db9bb4f7d710c34582e3b35db62ac60eccafac7e",
+      "bytes": 5165083
+    },
+    "/home/kxj/zte_ws/edge-smart-home-ai/models/sherpa-onnx-streaming-zipformer-zh-int8-2025-06-30/encoder.int8.onnx": {
+      "sha256": "5ac51e27981bb4dab01bb9be4958453ba50c3b61c063ddda0eab23fd3671aa4f",
+      "bytes": 161141793
+    },
+    "/home/kxj/zte_ws/edge-smart-home-ai/models/sherpa-onnx-streaming-zipformer-zh-int8-2025-06-30/joiner.int8.onnx": {
+      "sha256": "b34584dc6f561089e1d747fedebb3765f2caa72c927ef54d7ca55e5ae40a814b",
+      "bytes": 1033416
+    },
+    "/home/kxj/zte_ws/edge-smart-home-ai/models/sherpa-onnx-streaming-zipformer-zh-int8-2025-06-30/test_wavs/0.wav": {
+      "sha256": "668bf8df51a10027b84d5d8816a1ce11ae93545538dc05cfe2aa6811d399c250",
+      "bytes": 179646
+    },
+    "/home/kxj/zte_ws/edge-smart-home-ai/models/sherpa-onnx-streaming-zipformer-zh-int8-2025-06-30/test_wavs/1.wav": {
+      "sha256": "30edbabea84ca4c076f5b43bb44495f436f6711319c32a200d3fc5c67c1fee1d",
+      "bytes": 164976
+    },
+    "/home/kxj/zte_ws/edge-smart-home-ai/models/sherpa-onnx-streaming-zipformer-zh-int8-2025-06-30/test_wavs/8k.wav": {
+      "sha256": "0ed3bddacf0a23477d2b3c07ff9c24ad9c1fc3b31cdd47cb0773441e8e045cde",
+      "bytes": 72434
+    },
+    "/home/kxj/zte_ws/edge-smart-home-ai/models/sherpa-onnx-streaming-zipformer-zh-int8-2025-06-30/tokens.txt": {
+      "sha256": "6193c7ea1c96d0d9a1e9652789b40d13a8a913b434a5451e93158f5a09fd6652",
+      "bytes": 20628
+    },
+    "/home/kxj/zte_ws/edge-smart-home-ai/models/sherpa-onnx-streaming-zipformer-zh-int8-2025-06-30.tar.bz2": {
+      "sha256": "5a2832047ea1f97dd0dc595b816c230c4bafad65cfc0341fa57517cadc50afd0",
+      "bytes": 132634597
+    },
+    "/home/kxj/zte_ws/edge-smart-home-ai/models/sherpa-onnx-streaming-zipformer-zh-xlarge-int8-2025-06-30/README.md": {
+      "sha256": "9bd6af44d7ad96de4c3457613a8a95c75dbd91a40b26fb988a1b42d07a190f36",
+      "bytes": 311
+    },
+    "/home/kxj/zte_ws/edge-smart-home-ai/models/sherpa-onnx-streaming-zipformer-zh-xlarge-int8-2025-06-30/bpe.model": {
+      "sha256": "867a7355801cb43939962ad757ba1cb7941b6171b5a6902772483b4e3a623377",
+      "bytes": 263956
+    },
+    "/home/kxj/zte_ws/edge-smart-home-ai/models/sherpa-onnx-streaming-zipformer-zh-xlarge-int8-2025-06-30/decoder.onnx": {
+      "sha256": "8f9c903da2818f207304a3f30b9eeb30028e30398f333c1e95e12c97704173e6",
+      "bytes": 8533022
+    },
+    "/home/kxj/zte_ws/edge-smart-home-ai/models/sherpa-onnx-streaming-zipformer-zh-xlarge-int8-2025-06-30/encoder.int8.onnx": {
+      "sha256": "f2c543a0330e1ed0bd09c82e4ae7d3f1cbee10a15feca638fcc4f88083a36b8a",
+      "bytes": 761133737
+    },
+    "/home/kxj/zte_ws/edge-smart-home-ai/models/sherpa-onnx-streaming-zipformer-zh-xlarge-int8-2025-06-30/joiner.int8.onnx": {
+      "sha256": "f76ffce14b6ef80098cfdbce8846896ff68133970abc314eafab632f910df0d7",
+      "bytes": 1545417
+    },
+    "/home/kxj/zte_ws/edge-smart-home-ai/models/sherpa-onnx-streaming-zipformer-zh-xlarge-int8-2025-06-30/test_wavs/0.wav": {
+      "sha256": "668bf8df51a10027b84d5d8816a1ce11ae93545538dc05cfe2aa6811d399c250",
+      "bytes": 179646
+    },
+    "/home/kxj/zte_ws/edge-smart-home-ai/models/sherpa-onnx-streaming-zipformer-zh-xlarge-int8-2025-06-30/test_wavs/1.wav": {
+      "sha256": "30edbabea84ca4c076f5b43bb44495f436f6711319c32a200d3fc5c67c1fee1d",
+      "bytes": 164976
+    },
+    "/home/kxj/zte_ws/edge-smart-home-ai/models/sherpa-onnx-streaming-zipformer-zh-xlarge-int8-2025-06-30/test_wavs/8k.wav": {
+      "sha256": "0ed3bddacf0a23477d2b3c07ff9c24ad9c1fc3b31cdd47cb0773441e8e045cde",
+      "bytes": 72434
+    },
+    "/home/kxj/zte_ws/edge-smart-home-ai/models/sherpa-onnx-streaming-zipformer-zh-xlarge-int8-2025-06-30/tokens.txt": {
+      "sha256": "6722bd1585f46f84456b29c3550a343a3cc375b971645773c02ed8e0b4e2405c",
+      "bytes": 18626
+    },
+    "/home/kxj/zte_ws/edge-smart-home-ai/models/sherpa-onnx-streaming-zipformer-zh-xlarge-int8-2025-06-30.tar.bz2": {
+      "sha256": "30437d84dc4861740d40166212ab05f3728945443d53691620075c4031fb88e1",
+      "bytes": 597755927
+    },
+    "/home/kxj/zte_ws/edge-smart-home-ai/models/sherpa-onnx-vits-zh-ll/G_multisperaker_latest.json": {
+      "sha256": "f31e4bf23827c3528fdf090fd7b6fb8e63333709b80670d40fa864f1fa9fadf3",
+      "bytes": 2352
+    },
+    "/home/kxj/zte_ws/edge-smart-home-ai/models/sherpa-onnx-vits-zh-ll/README.md": {
+      "sha256": "bc51b9240f9512e1c9e5b859931d04b5c2b5062b44f63162f2f749f693ffebbd",
+      "bytes": 127
+    },
+    "/home/kxj/zte_ws/edge-smart-home-ai/models/sherpa-onnx-vits-zh-ll/date.fst": {
+      "sha256": "eb8aa079ae3cb81d8f4404992f39d61a0cb990947512b5b8d1e54d1f6980e718",
+      "bytes": 59154
+    },
+    "/home/kxj/zte_ws/edge-smart-home-ai/models/sherpa-onnx-vits-zh-ll/dict/README.md": {
+      "sha256": "8bcc7c2ed7dff082d9a99c09de0bfd72249bf3b5c4298a3af328da40cbd8cfd1",
+      "bytes": 683
+    },
+    "/home/kxj/zte_ws/edge-smart-home-ai/models/sherpa-onnx-vits-zh-ll/dict/hmm_model.utf8": {
+      "sha256": "f17790586ac86dd048c8adffed052c4bd2b28ed0682972c1275e59040c0589a7",
+      "bytes": 519739
+    },
+    "/home/kxj/zte_ws/edge-smart-home-ai/models/sherpa-onnx-vits-zh-ll/dict/idf.utf8": {
+      "sha256": "dbd1e03d72b2263cc8d84a4304ed77677eed9e7deaf43a1a5133bbba9733b535",
+      "bytes": 5998717
+    },
+    "/home/kxj/zte_ws/edge-smart-home-ai/models/sherpa-onnx-vits-zh-ll/dict/jieba.dict.utf8": {
+      "sha256": "3043b77068e09c9904f27cad82f12b6ebe9dbdb5aeff3b25e45ab7f9c1122b55",
+      "bytes": 5071204
+    },
+    "/home/kxj/zte_ws/edge-smart-home-ai/models/sherpa-onnx-vits-zh-ll/dict/pos_dict/char_state_tab.utf8": {
+      "sha256": "28b7be1dd7369766a51445af4d42e9a2ba4bf374c13be5bc1ca7721e27271dbb",
+      "bytes": 327139
+    },
+    "/home/kxj/zte_ws/edge-smart-home-ai/models/sherpa-onnx-vits-zh-ll/dict/pos_dict/prob_emit.utf8": {
+      "sha256": "c33c4cb7edf3b3a5947df7209b6e9f267eae1f21335d9e2bd2521ea07105457a",
+      "bytes": 1687686
+    },
+    "/home/kxj/zte_ws/edge-smart-home-ai/models/sherpa-onnx-vits-zh-ll/dict/pos_dict/prob_start.utf8": {
+      "sha256": "13623ea0e9300bdb597cb2da28770b7b385d6c0098d66e516083fb01b6bd5d96",
+      "bytes": 4347
+    },
+    "/home/kxj/zte_ws/edge-smart-home-ai/models/sherpa-onnx-vits-zh-ll/dict/pos_dict/prob_trans.utf8": {
+      "sha256": "f22363e2307408293d180c6f9f6b5cb75879d52f722f7764fa2d3d0ae2400236",
+      "bytes": 124159
+    },
+    "/home/kxj/zte_ws/edge-smart-home-ai/models/sherpa-onnx-vits-zh-ll/dict/stop_words.utf8": {
+      "sha256": "b788b8a939d2e2fe079abd579ea98f12f9fb84370bfd0dddd81bb9381f7ab42c",
+      "bytes": 8974
+    },
+    "/home/kxj/zte_ws/edge-smart-home-ai/models/sherpa-onnx-vits-zh-ll/dict/user.dict.utf8": {
+      "sha256": "495bbf49270408a1234690e1e6a97328f30a482a7a72aa769e8a12e8714b0c62",
+      "bytes": 49
+    },
+    "/home/kxj/zte_ws/edge-smart-home-ai/models/sherpa-onnx-vits-zh-ll/lexicon.txt": {
+      "sha256": "b3a82f16b286c424953dea3686039e7ab465fa8e15d87ef8abd0ec69175beb21",
+      "bytes": 376868
+    },
+    "/home/kxj/zte_ws/edge-smart-home-ai/models/sherpa-onnx-vits-zh-ll/model.onnx": {
+      "sha256": "6c349bdd73dc928234dd7bc86929748bba32cd5264d32d915bf7b7aa0595965b",
+      "bytes": 121100803
+    },
+    "/home/kxj/zte_ws/edge-smart-home-ai/models/sherpa-onnx-vits-zh-ll/new_heteronym.fst": {
+      "sha256": "ca14b2127e27baa571664e4bb791e143e7425f56a6bc29db08d74f97e6aa4e29",
+      "bytes": 21974
+    },
+    "/home/kxj/zte_ws/edge-smart-home-ai/models/sherpa-onnx-vits-zh-ll/number.fst": {
+      "sha256": "743f402181fcfebf76cc2f0546b71fa26476e626fbe4e460fb7b4c3a7a8bd5bd",
+      "bytes": 64482
+    },
+    "/home/kxj/zte_ws/edge-smart-home-ai/models/sherpa-onnx-vits-zh-ll/phone.fst": {
+      "sha256": "1ac2b6fa56b1442320c4de7db08353bab8963a2b57f365eebcdd3a2d3562f8d7",
+      "bytes": 88630
+    },
+    "/home/kxj/zte_ws/edge-smart-home-ai/models/sherpa-onnx-vits-zh-ll/tokens.txt": {
+      "sha256": "34b035b9aeb070df6188b022f29c00e0e142c7ade9f25611ced65db5e9cc8402",
+      "bytes": 331
+    },
+    "/home/kxj/zte_ws/edge-smart-home-ai/models/sherpa-onnx-vits-zh-ll.tar.bz2": {
+      "sha256": "f7393d1bbc59709d5f52ea76cd5bceeec62f6a29f9c1f79ff64b4c15ec841f3a",
+      "bytes": 118810709
+    },
+    "/home/kxj/zte_ws/edge-smart-home-ai/models/silero_vad.onnx": {
+      "sha256": "9e2449e1087496d8d4caba907f23e0bd3f78d91fa552479bb9c23ac09cbb1fd6",
+      "bytes": 643854
+    },
+    "/home/kxj/zte_ws/edge-smart-home-ai/evaluation/asr_command_sets/20260831T164349.324809Z/manifest.jsonl": {
+      "sha256": "1046d85d296d600ae5f04a31d6a2288558675492870a8a05a87fd308cd5ae162",
+      "bytes": 16143
+    },
+    "/home/kxj/zte_ws/edge-smart-home-ai/evaluation/asr_command_sets/20260831T165953.010995Z/manifest.jsonl": {
+      "sha256": "135dc51d7e97795945d33d10bb4f122136438428a1ed403dff058510ef918b9b",
+      "bytes": 11629
+    },
+    "/home/kxj/zte_ws/edge-smart-home-ai/evaluation/asr_real_command_sets/20260904T144606.463648Z/manifest.jsonl": {
+      "sha256": "57c443b58787db97b4dea4da771b19e625624e7e8a0714f84ab9d2f323c88ea9",
+      "bytes": 383
+    },
+    "/home/kxj/zte_ws/edge-smart-home-ai/evaluation/hagrid_manifests/hf_derived_seed42_n20.jsonl": {
+      "sha256": "c75334c7782ad4a186110cb095d2fa7d5ca331299e5741c2b37cbcfbd305483e",
+      "bytes": 55820
+    },
+    "/home/kxj/zte_ws/edge-smart-home-ai/evaluation/tts_command_sets/20260831T171000.376388Z/manifest.jsonl": {
+      "sha256": "4a7a8289a4e03265fd3dd05ca09618aaffeba7b8b6bfbcef9f2a73f3c2dc16e2",
+      "bytes": 11681
+    },
+    "/home/kxj/zte_ws/edge-smart-home-ai/evaluation/tts_command_sets/20260831T171510.148908Z/manifest.jsonl": {
+      "sha256": "ec8baabaccbc10a4b1458229d5abd71c55080624b475abff06ff6b96903499e1",
+      "bytes": 11679
+    },
+    "/home/kxj/zte_ws/edge-smart-home-ai/evaluation/tts_command_sets/20260831T171651.832029Z/manifest.jsonl": {
+      "sha256": "25bfc589dc21d03555c7a57d66ccd50ef896154e08ada6c755a4f7c13ee6f8a6",
+      "bytes": 11852
+    },
+    "/home/kxj/zte_ws/edge-smart-home-ai/evaluation/tts_command_sets/20260831T171938.409662Z/manifest.jsonl": {
+      "sha256": "dcc81bfd34874c133c2d163866ce7035f0da763dbee3142ee092bd6f0d707130",
+      "bytes": 176305
+    }
+  },
+  "runtime": {
+    "python": "3.10.21 | packaged by conda-forge | (main, Aug 21 2026, 22:42:31) [GCC 14.4.0]",
+    "executable": "/home/kxj/miniforge3/envs/edge_ai/bin/python",
+    "platform": "Linux-6.8.0-138-generic-x86_64-with-glibc2.35",
+    "machine": "x86_64",
+    "logical_cpus": 32,
+    "packages": {
+      "edge-smart-home-ai": "0.1.0",
+      "wheel": "0.48.0",
+      "xxhash": "4.0.1",
+      "mediapipe": "1.0.1",
+      "aiohappyeyeballs": "2.7.1",
+      "yarl": "1.24.5",
+      "hf-xet": "1.6.0",
+      "sherpa-onnx-core": "1.13.6",
+      "dill": "0.4.1",
+      "anyio": "4.14.2",
+      "numpy": "2.2.6",
+      "urllib3": "2.7.0",
+      "huggingface_hub": "1.29.0",
+      "pytz": "2026.3.post1",
+      "opencv-contrib-python": "5.0.0.93",
+      "fonttools": "4.64.0",
+      "sherpa_onnx": "1.13.6",
+      "multiprocess": "0.70.19",
+      "pyarrow": "25.0.1",
+      "h11": "0.16.0",
+      "matplotlib": "3.10.9",
+      "certifi": "2026.7.22",
+      "datasets": "5.0.1",
+      "absl-py": "2.5.0",
+      "httpcore": "1.0.9",
+      "tqdm": "4.70.0",
+      "packaging": "26.3",
+      "propcache": "0.5.2",
+      "click": "8.5.0",
+      "flatbuffers": "25.12.19",
+      "filelock": "3.32.5",
+      "pillow": "12.3.0",
+      "aiohttp": "3.14.3",
+      "pip": "26.2.1",
+      "cffi": "2.1.1",
+      "sounddevice": "0.5.6",
+      "contourpy": "1.3.2",
+      "aiosignal": "1.4.0",
+      "attrs": "26.1.0",
+      "pandas": "2.3.3",
+      "multidict": "6.7.1",
+      "python-dateutil": "2.9.0.post0",
+      "six": "1.17.0",
+      "charset-normalizer": "3.5.1",
+      "tzdata": "2026.3",
+      "idna": "3.19",
+      "kiwisolver": "1.5.1",
+      "requests": "2.34.2",
+      "exceptiongroup": "1.3.1",
+      "opencv-python": "5.0.0.93",
+      "fsspec": "2026.6.0",
+      "cycler": "0.12.1",
+      "httpx": "0.28.1",
+      "pyparsing": "3.3.2",
+      "PyYAML": "6.0.3",
+      "setuptools": "84.0.0",
+      "frozenlist": "1.8.0",
+      "typing_extensions": "4.16.0",
+      "pycparser": "3.0",
+      "async-timeout": "5.0.1"
+    }
+  },
+  "run_parameters": {},
+  "metrics": null,
+  "input_source": null,
+  "device_backend": null,
+  "sample_count": null,
+  "result": "pending",
+  "command_set_version": "7a9c684bdf5f682455cedcf4ecb242015294936e84a1bc329c140a8075341315",
+  "experiment": {
+    "baseline_run": null,
+    "candidate_run": "20260909-audio-load-v1",
+    "changed_variable": null,
+    "decision": "pending"
+  },
+  "ollama_digest": "359d7dd4bcdab3d86b87d73ac27966f4dbb9f5efdfcc75d34a8764a09474fae7",
+  "notes": "Local file inventory and read-only Ollama tag identity; no inference.",
+  "ollama_identity": {
+    "model": "qwen3:4b",
+    "source": "read_only_api_tags",
+    "digest": "359d7dd4bcdab3d86b87d73ac27966f4dbb9f5efdfcc75d34a8764a09474fae7",
+    "status": "resolved"
+  }
+}

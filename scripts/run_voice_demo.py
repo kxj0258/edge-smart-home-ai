@@ -57,6 +57,9 @@ def main() -> None:
         diagnostics = AudioDiagnosticRecorder(
             args.diagnostics_dir,
             {
+                "input_source": "real_mic",
+                "backend": "configured",
+                "hotwords": str((args.hotwords or root / "configs/hotwords.txt").resolve()),
                 "model": {
                     "tokens": str(args.tokens.resolve()),
                     "encoder": str(args.encoder.resolve()),
@@ -114,12 +117,12 @@ def main() -> None:
     finally:
         if diagnostics:
             diagnostics.update_summary({
-                "portaudio_overflow_count": source.portaudio_overflow_count,
-                "queue_drop_count": source.queue_drop_count,
+                **source.metrics(),
             })
-            diagnostics.close()
         if feedback:
             feedback.close()
+        if diagnostics:
+            diagnostics.close()
 
 
 def _preload_model(orchestrator: AssistantOrchestrator) -> None:

@@ -1,7 +1,8 @@
 from __future__ import annotations
 
 from pathlib import Path
-from time import perf_counter
+from time import perf_counter, monotonic_ns
+from edge_smart_home.common.observability import Trace, activate, span
 from typing import Any, Mapping
 
 from .hotwords import HotwordValidationResult, create_validated_hotwords_file
@@ -107,16 +108,27 @@ class SherpaOnnxStreamingAsr(StreamingSpeechRecognizer):
         self._decode_seconds = 0.0
         self._last_input_sample_rate = sample_rate
         self._finished = False
+        self._trace = Trace()
 
     def accept(self, chunk: AudioChunk) -> tuple[StreamingRecognition, ...]:
         if self._finished:
             raise RuntimeError("recognizer stream is already finished")
         # sherpa-onnx performs native low-pass resampling when chunk.sample_rate
         # differs from the recognizer feature sample rate.
-        self._stream.accept_waveform(chunk.sample_rate, chunk.samples)
+        if chunk.callback_ns is not None:
+            if "capture_callback" not in self._trace.marks:
+                self._trace.mark("capture_callback", chunk.callback_ns)
+            self._trace.mark("last_capture_callback", chunk.callback_ns)
+        if chunk.callback_ns is not None and chunk.dequeued_ns is not None:
+            self._trace.add("audio_queue_wait", chunk.callback_ns, chunk.dequeued_ns,
+                            sequence=chunk.sequence, discontinuity=chunk.discontinuity,
+                            queue_depth=chunk.queue_depth)
+        with activate(self._trace), span("asr_accept_resample"):
+            self._stream.accept_waveform(chunk.sample_rate, chunk.samples)
         self._audio_seconds += len(chunk.samples) / chunk.sample_rate
         self._last_input_sample_rate = chunk.sample_rate
-        self._decode_ready()
+        with activate(self._trace), span("asr_decode"):
+            self._decode_ready()
         if not self._recognizer.is_endpoint(self._stream):
             return ()
 
@@ -130,9 +142,10 @@ class SherpaOnnxStreamingAsr(StreamingSpeechRecognizer):
         if self._finished:
             return ()
         self._finished = True
-        self._append_tail_padding(self._last_input_sample_rate)
-        self._stream.input_finished()
-        self._decode_ready()
+        with activate(self._trace), span("asr_finish"):
+            self._append_tail_padding(self._last_input_sample_rate)
+            self._stream.input_finished()
+            self._decode_ready()
         text = self._recognizer.get_result_all(self._stream).text.strip()
         result = self._build_result(text)
         self._reset_metrics()
@@ -212,8 +225,10 @@ class SherpaOnnxStreamingAsr(StreamingSpeechRecognizer):
         self._stream.accept_waveform(input_sample_rate, tail)
 
     def _build_result(self, text: str) -> StreamingRecognition:
-        return StreamingRecognition(text, self._audio_seconds, self._decode_seconds)
+        self._trace.mark("recognition_ready")
+        return StreamingRecognition(text, self._audio_seconds, self._decode_seconds, self._trace)
 
     def _reset_metrics(self) -> None:
+        self._trace = Trace()
         self._audio_seconds = 0.0
         self._decode_seconds = 0.0

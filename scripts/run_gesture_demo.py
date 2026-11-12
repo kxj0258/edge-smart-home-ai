@@ -8,6 +8,7 @@ from time import monotonic, monotonic_ns, perf_counter
 
 from edge_smart_home.app import AssistantOrchestrator
 from edge_smart_home.app.cli import serialize_response
+from edge_smart_home.common.observability import Trace, activate, span
 from edge_smart_home.audio.feedback import create_feedback
 from edge_smart_home.app.pipeline import _load_json
 from edge_smart_home.benchmark.gesture_guided import GuidedGestureProtocol
@@ -109,6 +110,9 @@ def main() -> None:
         diagnostics = GestureDiagnosticRecorder(
             args.diagnostics_dir,
             {
+                "input_source": "real_camera_guided" if args.guided_capture else "real_camera",
+                "backend": type(control.control.backend).__name__,
+                "config_dir": str(args.config_dir.resolve()),
                 "model": str(args.model.resolve()),
                 "camera_index": args.camera,
                 "camera": actual_camera,
@@ -117,6 +121,8 @@ def main() -> None:
                 "guided_capture": args.guided_capture,
             },
         )
+        control.session_id = diagnostics.session_id
+        control.trace_sink = diagnostics.record_trace
         print(f"Diagnostics: {diagnostics.session_dir}")
     print(f"Camera: {json.dumps(actual_camera, ensure_ascii=False)}")
     print("Gesture demo started. Press ESC to stop.")
@@ -154,7 +160,11 @@ def main() -> None:
                 ),
             )
             while True:
+                frame_trace = Trace()
+                read_start = monotonic_ns()
                 success, frame = camera.read()
+                frame_trace.mark("frame_received")
+                frame_trace.add("camera_read", read_start, monotonic_ns())
                 if not success:
                     consecutive_read_failures += 1
                     total_read_failures += 1
@@ -164,9 +174,10 @@ def main() -> None:
                 consecutive_read_failures = 0
                 now = monotonic()
                 frame_times.append(now)
-                if vision_config.get("mirror_preview", True):
-                    frame = cv2.flip(frame, 1)
-                rgb_frame = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
+                with activate(frame_trace), span("vision_preprocess"):
+                    if vision_config.get("mirror_preview", True):
+                        frame = cv2.flip(frame, 1)
+                    rgb_frame = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
                 timestamp_ms = monotonic_ns() // 1_000_000
                 last_timestamp_ms = timestamp_ms
                 video_frame_index = None
@@ -201,11 +212,10 @@ def main() -> None:
                     if guided_state is not None and guided_state.index != guided_phase_index:
                         guided_phase_index = guided_state.index
                         print(f"Guided: {guided_state.prompt}")
-                inference_started = perf_counter()
                 frame_results = pipeline.process_frame(
-                    rgb_frame, timestamp_ms
+                    rgb_frame, timestamp_ms, trace=frame_trace
                 )
-                inference_ms = round((perf_counter() - inference_started) * 1000, 3)
+                inference_ms = round(pipeline.last_inference_ms, 3)
                 observation_rows = []
                 response_rows = []
                 display_observation = None

@@ -1,0 +1,20 @@
+{
+  "date": "2026-09-09",
+  "tests": {
+    "command": "PYTHONPATH=src /home/kxj/miniforge3/envs/edge_ai/bin/python -m unittest discover -s tests -q",
+    "count": 130,
+    "passed": 130,
+    "failed": 0
+  },
+  "syntax_check": "compileall src scripts tests passed",
+  "diff_check": "git diff --check passed",
+  "mock_trace_count": 5,
+  "mock_session": "evaluation/observability_smoke/20260909T133711.105945Z",
+  "real_sensors_or_inference_run": false,
+  "read_only_ollama_tags": true,
+  "changed_since_candidate_freeze": [],
+  "manifest_sha256": {
+    "baselines/20260909-observability-v1.json": "674c711c2e6413dbc17f66853600390dcb4174f82ccd6ea5e0043a174741383c",
+    "baselines/20260909-pre-observability.json": "6a2955b887b7e6bb3918f2e4a2487c639f4d1147ea2f982d3b5535c742c0bc78"
+  }
+}
