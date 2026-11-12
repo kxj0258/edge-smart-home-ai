@@ -20,13 +20,11 @@ from edge_smart_home.agent import (
     UrllibJsonTransport,
 )
 from edge_smart_home.common import DeviceCommand, EventSource, PerceptionEvent
-from edge_smart_home.common.timing_policy import (
-    DEFERRED_TIME_MESSAGE, DEFERRED_TIME_REASON, is_deferred_time_request,
-)
+from edge_smart_home.agent.error_codes import IntentErrorCode, assistant_error_code
 from edge_smart_home.device import ConfirmationRequiredError, DeviceBackendError
 from edge_smart_home.router import DuplicateCommandError, UnsupportedCommandError
 
-from .pipeline import ControlOutcome, TextControlPipeline
+from .pipeline import ControlOutcome, TextControlPipeline, RequestPlanConsistencyError
 
 
 @dataclass(frozen=True, slots=True)
@@ -42,6 +40,11 @@ class AssistantResponse:
     llm_calls: int = 0
     llm_latency_ms: float | None = None
     confirmation_message: str | None = None
+    error_code: str | None = None
+
+    def __post_init__(self):
+        result_code = self.intelligent_result.error_code if self.intelligent_result else None
+        object.__setattr__(self, "error_code", assistant_error_code(self.status, self.error_code, result_code))
 
 
 @dataclass(frozen=True, slots=True)
@@ -132,6 +135,21 @@ class AssistantOrchestrator:
         return float(preload())
 
     def handle_text(self, text: str, confirmed: bool = False) -> AssistantResponse:
+        from edge_smart_home.agent.error_codes import input_error_code
+        if input_error_code(text) is not None:
+            if confirmed:
+                with self._confirmation_lock:
+                    self._pending_confirmation = None
+            # PerceptionEvent requires a nonempty label. Preserve the rejected
+            # original in payload while using a valid envelope for the error.
+            received = text if isinstance(text, str) and text.strip() else "<invalid intent input>"
+            event = PerceptionEvent(source=EventSource.TEXT, label=received,
+                                    raw_payload={"invalid_input": text})
+            result = IntelligentPathResult(kind=IntelligentResultKind.REJECTED,
+                                           message="请输入1至512个字符的明确家庭指令。",
+                                           error_code=IntentErrorCode.REQUEST_INPUT_INVALID)
+            return AssistantResponse(event=event, status="request_rejected", intelligent_result=result,
+                                     error=result.message, error_code=result.error_code)
         return self.handle_event(
             PerceptionEvent(source=EventSource.TEXT, label=text), confirmed=confirmed
         )
@@ -173,15 +191,17 @@ class AssistantOrchestrator:
         if confirmed:
             with self._confirmation_lock:
                 self._pending_confirmation = None
-        if is_deferred_time_request(event.label):
+        preflight = self.control.preflight_event(event)
+        if preflight is not None:
             return AssistantResponse(
-                event=event, status="unavailable", path="fast_path", provider=None,
+                event=event, status={IntelligentResultKind.REJECTED: "request_rejected",
+                                    IntelligentResultKind.CLARIFICATION: "clarification_required",
+                                    IntelligentResultKind.UNAVAILABLE: "unavailable" if preflight.error_code == IntentErrorCode.SCHEDULING_DEFERRED else "needs_intelligence"}[preflight.kind],
+                path="fast_path", provider=None,
                 llm_calls=0, llm_latency_ms=None,
                 processing_ms=round((perf_counter() - started) * 1000, 3),
-                intelligent_result=IntelligentPathResult(
-                    kind=IntelligentResultKind.UNAVAILABLE,
-                    message=DEFERRED_TIME_MESSAGE, reason=DEFERRED_TIME_REASON,
-                ),
+                intelligent_result=preflight,
+                error=preflight.reason or preflight.message,
             )
         if not confirmed:
             confirmation_response = self.confirm_pending(event)
@@ -211,6 +231,16 @@ class AssistantOrchestrator:
             )
         except DuplicateCommandError as error:
             return self._error_response(event, "duplicate_suppressed", error, started)
+        except RequestPlanConsistencyError as error:
+            return AssistantResponse(
+                event=event,
+                status="clarification_required" if error.result.kind == IntelligentResultKind.CLARIFICATION else "request_rejected",
+                intelligent_result=error.result, error=str(error), error_code=error.error_code,
+                path="fast_path", provider=None, llm_calls=0, llm_latency_ms=None,
+                processing_ms=round((perf_counter() - started) * 1000, 3),
+            )
+        except AgentPlanValidationError as error:
+            return self._error_response(event, "plan_rejected", error, started)
         except UnsupportedCommandError as error:
             if self.intelligent_path is not None:
                 with span("planner"):
@@ -253,8 +283,11 @@ class AssistantOrchestrator:
                 )
             except AgentPlanValidationError as error:
                 return self._intelligent_response(
-                    event, "plan_rejected", result, started, str(error)
+                    event, "plan_rejected", result, started, str(error), error_code=error.error_code
                 )
+            except RequestPlanConsistencyError as error:
+                return self._intelligent_response(event, "clarification_required" if error.result.kind == IntelligentResultKind.CLARIFICATION else "request_rejected", error.result, started,
+                                                  str(error), error_code=error.error_code)
             except ConfirmationRequiredError as error:
                 commands = self.control.build_agent_commands(event, result.commands)
                 self._store_pending(
@@ -311,6 +344,7 @@ class AssistantOrchestrator:
         started: float,
         error: str | None = None,
         confirmation_message: str | None = None,
+        error_code: str | None = None,
     ) -> AssistantResponse:
         return AssistantResponse(
             event=event,
@@ -323,6 +357,7 @@ class AssistantOrchestrator:
             llm_calls=self._llm_calls(),
             llm_latency_ms=self._llm_latency_ms(),
             confirmation_message=confirmation_message,
+            error_code=error_code,
         )
 
     def confirm_pending(self, event: PerceptionEvent) -> AssistantResponse | None:
@@ -337,7 +372,8 @@ class AssistantOrchestrator:
         decision = self._confirmation_decision(event.label)
         with self._confirmation_lock:
             pending = self._pending_confirmation
-            if pending and monotonic() - pending.created_at > self.confirmation_timeout_seconds:
+            expired = bool(pending and monotonic() - pending.created_at > self.confirmation_timeout_seconds)
+            if expired:
                 self._pending_confirmation = None
                 pending = None
 
@@ -345,7 +381,8 @@ class AssistantOrchestrator:
             if decision is None:
                 return None
             return self._confirmation_message_response(
-                event, "当前没有待确认的操作。"
+                event, "当前没有待确认的操作。",
+                error_code=IntentErrorCode.CONFIRMATION_EXPIRED if expired else None,
             )
 
         started = perf_counter()
@@ -353,11 +390,12 @@ class AssistantOrchestrator:
             return self._confirmation_message_response(
                 event, "刚才的操作需要确认，请说“确认”或“取消”。",
                 status="clarification_required",
+                error_code=IntentErrorCode.CONFIRMATION_REQUIRED,
             )
         with self._confirmation_lock:
             self._pending_confirmation = None
         if decision == "cancel":
-            return self._confirmation_message_response(event, "已取消。")
+            return self._confirmation_message_response(event, "已取消。", error_code=IntentErrorCode.CONFIRMATION_CANCELLED)
 
         event.trace.emit("confirmation", related_event_id=pending.event.event_id,
                          related_trace_id=pending.event.trace.trace_id)
@@ -463,6 +501,7 @@ class AssistantOrchestrator:
         message: str,
         *,
         status: str = "responded",
+        error_code: str | None = None,
     ) -> AssistantResponse:
         started = perf_counter()
         return AssistantResponse(
@@ -476,11 +515,13 @@ class AssistantOrchestrator:
                     else IntelligentResultKind.CLARIFICATION
                 ),
                 message=message,
+                error_code=error_code,
             ),
             path="fast_path",
             provider=None,
             llm_calls=0,
             llm_latency_ms=None,
+            error_code=error_code,
         )
 
     def _local_dialogue_response(
@@ -560,4 +601,5 @@ class AssistantOrchestrator:
             error=str(error),
             processing_ms=round((perf_counter() - started) * 1000, 3),
             confirmation_message=confirmation_message,
+            error_code=getattr(error, "error_code", None),
         )

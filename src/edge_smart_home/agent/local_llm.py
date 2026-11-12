@@ -6,6 +6,7 @@ import http.client
 import json
 import re
 import socket
+from dataclasses import replace
 from collections.abc import Callable, Mapping, Sequence
 from time import monotonic, perf_counter
 from typing import Any, Protocol
@@ -23,6 +24,8 @@ from .contract import (
     parse_agent_response,
 )
 from .interfaces import IntelligentPathResult, IntelligentResultKind
+from .error_codes import IntentErrorCode, normalize_error_code, input_error_code
+from .request_consistency import RequestPlanConsistency
 from .schema_format import ollama_agent_response_format
 
 
@@ -34,10 +37,15 @@ MAX_HTTP_RESPONSE_BYTES = 1024 * 1024
 class LlmTransportError(RuntimeError):
     """A local model HTTP request failed safely."""
 
+    def __init__(self, message: str, *, error_code=IntentErrorCode.MODEL_TRANSPORT_ERROR):
+        super().__init__(message)
+        self.error_code = normalize_error_code(error_code)
+
 
 class LlmHttpError(LlmTransportError):
     def __init__(self, status: int) -> None:
-        super().__init__(f"local LLM HTTP request failed with status {status}")
+        super().__init__(f"local LLM HTTP request failed with status {status}",
+                         error_code=IntentErrorCode.MODEL_HTTP_ERROR)
         self.status = status
 
 
@@ -84,7 +92,7 @@ class UrllibJsonTransport:
             )
             remaining = deadline - monotonic()
             if remaining <= 0:
-                raise LlmTransportError("local LLM request exceeded total timeout")
+                raise LlmTransportError("local LLM request exceeded total timeout", error_code=IntentErrorCode.MODEL_TIMEOUT)
             if connection.sock is not None:
                 # HTTPConnection uses its constructor timeout for connect and
                 # request I/O. Once connected, model loading/generation needs
@@ -100,7 +108,9 @@ class UrllibJsonTransport:
                 raise LlmTransportError("local LLM response exceeded size limit")
         except LlmTransportError:
             raise
-        except (OSError, socket.timeout, TimeoutError) as error:
+        except (socket.timeout, TimeoutError) as error:
+            raise LlmTransportError("local LLM request failed or timed out", error_code=IntentErrorCode.MODEL_TIMEOUT) from error
+        except OSError as error:
             raise LlmTransportError("local LLM request failed or timed out") from error
         finally:
             connection.close()
@@ -108,9 +118,9 @@ class UrllibJsonTransport:
         try:
             value = json.loads(response_body.decode("utf-8"))
         except (UnicodeDecodeError, json.JSONDecodeError) as error:
-            raise LlmTransportError("local LLM HTTP response is not valid JSON") from error
+            raise LlmTransportError("local LLM HTTP response is not valid JSON", error_code=IntentErrorCode.MODEL_OUTER_JSON_INVALID) from error
         if not isinstance(value, dict):
-            raise LlmTransportError("local LLM HTTP response must be an object")
+            raise LlmTransportError("local LLM HTTP response must be an object", error_code=IntentErrorCode.MODEL_OUTER_JSON_INVALID)
         return value
 
 
@@ -193,32 +203,53 @@ class LocalLlmRequestGuard:
 
     def __init__(self, devices: Mapping[str, Mapping[str, Any]]) -> None:
         self._devices = devices
+        self.consistency = RequestPlanConsistency(devices)
 
-    def apply(
-        self, event: PerceptionEvent, result: IntelligentPathResult
-    ) -> IntelligentPathResult:
+    def preflight(self, event: PerceptionEvent) -> IntelligentPathResult | None:
+        if input_error_code(event.label) is not None:
+            return IntelligentPathResult(
+                kind=IntelligentResultKind.REJECTED,
+                message="请输入1至512个字符的明确家庭指令。",
+                error_code=IntentErrorCode.REQUEST_INPUT_INVALID,
+            )
         text = _normalize_request(event.label)
         if any(marker in text for marker in self._UNKNOWN_REQUEST_MARKERS):
             return IntelligentPathResult(
                 kind=IntelligentResultKind.REJECTED,
                 message="请求包含未授权或不安全内容，已拒绝。",
+                error_code=IntentErrorCode.REQUEST_REJECTED,
             )
         if is_deferred_time_request(text):
             return IntelligentPathResult(
                 kind=IntelligentResultKind.UNAVAILABLE,
-                message=DEFERRED_TIME_MESSAGE,
-                reason=DEFERRED_TIME_REASON,
+                message=DEFERRED_TIME_MESSAGE, reason=DEFERRED_TIME_REASON,
+                error_code=IntentErrorCode.SCHEDULING_DEFERRED,
             )
         if any(phrase in text for phrase in self._UNAVAILABLE_PHRASES):
             return IntelligentPathResult(
                 kind=IntelligentResultKind.UNAVAILABLE,
                 reason="requested capability is not available locally",
+                error_code=IntentErrorCode.CAPABILITY_UNAVAILABLE,
             )
+        decision = self.consistency.preflight(event)
+        return replace(decision.result, error_code=decision.code) if decision else None
+
+    def apply(
+        self, event: PerceptionEvent, result: IntelligentPathResult
+    ) -> IntelligentPathResult:
+        preflight = self.preflight(event)
+        if preflight is not None:
+            return preflight
+        text = _normalize_request(event.label)
         if result.kind == IntelligentResultKind.PLAN and self._is_dialogue_request(text):
             return IntelligentPathResult(
                 kind=IntelligentResultKind.REJECTED,
                 message="对话请求不应生成设备计划，已拒绝执行。",
             )
+        decision = self.consistency.check(event, result)
+        if decision.applied:
+            result = (decision.result if decision.result.kind == IntelligentResultKind.PLAN
+                      else replace(decision.result, error_code=decision.code))
         if (
             result.kind == IntelligentResultKind.RESPONSE
             and any(marker in (result.message or "") for marker in self._EXECUTION_CLAIM_MARKERS)
@@ -375,11 +406,14 @@ class LocalLlmIntelligentPath:
     def route(self, event: PerceptionEvent) -> IntelligentPathResult:
         self.last_call_count = 0
         self.last_llm_latency_ms = None
+        preflight = self.request_guard.preflight(event)
+        if preflight is not None:
+            return preflight
         try:
             try:
                 states = self._read_states()
             except Exception as error:
-                return self._unavailable(f"device state context failed: {error}")
+                return self._unavailable(f"device state context failed: {error}", IntentErrorCode.STATE_CONTEXT_UNAVAILABLE)
             prompt = build_agent_prompt(
                 event,
                 self.devices,
@@ -414,10 +448,17 @@ class LocalLlmIntelligentPath:
                     (perf_counter() - llm_started) * 1000, 3
                 )
             if not isinstance(response, Mapping):
-                return self._unavailable("local LLM response must be an object")
+                return self._unavailable("local LLM response must be an object", IntentErrorCode.MODEL_OUTER_JSON_INVALID)
+            if response.get("done") is False:
+                return self._unavailable("local LLM response is incomplete", IntentErrorCode.MODEL_RESPONSE_INCOMPLETE)
+            if response.get("done_reason") == "length":
+                return self._unavailable("local LLM response was truncated", IntentErrorCode.MODEL_RESPONSE_TRUNCATED)
+            if (response.get("model", self.model) != self.model
+                    or response.get("remote_host") or response.get("remote_model")):
+                return self._unavailable("local LLM response identity differs", IntentErrorCode.MODEL_IDENTITY_MISMATCH)
             raw_response = response.get("response")
             if not isinstance(raw_response, str) or not raw_response.strip():
-                return self._unavailable("local LLM returned an empty response")
+                return self._unavailable("local LLM returned an empty response", IntentErrorCode.MODEL_RESPONSE_EMPTY)
             result = parse_agent_response(raw_response, max_commands=self.max_commands)
             return self.request_guard.apply(event, result)
         except (
@@ -427,7 +468,10 @@ class LocalLlmIntelligentPath:
             OSError,
             TimeoutError,
         ) as error:
-            return self._unavailable(str(error))
+            fallback = (IntentErrorCode.MODEL_TIMEOUT if isinstance(error, TimeoutError)
+                        else IntentErrorCode.MODEL_TRANSPORT_ERROR if isinstance(error, OSError)
+                        else IntentErrorCode.INTENT_INTERNAL_ERROR)
+            return self._unavailable(str(error), getattr(error, "error_code", fallback))
 
     @observed("planner_state_read")
     def _read_states(self) -> tuple[DeviceState, ...]:
@@ -436,10 +480,11 @@ class LocalLlmIntelligentPath:
         return tuple(self.state_provider())
 
     @staticmethod
-    def _unavailable(reason: str) -> IntelligentPathResult:
+    def _unavailable(reason: str, error_code=IntentErrorCode.CAPABILITY_UNAVAILABLE) -> IntelligentPathResult:
         return IntelligentPathResult(
             kind=IntelligentResultKind.UNAVAILABLE,
             reason=f"local LLM unavailable: {reason}",
+            error_code=error_code,
         )
 
 

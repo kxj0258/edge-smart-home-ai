@@ -71,6 +71,7 @@ _serialize_outcome = serialize_outcome
 def serialize_response(response: AssistantResponse) -> dict:
     payload = {
         "status": response.status,
+        "error_code": response.error_code,
         "source": response.event.source.value,
         "label": response.event.label,
         "event_id": response.event.event_id,
@@ -93,6 +94,7 @@ def serialize_response(response: AssistantResponse) -> dict:
     if response.intelligent_result is not None:
         payload["intelligent_path"] = {
             "kind": response.intelligent_result.kind.value,
+            "error_code": response.intelligent_result.error_code,
             "message": response.intelligent_result.message,
             "reason": response.intelligent_result.reason,
             "commands": [

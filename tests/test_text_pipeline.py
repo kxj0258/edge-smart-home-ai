@@ -1,7 +1,9 @@
 from pathlib import Path
 import unittest
+from unittest.mock import patch
 
-from edge_smart_home.app.pipeline import TextControlPipeline
+from edge_smart_home.app.pipeline import TextControlPipeline, RequestPlanConsistencyError
+from edge_smart_home.agent.error_codes import IntentErrorCode
 from edge_smart_home.common import EventSource, PerceptionEvent
 from edge_smart_home.device import DeviceBackendError
 from edge_smart_home.router import UnsupportedCommandError
@@ -53,12 +55,12 @@ class TextControlPipelineTest(unittest.TestCase):
         with self.assertRaises(UnsupportedCommandError):
             self.pipeline.handle_text("帮我营造一个适合看电影的氛围")
 
-    def test_out_of_range_volume_stays_on_fast_path_and_backend_rejects(self) -> None:
-        with self.assertRaises(DeviceBackendError):
-            self.pipeline.handle_text("把电视音量设置为1000")
-
-        with self.assertRaises(DeviceBackendError):
-            self.pipeline.handle_text("把电视音量设置为一千")
+    def test_out_of_range_volume_is_classified_before_backend_execution(self) -> None:
+        with patch.object(self.pipeline.backend, "execute", side_effect=AssertionError("must not execute")):
+            for text in ("把电视音量设置为1000", "把电视音量设置为一千"):
+                with self.subTest(text=text), self.assertRaises(RequestPlanConsistencyError) as caught:
+                    self.pipeline.handle_text(text)
+                self.assertEqual(caught.exception.error_code, IntentErrorCode.REQUEST_ARGUMENT_INVALID)
 
     def test_external_music_does_not_use_default_playback(self) -> None:
         with self.assertRaises(UnsupportedCommandError):

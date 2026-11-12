@@ -1,7 +1,6 @@
 from __future__ import annotations
 
 from edge_smart_home.common.observability import observed, span
-from edge_smart_home.common.timing_policy import DEFERRED_TIME_MESSAGE, is_deferred_time_request
 
 import json
 import os
@@ -9,7 +8,9 @@ from pathlib import Path
 from typing import Any
 from collections.abc import Sequence
 
-from edge_smart_home.agent import PlannedDeviceCommand
+from edge_smart_home.agent import PlannedDeviceCommand, IntelligentPathResult, IntelligentResultKind
+from edge_smart_home.agent.local_llm import LocalLlmRequestGuard
+from edge_smart_home.agent.validation import AgentPlanValidator
 from edge_smart_home.common import (
     CommandExecutionResult,
     DeviceCommand,
@@ -38,6 +39,15 @@ from edge_smart_home.router import (
 ControlOutcome = DeviceState | SceneExecutionResult
 
 
+class RequestPlanConsistencyError(UnsupportedCommandError):
+    """A classified preflight/fidelity failure; never requests model fallback."""
+
+    def __init__(self, result: IntelligentPathResult):
+        super().__init__(result.message or result.reason or "request/plan consistency rejected")
+        self.result = result
+        self.error_code = result.error_code
+
+
 class TextControlPipeline:
     def __init__(
         self,
@@ -52,6 +62,30 @@ class TextControlPipeline:
         self.backend = backend
         self.safety = safety
         self.deduplicator = deduplicator
+        self.request_guard = LocalLlmRequestGuard(router.devices)
+        self.plan_validator = AgentPlanValidator(router.devices)
+
+    def preflight_event(self, event: PerceptionEvent) -> IntelligentPathResult | None:
+        return self.request_guard.preflight(event)
+
+    def _validate_request_plan(self, event: PerceptionEvent, commands) -> None:
+        self.plan_validator.validate(commands)
+        proposed = IntelligentPathResult(kind=IntelligentResultKind.PLAN, commands=tuple(commands))
+        decision = self.request_guard.consistency.check(event, proposed)
+        if decision.applied:
+            # This execution boundary does not silently substitute a different
+            # plan. Query reconstruction belongs to the planning guard.
+            from dataclasses import replace
+            from edge_smart_home.agent.error_codes import IntentErrorCode
+            failure = decision.result
+            if failure.kind == IntelligentResultKind.PLAN:
+                failure = IntelligentPathResult(
+                    kind=IntelligentResultKind.REJECTED, message="计划与查询请求不一致，已拒绝。",
+                    error_code=IntentErrorCode.REQUEST_PLAN_MISMATCH,
+                )
+            else:
+                failure = replace(failure, error_code=decision.code)
+            raise RequestPlanConsistencyError(failure)
 
     @classmethod
     def from_config_dir(cls, config_dir: Path) -> "TextControlPipeline":
@@ -96,12 +130,15 @@ class TextControlPipeline:
         self, event: PerceptionEvent
     ) -> tuple[str | None, tuple[DeviceCommand, ...]]:
         """Resolve an event without validating safety or causing side effects."""
-        if is_deferred_time_request(event.label):
-            raise UnsupportedCommandError(DEFERRED_TIME_MESSAGE)
+        preflight = self.preflight_event(event)
+        if preflight is not None:
+            raise RequestPlanConsistencyError(preflight)
         scene = self.scene_router.match(event)
         if scene:
             return scene
-        return None, (self.router.route(event),)
+        command = self.router.route(event)
+        self._validate_request_plan(event, (PlannedDeviceCommand(command.device_id, command.action, command.arguments),))
+        return None, (command,)
 
     def execute_resolved(
         self,
@@ -168,6 +205,10 @@ class TextControlPipeline:
         planned_commands: Sequence[PlannedDeviceCommand],
         confirmed: bool = False,
     ) -> SceneExecutionResult:
+        preflight = self.preflight_event(event)
+        if preflight is not None:
+            raise RequestPlanConsistencyError(preflight)
+        self._validate_request_plan(event, planned_commands)
         commands = self.build_agent_commands(event, planned_commands)
         # Preflight the complete plan before the first side effect.
         for command in commands:

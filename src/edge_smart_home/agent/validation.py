@@ -3,10 +3,15 @@ from __future__ import annotations
 from typing import Any, Mapping, Sequence
 
 from .interfaces import PlannedDeviceCommand
+from .error_codes import IntentErrorCode, normalize_error_code
 
 
 class AgentPlanValidationError(ValueError):
     """An Agent plan violates the configured device/action contract."""
+
+    def __init__(self, message: str, *, error_code: IntentErrorCode | str = IntentErrorCode.PLAN_VALIDATION_FAILED):
+        super().__init__(message)
+        self.error_code = normalize_error_code(error_code)
 
 
 class AgentPlanValidator:
@@ -27,11 +32,13 @@ class AgentPlanValidator:
             device = self.devices.get(command.device_id)
             if device is None:
                 raise AgentPlanValidationError(
-                    f"agent plan references unknown device: {command.device_id}"
+                    f"agent plan references unknown device: {command.device_id}",
+                    error_code=IntentErrorCode.UNKNOWN_DEVICE,
                 )
             if command.action not in device.get("capabilities", []):
                 raise AgentPlanValidationError(
-                    f"agent action is not allowed: {command.device_id}.{command.action}"
+                    f"agent action is not allowed: {command.device_id}.{command.action}",
+                    error_code=IntentErrorCode.UNSUPPORTED_ACTION,
                 )
             self._validate_arguments(command)
 
@@ -50,7 +57,8 @@ class AgentPlanValidator:
             value = arguments.pop(name, None)
             if type(value) is not value_type or not minimum <= value <= maximum:
                 raise AgentPlanValidationError(
-                    f"invalid agent argument for {command.action}: {name}"
+                    f"invalid agent argument for {command.action}: {name}",
+                    error_code=IntentErrorCode.INVALID_ARGUMENTS,
                 )
         elif command.action in {"set_channel", "open_app", "set_mode", "set_hvac_mode"}:
             names = {
@@ -63,17 +71,21 @@ class AgentPlanValidator:
             value = arguments.pop(name, None)
             if not isinstance(value, str) or not value:
                 raise AgentPlanValidationError(
-                    f"invalid agent argument for {command.action}: {name}"
+                    f"invalid agent argument for {command.action}: {name}",
+                    error_code=IntentErrorCode.INVALID_ARGUMENTS,
                 )
             if command.action == "set_mode" and value not in {"auto", "sleep", "turbo"}:
                 raise AgentPlanValidationError(
-                    f"invalid agent argument for set_mode: {value}"
+                    f"invalid agent argument for set_mode: {value}",
+                    error_code=IntentErrorCode.INVALID_ARGUMENTS,
                 )
             if command.action == "set_hvac_mode" and value not in {"cool", "heat", "auto", "dry"}:
                 raise AgentPlanValidationError(
-                    f"invalid agent argument for set_hvac_mode: {value}"
+                    f"invalid agent argument for set_hvac_mode: {value}",
+                    error_code=IntentErrorCode.INVALID_ARGUMENTS,
                 )
         if arguments:
             raise AgentPlanValidationError(
-                f"unexpected agent arguments for {command.action}: {sorted(arguments)}"
+                f"unexpected agent arguments for {command.action}: {sorted(arguments)}",
+                error_code=IntentErrorCode.INVALID_ARGUMENTS,
             )

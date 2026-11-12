@@ -7,6 +7,8 @@ from typing import Any, Mapping, Protocol
 
 from edge_smart_home.common import PerceptionEvent
 
+from .error_codes import result_error_code
+
 
 class IntelligentResultKind(str, Enum):
     PLAN = "plan"
@@ -34,8 +36,10 @@ class IntelligentPathResult:
     commands: tuple[PlannedDeviceCommand, ...] = ()
     message: str | None = None
     reason: str | None = None
+    error_code: str | None = None
 
     def __post_init__(self) -> None:
+        object.__setattr__(self, "error_code", result_error_code(self.kind, self.error_code))
         if self.kind == IntelligentResultKind.PLAN and not self.commands:
             raise ValueError("a plan must contain at least one command")
         if self.kind != IntelligentResultKind.PLAN and self.commands:

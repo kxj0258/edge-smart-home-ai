@@ -44,6 +44,7 @@ def normalized_result(result: IntelligentPathResult) -> dict:
     """Preserve internal message/reason fields without inventing wire JSON."""
     return {
         "kind": result.kind.value,
+        "error_code": result.error_code,
         "message": result.message,
         "reason": result.reason,
         "commands": [
@@ -54,7 +55,7 @@ def normalized_result(result: IntelligentPathResult) -> dict:
 
 
 def _error(stage: str, category: str, error: Exception) -> dict:
-    return {"stage": stage, "category": category,
+    return {"stage": stage, "category": category, "error_code": getattr(error, "error_code", None),
             "exception_type": type(error).__name__, "message": str(error)}
 
 

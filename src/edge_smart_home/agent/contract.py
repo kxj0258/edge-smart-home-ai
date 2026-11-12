@@ -4,6 +4,7 @@ import json
 from typing import Any, Mapping
 
 from .interfaces import IntelligentPathResult, IntelligentResultKind, PlannedDeviceCommand
+from .error_codes import IntentErrorCode, normalize_error_code
 
 
 MAX_AGENT_MESSAGE_LENGTH = 512
@@ -16,6 +17,22 @@ AGENT_RESPONSE_KINDS = frozenset(
 
 class AgentResponseContractError(ValueError):
     """A model response violates the fixed JSON wire contract."""
+
+    def __init__(self, message: str, *, error_code: IntentErrorCode | str = IntentErrorCode.WIRE_CONTRACT_INVALID):
+        super().__init__(message)
+        self.error_code = normalize_error_code(error_code)
+
+
+class _DuplicateJsonObjectKey(ValueError):
+    pass
+
+
+class _NonfiniteJsonConstant(ValueError):
+    pass
+
+
+def _reject_json_constant(value: str):
+    raise _NonfiniteJsonConstant(f"invalid JSON constant: {value}")
 
 
 def default_agent_response_schema() -> dict[str, Any]:
@@ -130,15 +147,21 @@ def parse_agent_response(
         payload = json.loads(
             raw_json,
             object_pairs_hook=_json_object_without_duplicates,
-            parse_constant=lambda value: (_ for _ in ()).throw(
-                ValueError(f"invalid JSON constant: {value}")
-            ),
+            parse_constant=_reject_json_constant,
         )
-    except (TypeError, json.JSONDecodeError, ValueError) as error:
-        raise AgentResponseContractError("agent response is not valid JSON") from error
+    except _DuplicateJsonObjectKey as error:
+        raise AgentResponseContractError("agent response is not valid JSON", error_code=IntentErrorCode.JSON_DUPLICATE_KEY) from error
+    except _NonfiniteJsonConstant as error:
+        raise AgentResponseContractError("agent response is not valid JSON", error_code=IntentErrorCode.JSON_NONFINITE) from error
+    except UnicodeDecodeError as error:
+        raise AgentResponseContractError("agent response is not valid JSON", error_code=IntentErrorCode.JSON_ENCODING) from error
+    except TypeError as error:
+        raise AgentResponseContractError("agent response is not valid JSON", error_code=IntentErrorCode.JSON_INPUT_TYPE) from error
+    except (json.JSONDecodeError, ValueError) as error:
+        raise AgentResponseContractError("agent response is not valid JSON", error_code=IntentErrorCode.JSON_SYNTAX) from error
 
     if not isinstance(payload, dict):
-        raise AgentResponseContractError("agent response root must be an object")
+        raise AgentResponseContractError("agent response root must be an object", error_code=IntentErrorCode.JSON_ROOT_TYPE)
     _require_exact_keys(payload, {"kind", "message", "commands"}, "response")
 
     kind_value = payload["kind"]
@@ -177,7 +200,7 @@ def _json_object_without_duplicates(pairs: list[tuple[str, Any]]) -> dict[str, A
     result: dict[str, Any] = {}
     for name, value in pairs:
         if name in result:
-            raise ValueError(f"duplicate JSON object key: {name}")
+            raise _DuplicateJsonObjectKey(f"duplicate JSON object key: {name}")
         result[name] = value
     return result
 
