@@ -54,6 +54,12 @@
 
 [修复诊断结果](docs/stages/E0-w16-repair-results.md) · [预登记/复现](docs/W16_REPAIR.md) · [60条表](docs/voice_evidence/20261113-w16-repair-cases.csv) · [7组摘要](docs/voice_evidence/20261113-w16-repair-summary.csv) · [机器结果](baselines/20261113-w16-repair-v1.json) · [新证据索引](docs/voice_evidence/20261113-w16-repair-results.json)。W16-P0-1继续进行中；不重合成挑样，真人家庭材料、权重许可、个人理解与现场overflow等仍待验。
 
+## W16续修：全量听辨、真人流程与上下文预登记
+
+复用冻结18条及原36个A/B波形，新增两步人工听辨流程（首遍36槽，参考复核36槽/30焦点）和两位匿名说话人各18条的事先授权采集计划。正式空表检查均返回pending，实际听辨与真人录音仍0；646离线测试/网络0、根计划10项通过。原声音和失败成绩不改，本轮没有生成、识别、录音、播放或执行上下文候选。
+
+[本轮结果](docs/stages/E0-w16-review-context-results.md) · [听辨操作](docs/W16_LISTENING_REVIEW.md) · [真人采集](docs/W16_HUMAN_COLLECTION.md) · [上下文单因素预登记](configs/w16-context-repair-prereg-v1.json) · [证据索引](docs/voice_evidence/20261113-w16-review-context-results.json)。未来只计划温度上下文的单条FAR＋新增词条整体资源包，不全局替换“调”、不按24/32挑值；尚未构建或运行，不自动晋升。W16-P0-1、人耳、真人和个人理解保持待验，文本备用保留。
+
 ## W16续修：中文前端与生成声音
 
 独立18条原创材料先冻结，A/B仅改变官方FAR开关，两组共同零噪声。36次真实TTS＋36次ASR完整保存；实际native分词＋词典推导焦点匹配6/15→13/15，剩两处“调到”未覆盖，家庭语义3/10→4/10仍不通过候选。已生成全36槽待人工听辨包，音素推导/波形/ASR/人耳结论分开；不以新受控域改善覆盖旧默认噪声失败。603单测/网络0，483旧工件未变，文本备用保留。

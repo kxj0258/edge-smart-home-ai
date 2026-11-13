@@ -1,0 +1,12 @@
+check,expected,observed,status
+full_offline_unit,646 incl43 new; network0,646; network0,passed
+root_plan_unit,10,10,passed
+all_original_listening_audio,36 byte-identical WAV copies,36 copies;0 new synthesis,passed
+first_pass_pending,"36 slots,0 reviewed,exit3","36 slots,0 reviewed,exit3",passed
+second_pass_templates,36 slots and30 focals;all human fields blank,36 and30 blank,passed
+human_split_plan,P01/P02 each18;no default consent,36 planned slots;0 actual recordings,passed
+empty_human_audit,"pending,0 imported,exit3","pending,0 imported,exit3",passed
+negative_directory_checks,5 exit2;55 new artifacts unchanged,5 exit2;55 unchanged,passed
+original_preservation,1098 immutable identities,1098 unchanged,passed
+context_single_factor,frozen specification only,not implemented or executed,preregistered
+human_acoustic_personal_acceptance,real submissions and separate acceptance,0;not accepted,pending

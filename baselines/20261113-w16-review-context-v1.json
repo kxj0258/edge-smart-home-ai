@@ -1,0 +1,214 @@
+{
+  "schema_version": 1,
+  "kind": "w16_listening_collection_and_context_preregistration_results",
+  "created_at": "2026-11-13T05:44:15.801789+00:00",
+  "local_work_date": "2026-11-13",
+  "timezone": "Asia/Shanghai",
+  "engineering_evidence_passed": true,
+  "runtime_source_commit": "d678fa4a69b497dfe1443fe8b88cd6bdb08c5613",
+  "root_preregistration_commit": "31970881c4d76b718173234c724caa0ac154a621",
+  "tests": {
+    "full_unit": 646,
+    "new_vs_previous": 43,
+    "listening": 24,
+    "human_collection": 19,
+    "network_attempts": 0,
+    "root_plan": 10,
+    "test_source_witness_and_git_blobs": 199,
+    "focused_tests_are_included_in_full_count": true,
+    "scope": "Unit tests use temporary artificial WAV/CSV; not human hearing/recording observations."
+  },
+  "context_preregistration": {
+    "path": "edge-smart-home-ai/configs/w16-context-repair-prereg-v1.json",
+    "bytes": 14639,
+    "sha256": "0c4576a8fe4089b204ceab71f4833273753ac2cac751b91ba6bc983e22a5d401"
+  },
+  "context_candidate_implemented": false,
+  "context_candidate_compiled": false,
+  "context_candidate_executed": false,
+  "context_candidate_passed": false,
+  "new_context_candidate_accuracy": null,
+  "one_factor_scope": "One on/off context resource bundle: appended one-entry FAR plus append-only sidecar lexicon. Effects of individual files are not separately identified. Future D18 only planned; C denotes archived B18, not contemporaneous speed benchmark.",
+  "original_fixture": {
+    "path": "edge-smart-home-ai/configs/w16-pronunciation-cases-v1.json",
+    "bytes": 24673,
+    "sha256": "edd9c02dc8e0e1d7a07633597c7f42639f34e9dc3213f8ad02a04f13b894a522"
+  },
+  "original_scores_retained": {
+    "A_focal": [
+      6,
+      15
+    ],
+    "B_focal": [
+      13,
+      15
+    ],
+    "A_home": [
+      3,
+      10
+    ],
+    "B_home": [
+      4,
+      10
+    ],
+    "A_normal": [
+      1,
+      5
+    ],
+    "B_normal": [
+      2,
+      5
+    ],
+    "first_speech_cer": [
+      42,
+      73
+    ],
+    "combined_speech_cer": [
+      43,
+      73
+    ],
+    "all_original_failed_candidates_retained": true
+  },
+  "listening": {
+    "prepared": {
+      "status": "pending",
+      "audio_slots": 36,
+      "submitted_rows": 0,
+      "second_pass_slot_rows": 36,
+      "second_pass_focal_rows": 30,
+      "bundle": "/home/kxj/zte_ws/edge-smart-home-ai/evaluation/20261113-w16-review-listening-package",
+      "manifest": {
+        "path": "/home/kxj/zte_ws/edge-smart-home-ai/evaluation/20261113-w16-review-listening-package/manifest.json",
+        "bytes": 35825,
+        "sha256": "f9f9fb418802601822091f97ca7eb5365242a680e6336fb6188503a1ae047b96"
+      },
+      "human_listening_accepted": false,
+      "actual_acoustic_pronunciation_accepted": false,
+      "human_household_material_accepted": false,
+      "personal_understanding_accepted": false,
+      "tts_asr_playback_control_calls": 0
+    },
+    "empty_first_pass_validation": {
+      "status": "pending",
+      "structure_complete": false,
+      "total_slots": 36,
+      "reviewed_slots": 0,
+      "pending_slots": 36,
+      "reviewer_id": null,
+      "reference_access_counts": {},
+      "ratings": {
+        "path": "/home/kxj/zte_ws/edge-smart-home-ai/evaluation/20261113-w16-review-context-submissions/ratings-first-pass-empty.csv",
+        "bytes": 3657,
+        "sha256": "3b6134e4823057a76565fd76acc1363d7f141518d5a5bb7256beba0d594b03f8"
+      },
+      "manifest": {
+        "path": "/home/kxj/zte_ws/edge-smart-home-ai/evaluation/20261113-w16-review-listening-package/manifest.json",
+        "bytes": 35825,
+        "sha256": "f9f9fb418802601822091f97ca7eb5365242a680e6336fb6188503a1ae047b96"
+      },
+      "human_listening_accepted": false,
+      "actual_acoustic_pronunciation_accepted": false,
+      "human_household_material_accepted": false,
+      "personal_understanding_accepted": false,
+      "scope": "CSV completeness and self-attested observations only; no proof of listener identity, acoustic correctness, blind protocol or household human recordings.",
+      "tts_asr_playback_control_calls": 0
+    },
+    "first_pass_rows": 36,
+    "second_pass_slot_rows": 36,
+    "second_pass_focal_rows": 30,
+    "actual_first_pass_submissions": 0,
+    "actual_second_pass_submissions": 0,
+    "review_bundle_artifacts_including_manifest": 43,
+    "waveforms_copied": 36,
+    "copy_is_not_tts_generation": true,
+    "source_run_artifacts_verified": 247,
+    "source_tts_model_files_verified": 9,
+    "first_pass_references_hidden": true,
+    "claimed_new_blind_experiment": false,
+    "second_pass_automatic_validation_implemented": false
+  },
+  "human_collection": {
+    "plan": {
+      "path": "edge-smart-home-ai/evaluation/20261113-w16-review-human-package/plan.json",
+      "bytes": 10041,
+      "sha256": "bf99427b312eb47c70516ad0577b151f22783150024fc6f927d9e2ed030b1a65"
+    },
+    "empty_audit": {
+      "path": "edge-smart-home-ai/evaluation/20261113-w16-review-human-empty-audit/report.json",
+      "bytes": 29868,
+      "sha256": "a4761765ded0a749b1e3155a569278223746828b028b1f3c1cd77b53d09b2294"
+    },
+    "status": "pending",
+    "planned_participants": 2,
+    "fixed_slots": 36,
+    "same_original_prompts_each_participant": 18,
+    "supplied_audio_files": 0,
+    "copied_original_files": 0,
+    "missing_fields": 194,
+    "issues": [],
+    "actual_consent_records": 0,
+    "split": "P01/session-dev versus P02/session-validation, all18 texts each; same public prompts, not unseen-text/independent generalization test.",
+    "unseen_text_generalization_set": false,
+    "source_declarations_verified_as_true": false,
+    "public_release_authorized": false
+  },
+  "validation": {
+    "new_package_submission_audit_files_unchanged": 55,
+    "negative_cli_cases": 5,
+    "negative_returncode": 2,
+    "empty_listening_returncode": 3,
+    "empty_human_returncode": 3,
+    "repeated_empty_listening_byte_identical": true,
+    "original_immutable_artifacts_preserved": 1098,
+    "prior_index_initial_artifacts_verified": 1104,
+    "navigation_and_task_mutable_paths": 7,
+    "source_clean_during_formal_workflows": true
+  },
+  "current_calls": {
+    "new_tts_generations": 0,
+    "new_asr_calls": 0,
+    "model_sessions": 0,
+    "microphone_calls": 0,
+    "playback_calls": 0,
+    "device_or_ha_calls": 0,
+    "context_resource_builds": 0
+  },
+  "stage_audio_control_acceptance_passed": false,
+  "automatic_product_promotion": false,
+  "actual_acoustic_pronunciation_accepted": false,
+  "human_listening_accepted": false,
+  "human_household_material_accepted": false,
+  "personal_understanding_accepted": false,
+  "asr_weight_license_verified": false,
+  "overflow_resolution_accepted": false,
+  "real_ha_accepted": false,
+  "physical_completion_accepted": false,
+  "audible_feedback_accepted": false,
+  "arm_hardware_accepted": false,
+  "request_id_idempotency_implemented": false,
+  "official_research": {
+    "path": "edge-smart-home-ai/evaluation/20261113-w16-review-context-sources/summary.json",
+    "bytes": 15321,
+    "sha256": "1409fc79aec29bfa5f9c865f2d5bbf36a12be2f175a246b519b11b2d4f34e630"
+  },
+  "independent_source_audit": {
+    "path": "edge-smart-home-ai/evaluation/20261113-w16-review-context-audit/summary.json",
+    "bytes": 9862,
+    "sha256": "0e427fd97b2ec421337385d009cbc8debd0cd3d37ad801a9101d296a5b33d189"
+  },
+  "limitations": [
+    "Preparation, empty pending checks, source identities and unit regressions passed; no genuine human review or new human recording is present.",
+    "Second-pass slot/focal adjudication is manually completed later; current templates are blank and not automatically acoustically graded.",
+    "Two pseudonyms and provider consent fields are declarations, not independent proof of separate speakers, authenticity or valid permission.",
+    "Same18 disclosed prompts across speaker/session split are not an unseen-text or generalization heldout corpus.",
+    "Context FAR/sidecar/compiler are not built or executed; future strict two-target/13-focal/16-sentence gates are specifications, not achieved scores.",
+    "Original A/B6/15 and13/15, home3/10 and4/10, historic42/73/43/73 and60 diagnostics remain unchanged; no product/default promotion.",
+    "No live E2E/overflow/HA/physical/ARM/audible feedback/idempotency or personal acceptance. Old RTF does not close those gates.",
+    "Hashes are not backups. Raw local waveforms, templates, submitted permission documents and logs remain ignored; do not edit frozen packages."
+  ],
+  "independent_formal_audit": {
+    "path": "edge-smart-home-ai/evaluation/20261113-w16-review-context-formal-review/summary.json",
+    "bytes": 23553,
+    "sha256": "fcd4d45ee9d83b6a2f6d14e6fce5cc7a7c25bbdfeaa81712e93d31fa7f2fae32"
+  }
+}
