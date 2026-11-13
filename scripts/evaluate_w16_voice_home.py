@@ -230,6 +230,7 @@ def finish_probe(context, result, *, wall_ms, outcome=None):
     state = getattr(result, "state", None) if outcome is None else outcome
     trace = getattr(result, "trace", None) or getattr(getattr(result, "event", None), "trace", None)
     return {"status": result.status, "error_code": result.error_code, "error": result.error,
+            "error_stage": getattr(result, "error_stage", None),
             "text": getattr(result, "text", None), "message": getattr(result, "message", None),
             "text_fallback": getattr(result, "text_fallback", None), "llm_calls": result.llm_calls,
             "feedback_error": getattr(result, "feedback_error", None),
@@ -323,7 +324,8 @@ def recognize_case(clip, case, p, asr):
         row["primary"]["checks"] = check_probe(row["primary"], case)
         row["primary_semantics_passed"] = all(row["primary"]["checks"].values())
         if row["primary"]["error_code"]:
-            row["errors"].append({"stage": "voice_or_intent_device", "code": row["primary"]["error_code"], "detail": row["primary"]["status"]})
+            row["errors"].append({"stage": row["primary"].get("error_stage") or "voice_or_intent_device",
+                                  "code": row["primary"]["error_code"], "detail": row["primary"]["status"]})
         if not row["primary_semantics_passed"]:
             row["errors"].append({"stage": "semantic", "code": "AUDIO_TO_STATE_ORACLE_MISMATCH", "detail": "Frozen primary case oracle did not match"})
     else:

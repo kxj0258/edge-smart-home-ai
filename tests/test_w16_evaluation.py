@@ -162,6 +162,15 @@ class W16EvaluationTests(unittest.TestCase):
         self.assertIn('| failed | synthetic_audio | normal |  | not_routed |  | False |', report)
         self.assertIn('Primary all semantic oracles passed: False', report)
 
+    def test_empty_asr_stage_is_retained_in_probe_and_error_log(self):
+        with TemporaryDirectory() as temp:
+            root = Path(temp)
+            self.run_fake(root)
+            row = W16.read(root / 'run/records/0009.json')
+            self.assertEqual(row['primary']['error_stage'], 'asr_output')
+            error = next(e for e in row['errors'] if e['code'] == 'ASR_EMPTY_TRANSCRIPT')
+            self.assertEqual(error['stage'], 'asr_output')
+
     def test_decode_failure_is_saved_without_retry_and_without_device_effect(self):
         with TemporaryDirectory() as temp:
             root = Path(temp); summary, _, fake = self.run_fake(root, fail_at=2)
