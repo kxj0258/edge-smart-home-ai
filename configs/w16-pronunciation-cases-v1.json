@@ -1,0 +1,792 @@
+{
+  "schema_version": 1,
+  "kind": "w16_pronunciation_cases",
+  "version": "v1",
+  "selection": {
+    "purpose": "New development diagnostic for Chinese frontend/lexical pronunciation; not a blind held-out test.",
+    "authored_before_native_output": true,
+    "previous_home_literal_text_overlap": 0,
+    "asr_driven_selection": false,
+    "reference_texts_may_change_after_output": false,
+    "reference_only_mock_preflight": "10/10 expected behaviors verified before formal native generation; not ASR accuracy."
+  },
+  "sources": {
+    "text": {
+      "source_kind": "project_authored_text",
+      "source_url": "project://w16/pronunciation-cases-v1",
+      "attribution": "New household fixture sentences and common-word pronunciation probes authored for this project task.",
+      "rights": "Local evaluation and synthesis authorized by the active project task. No blanket new public license is assigned to the repository or generated waveforms.",
+      "upstream_sentences_or_audio_copied": false
+    },
+    "tts_inventory": "configs/w16-material-source-v1.json",
+    "tts_model_license": "Apache-2.0 as declared by the pinned author model card",
+    "tts_training_data_license": "AISHELL-3/OpenSLR93 Apache-2.0 as separately audited",
+    "generated_audio_rights": "Generation provenance, self-authored text and upstream model/data licenses remain separate; no blanket output-copyright claim.",
+    "dictionary_license_url": "https://language.moe.gov.tw/001/Upload/Files/site_content/M0001/respub/index.html",
+    "dictionary_license": "CC-BY-ND-3.0-TW; pronunciation facts/links only, no dictionary definitions/example sentences/audio used as synthesis input.",
+    "human_household_recordings": 0
+  },
+  "common_tts": {
+    "speaker_id": 13,
+    "speed": 1.0,
+    "num_threads": 2,
+    "provider": "cpu",
+    "sample_rate": 8000,
+    "num_speakers": 174,
+    "noise_scale": 0.0,
+    "noise_scale_w": 0.0,
+    "debug": true,
+    "silence_scale": 0.2
+  },
+  "single_factor_ab": {
+    "A": "Original ASCII lexicon and phone.fst,number.fst",
+    "B": "Same configuration, additionally the audited official rule.far only",
+    "unchanged_model_weights_voice_rate_noise_generation": true,
+    "historical_override_lexicon_used": false,
+    "per_arm_per_text_synthesis_attempts": 1,
+    "new_controlled_zero_noise_domain": true,
+    "not_a_reproduction_of_old_default_noise_wavs": true,
+    "selection_or_regeneration_from_asr_results": false
+  },
+  "home_cases": [
+    {
+      "id": "W16-TN01",
+      "category": "normal",
+      "reference_text": "开启卧室空调",
+      "source_kind": "project_authored_text",
+      "setup": [],
+      "expect": {
+        "status": "executed",
+        "error_code": null,
+        "attributes": {
+          "bedroom_air_conditioner": {
+            "power": true,
+            "temperature": 26,
+            "hvac_mode": "cool"
+          }
+        },
+        "unchanged": false
+      },
+      "focal_pronunciation": [
+        {
+          "text": "空调",
+          "char_start": 4,
+          "char_end": 6,
+          "base_pinyin": [
+            "kong1",
+            "tiao2"
+          ],
+          "expected_phones": [
+            "k",
+            "ong1",
+            "#0",
+            "t",
+            "iao2",
+            "#0"
+          ],
+          "dictionary_url": "https://dict.revised.moe.edu.tw/dictView.jsp?ID=78791&la=0&powerMode=0",
+          "scope": "Canonical lexical reading; sentence coarticulation/sandhi and intelligibility require separate listening."
+        }
+      ],
+      "note": null
+    },
+    {
+      "id": "W16-TN02",
+      "category": "normal",
+      "reference_text": "卧室空调温度调到二十四度",
+      "source_kind": "project_authored_text",
+      "setup": [],
+      "expect": {
+        "status": "executed",
+        "error_code": null,
+        "attributes": {
+          "bedroom_air_conditioner": {
+            "power": true,
+            "temperature": 24,
+            "hvac_mode": "cool"
+          }
+        },
+        "unchanged": false
+      },
+      "focal_pronunciation": [
+        {
+          "text": "空调",
+          "char_start": 2,
+          "char_end": 4,
+          "base_pinyin": [
+            "kong1",
+            "tiao2"
+          ],
+          "expected_phones": [
+            "k",
+            "ong1",
+            "#0",
+            "t",
+            "iao2",
+            "#0"
+          ],
+          "dictionary_url": "https://dict.revised.moe.edu.tw/dictView.jsp?ID=78791&la=0&powerMode=0",
+          "scope": "Canonical lexical reading; sentence coarticulation/sandhi and intelligibility require separate listening."
+        },
+        {
+          "text": "调到",
+          "char_start": 6,
+          "char_end": 8,
+          "base_pinyin": [
+            "tiao2",
+            "dao4"
+          ],
+          "expected_phones": [
+            "t",
+            "iao2",
+            "#0",
+            "d",
+            "ao4",
+            "#0"
+          ],
+          "dictionary_url": "https://dict.mini.moe.edu.tw/SearchIndex/word_detail?breadcrumbs=Search_%E8%AA%BF_one&dictSearchField=%E8%AA%BF&wordID=D0001107",
+          "scope": "Canonical lexical reading; sentence coarticulation/sandhi and intelligibility require separate listening."
+        }
+      ],
+      "note": "Two occurrences of 调 must both be audited; 空调 alone passing is not whole-utterance pronunciation acceptance."
+    },
+    {
+      "id": "W16-TN03",
+      "category": "normal",
+      "reference_text": "厨房灯亮度设为六十",
+      "source_kind": "project_authored_text",
+      "setup": [],
+      "expect": {
+        "status": "executed",
+        "error_code": null,
+        "attributes": {
+          "kitchen_light": {
+            "power": true,
+            "brightness": 60
+          }
+        },
+        "unchanged": false
+      },
+      "focal_pronunciation": [],
+      "note": null
+    },
+    {
+      "id": "W16-TN04",
+      "category": "normal",
+      "reference_text": "请开启卧室窗帘",
+      "source_kind": "project_authored_text",
+      "setup": [],
+      "expect": {
+        "status": "executed",
+        "error_code": null,
+        "attributes": {
+          "bedroom_curtain": {
+            "position": "open",
+            "position_percent": 100
+          }
+        },
+        "unchanged": false
+      },
+      "focal_pronunciation": [
+        {
+          "text": "窗帘",
+          "char_start": 5,
+          "char_end": 7,
+          "base_pinyin": [
+            "chuang1",
+            "lian2"
+          ],
+          "expected_phones": [
+            "ch",
+            "uang1",
+            "#0",
+            "l",
+            "ian2",
+            "#0"
+          ],
+          "dictionary_url": "https://dict.revised.moe.edu.tw/dictView.jsp?ID=126445&la=0&powerMode=0",
+          "scope": "Canonical lexical reading; sentence coarticulation/sandhi and intelligibility require separate listening."
+        }
+      ],
+      "note": null
+    },
+    {
+      "id": "W16-TN05",
+      "category": "normal",
+      "reference_text": "关掉卧室灯",
+      "source_kind": "project_authored_text",
+      "setup": [
+        {
+          "command": {
+            "device_id": "bedroom_light",
+            "action": "turn_on",
+            "arguments": {}
+          }
+        }
+      ],
+      "expect": {
+        "status": "executed",
+        "error_code": null,
+        "attributes": {
+          "bedroom_light": {
+            "power": false,
+            "brightness": 0
+          }
+        },
+        "unchanged": false
+      },
+      "focal_pronunciation": [],
+      "note": null
+    },
+    {
+      "id": "W16-TA01",
+      "category": "abnormal",
+      "reference_text": "开启阳台空调",
+      "source_kind": "project_authored_text",
+      "setup": [],
+      "expect": {
+        "status": "request_rejected",
+        "error_code": "UNKNOWN_DEVICE",
+        "attributes": {},
+        "unchanged": true
+      },
+      "focal_pronunciation": [
+        {
+          "text": "空调",
+          "char_start": 4,
+          "char_end": 6,
+          "base_pinyin": [
+            "kong1",
+            "tiao2"
+          ],
+          "expected_phones": [
+            "k",
+            "ong1",
+            "#0",
+            "t",
+            "iao2",
+            "#0"
+          ],
+          "dictionary_url": "https://dict.revised.moe.edu.tw/dictView.jsp?ID=78791&la=0&powerMode=0",
+          "scope": "Canonical lexical reading; sentence coarticulation/sandhi and intelligibility require separate listening."
+        }
+      ],
+      "note": null
+    },
+    {
+      "id": "W16-TA02",
+      "category": "abnormal",
+      "reference_text": "卧室空调温度调到三十二度",
+      "source_kind": "project_authored_text",
+      "setup": [],
+      "expect": {
+        "status": "request_rejected",
+        "error_code": "REQUEST_ARGUMENT_INVALID",
+        "attributes": {},
+        "unchanged": true
+      },
+      "focal_pronunciation": [
+        {
+          "text": "空调",
+          "char_start": 2,
+          "char_end": 4,
+          "base_pinyin": [
+            "kong1",
+            "tiao2"
+          ],
+          "expected_phones": [
+            "k",
+            "ong1",
+            "#0",
+            "t",
+            "iao2",
+            "#0"
+          ],
+          "dictionary_url": "https://dict.revised.moe.edu.tw/dictView.jsp?ID=78791&la=0&powerMode=0",
+          "scope": "Canonical lexical reading; sentence coarticulation/sandhi and intelligibility require separate listening."
+        },
+        {
+          "text": "调到",
+          "char_start": 6,
+          "char_end": 8,
+          "base_pinyin": [
+            "tiao2",
+            "dao4"
+          ],
+          "expected_phones": [
+            "t",
+            "iao2",
+            "#0",
+            "d",
+            "ao4",
+            "#0"
+          ],
+          "dictionary_url": "https://dict.mini.moe.edu.tw/SearchIndex/word_detail?breadcrumbs=Search_%E8%AA%BF_one&dictSearchField=%E8%AA%BF&wordID=D0001107",
+          "scope": "Canonical lexical reading; sentence coarticulation/sandhi and intelligibility require separate listening."
+        }
+      ],
+      "note": null
+    },
+    {
+      "id": "W16-TA03",
+      "category": "abnormal",
+      "reference_text": "厨房灯亮度设置一下",
+      "source_kind": "project_authored_text",
+      "setup": [],
+      "expect": {
+        "status": "clarification_required",
+        "error_code": "REQUEST_ARGUMENT_MISSING",
+        "attributes": {},
+        "unchanged": true
+      },
+      "focal_pronunciation": [],
+      "note": null
+    },
+    {
+      "id": "W16-TA04",
+      "category": "abnormal",
+      "reference_text": "开启厨房智能插座",
+      "source_kind": "project_authored_text",
+      "setup": [
+        {
+          "availability": {
+            "device_id": "kitchen_smart_plug",
+            "value": false
+          }
+        }
+      ],
+      "expect": {
+        "status": "device_error",
+        "error_code": "DEVICE_OFFLINE",
+        "attributes": {},
+        "unchanged": true
+      },
+      "focal_pronunciation": [],
+      "note": null
+    },
+    {
+      "id": "W16-TA05",
+      "category": "abnormal",
+      "reference_text": "卧室灯或者厨房灯亮度设为四十",
+      "source_kind": "project_authored_text",
+      "setup": [],
+      "expect": {
+        "status": "clarification_required",
+        "error_code": "REQUEST_TARGET_AMBIGUOUS",
+        "attributes": {},
+        "unchanged": true
+      },
+      "focal_pronunciation": [],
+      "note": null
+    }
+  ],
+  "pronunciation_probes": [
+    {
+      "id": "W16-TP01",
+      "reference_text": "空调",
+      "source_kind": "project_authored_common_word_text",
+      "pair_id": "P1",
+      "same_character": "调",
+      "focal_pronunciation": [
+        {
+          "text": "空调",
+          "char_start": 0,
+          "char_end": 2,
+          "base_pinyin": [
+            "kong1",
+            "tiao2"
+          ],
+          "expected_phones": [
+            "k",
+            "ong1",
+            "#0",
+            "t",
+            "iao2",
+            "#0"
+          ],
+          "dictionary_url": "https://dict.revised.moe.edu.tw/dictView.jsp?ID=78791&la=0&powerMode=0",
+          "scope": "Canonical lexical reading; sentence coarticulation/sandhi and intelligibility require separate listening."
+        }
+      ],
+      "state_or_semantics_evaluated": false,
+      "category": "polyphone_probe"
+    },
+    {
+      "id": "W16-TP02",
+      "reference_text": "调查",
+      "source_kind": "project_authored_common_word_text",
+      "pair_id": "P1",
+      "same_character": "调",
+      "focal_pronunciation": [
+        {
+          "text": "调查",
+          "char_start": 0,
+          "char_end": 2,
+          "base_pinyin": [
+            "diao4",
+            "cha2"
+          ],
+          "expected_phones": [
+            "d",
+            "iao4",
+            "#0",
+            "ch",
+            "a2",
+            "#0"
+          ],
+          "dictionary_url": "https://dict.revised.moe.edu.tw/dictView.jsp?ID=46036&la=0&powerMode=0",
+          "scope": "Canonical lexical reading; sentence coarticulation/sandhi and intelligibility require separate listening."
+        }
+      ],
+      "state_or_semantics_evaluated": false,
+      "category": "polyphone_probe"
+    },
+    {
+      "id": "W16-TP03",
+      "reference_text": "重复",
+      "source_kind": "project_authored_common_word_text",
+      "pair_id": "P2",
+      "same_character": "重",
+      "focal_pronunciation": [
+        {
+          "text": "重复",
+          "char_start": 0,
+          "char_end": 2,
+          "base_pinyin": [
+            "chong2",
+            "fu4"
+          ],
+          "expected_phones": [
+            "ch",
+            "ong2",
+            "#0",
+            "f",
+            "u4",
+            "#0"
+          ],
+          "dictionary_url": "https://dict.revised.moe.edu.tw/dictView.jsp?ID=126798&la=0&powerMode=0",
+          "scope": "Canonical lexical reading; sentence coarticulation/sandhi and intelligibility require separate listening."
+        }
+      ],
+      "state_or_semantics_evaluated": false,
+      "category": "polyphone_probe"
+    },
+    {
+      "id": "W16-TP04",
+      "reference_text": "重量",
+      "source_kind": "project_authored_common_word_text",
+      "pair_id": "P2",
+      "same_character": "重",
+      "focal_pronunciation": [
+        {
+          "text": "重量",
+          "char_start": 0,
+          "char_end": 2,
+          "base_pinyin": [
+            "zhong4",
+            "liang4"
+          ],
+          "expected_phones": [
+            "zh",
+            "ong4",
+            "#0",
+            "l",
+            "iang4",
+            "#0"
+          ],
+          "dictionary_url": "https://dict.revised.moe.edu.tw/dictView.jsp?ID=120479&la=0&powerMode=0",
+          "scope": "Canonical lexical reading; sentence coarticulation/sandhi and intelligibility require separate listening."
+        }
+      ],
+      "state_or_semantics_evaluated": false,
+      "category": "polyphone_probe"
+    },
+    {
+      "id": "W16-TP05",
+      "reference_text": "音乐",
+      "source_kind": "project_authored_common_word_text",
+      "pair_id": "P3",
+      "same_character": "乐",
+      "focal_pronunciation": [
+        {
+          "text": "音乐",
+          "char_start": 0,
+          "char_end": 2,
+          "base_pinyin": [
+            "yin1",
+            "yue4"
+          ],
+          "expected_phones": [
+            "^",
+            "in1",
+            "#0",
+            "^",
+            "ve4",
+            "#0"
+          ],
+          "dictionary_url": "https://dict.revised.moe.edu.tw/dictView.jsp?ID=156330&la=0&powerMode=0",
+          "scope": "Canonical lexical reading; sentence coarticulation/sandhi and intelligibility require separate listening."
+        }
+      ],
+      "state_or_semantics_evaluated": false,
+      "category": "polyphone_probe"
+    },
+    {
+      "id": "W16-TP06",
+      "reference_text": "快乐",
+      "source_kind": "project_authored_common_word_text",
+      "pair_id": "P3",
+      "same_character": "乐",
+      "focal_pronunciation": [
+        {
+          "text": "快乐",
+          "char_start": 0,
+          "char_end": 2,
+          "base_pinyin": [
+            "kuai4",
+            "le4"
+          ],
+          "expected_phones": [
+            "k",
+            "uai4",
+            "#0",
+            "l",
+            "e4",
+            "#0"
+          ],
+          "dictionary_url": "https://dict.revised.moe.edu.tw/dictView.jsp?ID=78094&la=0&powerMode=0",
+          "scope": "Canonical lexical reading; sentence coarticulation/sandhi and intelligibility require separate listening."
+        }
+      ],
+      "state_or_semantics_evaluated": false,
+      "category": "polyphone_probe"
+    },
+    {
+      "id": "W16-TP07",
+      "reference_text": "客厅",
+      "source_kind": "project_authored_common_word_text",
+      "focal_pronunciation": [
+        {
+          "text": "客厅",
+          "char_start": 0,
+          "char_end": 2,
+          "base_pinyin": [
+            "ke4",
+            "ting1"
+          ],
+          "expected_phones": [
+            "k",
+            "e4",
+            "#0",
+            "t",
+            "ing1",
+            "#0"
+          ],
+          "dictionary_url": "https://dict.revised.moe.edu.tw/dictView.jsp?ID=76402&la=0&powerMode=0",
+          "scope": "Canonical lexical reading; sentence coarticulation/sandhi and intelligibility require separate listening."
+        }
+      ],
+      "state_or_semantics_evaluated": false,
+      "category": "neutral_control"
+    },
+    {
+      "id": "W16-TP08",
+      "reference_text": "窗帘",
+      "source_kind": "project_authored_common_word_text",
+      "focal_pronunciation": [
+        {
+          "text": "窗帘",
+          "char_start": 0,
+          "char_end": 2,
+          "base_pinyin": [
+            "chuang1",
+            "lian2"
+          ],
+          "expected_phones": [
+            "ch",
+            "uang1",
+            "#0",
+            "l",
+            "ian2",
+            "#0"
+          ],
+          "dictionary_url": "https://dict.revised.moe.edu.tw/dictView.jsp?ID=126445&la=0&powerMode=0",
+          "scope": "Canonical lexical reading; sentence coarticulation/sandhi and intelligibility require separate listening."
+        }
+      ],
+      "state_or_semantics_evaluated": false,
+      "category": "neutral_control"
+    }
+  ],
+  "phonetic_references": [
+    {
+      "text": "空调",
+      "reference_traditional_orthography": "空調",
+      "base_pinyin": [
+        "kong1",
+        "tiao2"
+      ],
+      "expected_phones": [
+        "k",
+        "ong1",
+        "#0",
+        "t",
+        "iao2",
+        "#0"
+      ],
+      "word_entry_exists": true,
+      "dictionary_url": "https://dict.revised.moe.edu.tw/dictView.jsp?ID=78791&la=0&powerMode=0",
+      "pronunciation_reference_kind": "Official Ministry of Education Revised Mandarin Chinese Dictionary; lexical reading fact only; not a full-sentence acoustic/sandhi oracle",
+      "license_note": "MOE dictionary website data CC-BY-ND-3.0-TW; no copied definitions/examples/audio are used as synthesis material."
+    },
+    {
+      "text": "调查",
+      "reference_traditional_orthography": "調查",
+      "base_pinyin": [
+        "diao4",
+        "cha2"
+      ],
+      "expected_phones": [
+        "d",
+        "iao4",
+        "#0",
+        "ch",
+        "a2",
+        "#0"
+      ],
+      "word_entry_exists": true,
+      "dictionary_url": "https://dict.revised.moe.edu.tw/dictView.jsp?ID=46036&la=0&powerMode=0",
+      "pronunciation_reference_kind": "Official Ministry of Education Revised Mandarin Chinese Dictionary; lexical reading fact only; not a full-sentence acoustic/sandhi oracle",
+      "license_note": "MOE dictionary website data CC-BY-ND-3.0-TW; no copied definitions/examples/audio are used as synthesis material."
+    },
+    {
+      "text": "重复",
+      "reference_traditional_orthography": "重複",
+      "base_pinyin": [
+        "chong2",
+        "fu4"
+      ],
+      "expected_phones": [
+        "ch",
+        "ong2",
+        "#0",
+        "f",
+        "u4",
+        "#0"
+      ],
+      "word_entry_exists": true,
+      "dictionary_url": "https://dict.revised.moe.edu.tw/dictView.jsp?ID=126798&la=0&powerMode=0",
+      "pronunciation_reference_kind": "Official Ministry of Education Revised Mandarin Chinese Dictionary; lexical reading fact only; not a full-sentence acoustic/sandhi oracle",
+      "license_note": "MOE dictionary website data CC-BY-ND-3.0-TW; no copied definitions/examples/audio are used as synthesis material."
+    },
+    {
+      "text": "重量",
+      "reference_traditional_orthography": "重量",
+      "base_pinyin": [
+        "zhong4",
+        "liang4"
+      ],
+      "expected_phones": [
+        "zh",
+        "ong4",
+        "#0",
+        "l",
+        "iang4",
+        "#0"
+      ],
+      "word_entry_exists": true,
+      "dictionary_url": "https://dict.revised.moe.edu.tw/dictView.jsp?ID=120479&la=0&powerMode=0",
+      "pronunciation_reference_kind": "Official Ministry of Education Revised Mandarin Chinese Dictionary; lexical reading fact only; not a full-sentence acoustic/sandhi oracle",
+      "license_note": "MOE dictionary website data CC-BY-ND-3.0-TW; no copied definitions/examples/audio are used as synthesis material."
+    },
+    {
+      "text": "音乐",
+      "reference_traditional_orthography": "音樂",
+      "base_pinyin": [
+        "yin1",
+        "yue4"
+      ],
+      "expected_phones": [
+        "^",
+        "in1",
+        "#0",
+        "^",
+        "ve4",
+        "#0"
+      ],
+      "word_entry_exists": true,
+      "dictionary_url": "https://dict.revised.moe.edu.tw/dictView.jsp?ID=156330&la=0&powerMode=0",
+      "pronunciation_reference_kind": "Official Ministry of Education Revised Mandarin Chinese Dictionary; lexical reading fact only; not a full-sentence acoustic/sandhi oracle",
+      "license_note": "MOE dictionary website data CC-BY-ND-3.0-TW; no copied definitions/examples/audio are used as synthesis material."
+    },
+    {
+      "text": "快乐",
+      "reference_traditional_orthography": "快樂",
+      "base_pinyin": [
+        "kuai4",
+        "le4"
+      ],
+      "expected_phones": [
+        "k",
+        "uai4",
+        "#0",
+        "l",
+        "e4",
+        "#0"
+      ],
+      "word_entry_exists": true,
+      "dictionary_url": "https://dict.revised.moe.edu.tw/dictView.jsp?ID=78094&la=0&powerMode=0",
+      "pronunciation_reference_kind": "Official Ministry of Education Revised Mandarin Chinese Dictionary; lexical reading fact only; not a full-sentence acoustic/sandhi oracle",
+      "license_note": "MOE dictionary website data CC-BY-ND-3.0-TW; no copied definitions/examples/audio are used as synthesis material."
+    },
+    {
+      "text": "客厅",
+      "reference_traditional_orthography": "客廳",
+      "base_pinyin": [
+        "ke4",
+        "ting1"
+      ],
+      "expected_phones": [
+        "k",
+        "e4",
+        "#0",
+        "t",
+        "ing1",
+        "#0"
+      ],
+      "word_entry_exists": false,
+      "dictionary_url": "https://dict.revised.moe.edu.tw/dictView.jsp?ID=76402&la=0&powerMode=0",
+      "pronunciation_reference_kind": "Official Ministry of Education Revised Mandarin Chinese Dictionary; lexical reading fact only; not a full-sentence acoustic/sandhi oracle",
+      "license_note": "MOE dictionary website data CC-BY-ND-3.0-TW; no copied definitions/examples/audio are used as synthesis material."
+    },
+    {
+      "text": "窗帘",
+      "reference_traditional_orthography": "窗簾",
+      "base_pinyin": [
+        "chuang1",
+        "lian2"
+      ],
+      "expected_phones": [
+        "ch",
+        "uang1",
+        "#0",
+        "l",
+        "ian2",
+        "#0"
+      ],
+      "word_entry_exists": false,
+      "dictionary_url": "https://dict.revised.moe.edu.tw/dictView.jsp?ID=126445&la=0&powerMode=0",
+      "pronunciation_reference_kind": "Official Ministry of Education Revised Mandarin Chinese Dictionary; lexical reading fact only; not a full-sentence acoustic/sandhi oracle",
+      "license_note": "MOE dictionary website data CC-BY-ND-3.0-TW; no copied definitions/examples/audio are used as synthesis material."
+    }
+  ],
+  "acceptance": {
+    "human_household_accepted": false,
+    "personal_understanding_accepted": false,
+    "human_listening_accepted": false,
+    "native_phone_log_is_acoustic_proof": false,
+    "asr_is_a_phonetic_judge": false,
+    "automatic_product_promotion": false,
+    "expected_scope": "Lexical base-pinyin/phone targets, actual native frontend logs, generated waveform evidence, ASR/Mock diagnostic, and human listening are separate layers; no full-sentence tone-sandhi scoring."
+  }
+}
