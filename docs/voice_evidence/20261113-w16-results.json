@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "kind": "w16_audio_to_readback_stage_evidence_index",
-  "created_at": "2026-11-13T02:17:18.925592+00:00",
+  "created_at": "2026-11-13T02:18:07.259548+00:00",
   "path_base": "/home/kxj/zte_ws",
   "local_work_date": "2026-11-13",
   "timezone": "Asia/Shanghai",
@@ -527,8 +527,8 @@
     "bytes": 23755,
     "sha256": "dc8bab45380c17bc2faf015bf9a219ff62b6a2122d9500b15a79594fe74c5f93"
   },
-  "artifact_count": 378,
-  "artifact_bytes": 6681826,
+  "artifact_count": 379,
+  "artifact_bytes": 6683108,
   "artifacts": [
     {
       "path": "edge-smart-home-ai/README.md",
@@ -657,8 +657,8 @@
     },
     {
       "path": "edge-smart-home-ai/docs/voice_evidence/20261113-w16-cases.csv",
-      "bytes": 7183,
-      "sha256": "fe2202431c4e70ffb0b694c8e93615b73a5dc95aa35f674ec25972bae24c88d4"
+      "bytes": 7172,
+      "sha256": "95c4cc59d25485bdf2590452bd6e1341c334458a0e517fcff92e5db868884ccd"
     },
     {
       "path": "edge-smart-home-ai/docs/voice_evidence/20261113-w16-feedback.json",
@@ -672,8 +672,8 @@
     },
     {
       "path": "edge-smart-home-ai/docs/voice_evidence/20261113-w16-official-diagnostic.csv",
-      "bytes": 1798,
-      "sha256": "b8d29f4c229db727a85bee06d080887ebebdd2ac3baa87940247edee7b1e33f1"
+      "bytes": 1787,
+      "sha256": "4fc00559edc88b73d41badda20ae3abc4a9272f95280e960bb9df43b2b7b0ca7"
     },
     {
       "path": "edge-smart-home-ai/evaluation/20261113-w14-references/sherpa-online-file.py",
@@ -681,9 +681,14 @@
       "sha256": "2eaca0d1a51c3ded0728d44feb4d9c0da84a3bc81f987b84c6acb5b9b00ed696"
     },
     {
+      "path": "edge-smart-home-ai/evaluation/20261113-w16-archive-tools/archive-whitespace-fix.json",
+      "bytes": 1264,
+      "sha256": "d44d8527cf8f12101c3d4b0f9abdb33df3cbfebec798f18f8e1e4beff3132725"
+    },
+    {
       "path": "edge-smart-home-ai/evaluation/20261113-w16-archive-tools/build.py",
-      "bytes": 10488,
-      "sha256": "9b690882c9e4d9a7261a09760ec5270592aa71df1a37a2e3e42241492893a496"
+      "bytes": 10528,
+      "sha256": "e04b088f5f24ce5305c2db4db8eb4cceac12954e5bfe15bbcacd063a6b784ad8"
     },
     {
       "path": "edge-smart-home-ai/evaluation/20261113-w16-archive-tools/check.py",
