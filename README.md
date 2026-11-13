@@ -54,11 +54,17 @@
 
 [修复诊断结果](docs/stages/E0-w16-repair-results.md) · [预登记/复现](docs/W16_REPAIR.md) · [60条表](docs/voice_evidence/20261113-w16-repair-cases.csv) · [7组摘要](docs/voice_evidence/20261113-w16-repair-summary.csv) · [机器结果](baselines/20261113-w16-repair-v1.json) · [新证据索引](docs/voice_evidence/20261113-w16-repair-results.json)。W16-P0-1继续进行中；不重合成挑样，真人家庭材料、权重许可、个人理解与现场overflow等仍待验。
 
-## W16续修：全量听辨、真人流程与上下文预登记
+## W16续修：温度上下文D组严格回归
 
-复用冻结18条及原36个A/B波形，新增两步人工听辨流程（首遍36槽，参考复核36槽/30焦点）和两位匿名说话人各18条的事先授权采集计划。正式空表检查均返回pending，实际听辨与真人录音仍0；646离线测试/网络0、根计划10项通过。原声音和失败成绩不改，本轮没有生成、识别、录音、播放或执行上下文候选。
+已实现并冻结单条上下文FAR＋append-only sidecar词典，两次构建SHA一致；D18各生成/识别一次，688离线测试/0网络。两处“调到”与原13焦点均通过（15/15），16非目标phones/float/WAV SHA完全等于原B；ASR仍7/18、CER22/104，home仍4/10，不晋升产品默认。两目标波形已变，房间词仍被转录为“不过是”，人耳/真人/个人仍待验。
 
-[本轮结果](docs/stages/E0-w16-review-context-results.md) · [听辨操作](docs/W16_LISTENING_REVIEW.md) · [真人采集](docs/W16_HUMAN_COLLECTION.md) · [上下文单因素预登记](configs/w16-context-repair-prereg-v1.json) · [证据索引](docs/voice_evidence/20261113-w16-review-context-results.json)。未来只计划温度上下文的单条FAR＋新增词条整体资源包，不全局替换“调”、不按24/32挑值；尚未构建或运行，不自动晋升。W16-P0-1、人耳、真人和个人理解保持待验，文本备用保留。
+[D组结果](docs/stages/E0-w16-context-d-results.md) · [复现/停止规则](docs/W16_CONTEXT_D.md) · [构建/工具锁](docs/W16_CONTEXT_BUNDLE.md) · [18条C/D对照](docs/voice_evidence/20261113-w16-context-d-cases.csv) · [机器基线](baselines/20261113-w16-context-d-v1.json) · [证据索引](docs/voice_evidence/20261113-w16-context-d-results.json)。C为旧B档案不重生、不作同期测速；原失败和文本备用保留，W16-P0-1继续进行中，不启动W17。
+
+## W16上一阶段：全量听辨、真人流程与上下文预登记
+
+复用冻结18条及原36个A/B波形，新增两步人工听辨流程（首遍36槽，参考复核36槽/30焦点）和两位匿名说话人各18条的事先授权采集计划。正式空表检查均返回pending，实际听辨与真人录音仍0；646离线测试/网络0、根计划10项通过。原声音和失败成绩不改，该阶段没有生成、识别、录音、播放或执行上下文候选。
+
+[本轮结果](docs/stages/E0-w16-review-context-results.md) · [听辨操作](docs/W16_LISTENING_REVIEW.md) · [真人采集](docs/W16_HUMAN_COLLECTION.md) · [上下文单因素预登记](configs/w16-context-repair-prereg-v1.json) · [证据索引](docs/voice_evidence/20261113-w16-review-context-results.json)。该阶段只计划温度上下文的单条FAR＋新增词条整体资源包，不全局替换“调”、不按24/32挑值；当时尚未构建或运行，不自动晋升。W16-P0-1、人耳、真人和个人理解保持待验，文本备用保留。
 
 ## W16续修：中文前端与生成声音
 

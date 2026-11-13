@@ -1,0 +1,3 @@
+group,scope,observations,completed,focal_passed,focal_total,speech_exact,speech_scored,character_edits,reference_characters,cer,home_speech_exact,home_speech_scored,home_character_edits,home_reference_characters,home_cer,home_semantics_passed,normal_semantics_passed,abnormal_semantics_passed,abnormal_state_preserved,primary_mock_execute_attempts,strict_frontend_gate,home_semantic_gate,development_candidate_gate
+C,archived original B18; no new generation/inference,18,18,13,15,7,18,22,104,0.21153846153846154,3,10,15,88,0.17045454545454544,4,2,2,5,3,,False,False
+D,new once-only18 observations,18,18,15,15,7,18,22,104,0.21153846153846154,3,10,15,88,0.17045454545454544,4,2,2,5,3,True,False,False

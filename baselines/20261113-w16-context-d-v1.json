@@ -1,0 +1,1029 @@
+{
+  "schema_version": 1,
+  "kind": "w16_temperature_context_d_implementation_results",
+  "created_at": "2026-11-13T07:06:48.446897+00:00",
+  "local_work_date": "2026-11-13",
+  "timezone": "Asia/Shanghai",
+  "engineering_evidence_passed": true,
+  "strict_frontend_regression_gate": true,
+  "development_candidate_gate": false,
+  "home_semantic_gate": false,
+  "runtime_source_commit": "1ec319fb579c0f22d87dce778055d40beae41d02",
+  "root_execution_freeze_commit": "152e83156d3a73cde0eaf882e161af0d1fa554eb",
+  "original_plan": {
+    "path": "/home/kxj/zte_ws/edge-smart-home-ai/configs/w16-context-repair-prereg-v1.json",
+    "bytes": 14639,
+    "sha256": "0c4576a8fe4089b204ceab71f4833273753ac2cac751b91ba6bc983e22a5d401"
+  },
+  "protocol": {
+    "path": "edge-smart-home-ai/evaluation/20261113-w16-context-d-run/protocol.json",
+    "bytes": 460445,
+    "sha256": "b05a1f2a7e885efdaaa613882c4291c8e2b672962ef95241b743d6a450067d14"
+  },
+  "sources": 200,
+  "frozen_inputs": 1322,
+  "tests": {
+    "full_unit": 688,
+    "new_vs_previous": 42,
+    "builder_stdlib": 16,
+    "worker_fake": 10,
+    "coordinator_fake": 16,
+    "network_attempts": 0,
+    "skips": 0,
+    "root_plan": 10,
+    "test_source_files_git_bound": 208,
+    "actual_compiled_original_text_checks": 18,
+    "actual_compiled_guard_checks": 11,
+    "all_focused_unit_tests_are_included_in_full_count": true
+  },
+  "measurement": {
+    "schema_version": 1,
+    "kind": "w16_context_d_results",
+    "passed": true,
+    "engineering_evidence_passed": true,
+    "engineering_gates": {
+      "exact_order_and_count": true,
+      "worker_complete": true,
+      "all_audio_and_asr_complete": true,
+      "archived_text_controls_verified": true,
+      "returned_state_matches_readback": true,
+      "zero_network_attempts": true,
+      "runtime_inputs_preserved": true,
+      "no_global_failure": true
+    },
+    "runtime_source_commit": "1ec319fb579c0f22d87dce778055d40beae41d02",
+    "execution_kind": "native_tts_and_asr",
+    "control_scope": "C is reused original B18, not regenerated or a contemporaneous performance control.",
+    "control_original_B": {
+      "observations": 18,
+      "completed": 18,
+      "tts_completed": 18,
+      "speech_scored": 18,
+      "speech_exact": 7,
+      "character_edits": 22,
+      "reference_characters": 104,
+      "cer": 0.21153846153846154,
+      "home_speech_scored": 10,
+      "home_speech_exact": 3,
+      "home_character_edits": 15,
+      "home_reference_characters": 88,
+      "home_cer": 0.17045454545454544,
+      "home_semantics_passed": 4,
+      "normal_semantics_passed": 2,
+      "abnormal_semantics_passed": 2,
+      "abnormal_state_preserved": 5,
+      "primary_mock_execute_attempts": 3,
+      "focal_total": 15,
+      "focal_observed": 15,
+      "focal_passed": 13,
+      "native_surface_preserved": 18,
+      "error_counts": {
+        "request:UNKNOWN_DEVICE": 3,
+        "semantic:AUDIO_TO_STATE_ORACLE_MISMATCH": 6,
+        "transcript:ASR_TRANSCRIPT_MISMATCH": 11,
+        "request:REQUEST_ARGUMENT_INVALID": 2,
+        "intent:ROUTE_UNSUPPORTED": 1,
+        "device:DEVICE_OFFLINE": 1,
+        "request:REQUEST_TARGET_AMBIGUOUS": 1
+      },
+      "latency_ms": {
+        "tts_generation_wall_ms": {
+          "n": 18,
+          "p50": 37.73840299982112,
+          "p95": 57.74284530125441
+        },
+        "pcm_read_convert_wall_ms": {
+          "n": 18,
+          "p50": 0.13844500062987208,
+          "p95": 0.201160556753166
+        },
+        "asr_replay_wall_ms": {
+          "n": 18,
+          "p50": 321.18347449431894,
+          "p95": 681.1663684427912
+        },
+        "decode_only_ms": {
+          "n": 18,
+          "p50": 296.952170523582,
+          "p95": 640.1398458612674
+        },
+        "voice_control_feedback_wall_ms": {
+          "n": 10,
+          "p50": 0.40702599653741345,
+          "p95": 0.9993321975343857
+        },
+        "explicit_final_readback_wall_ms": {
+          "n": 10,
+          "p50": 0.1531630041426979,
+          "p95": 0.33137240025098413
+        },
+        "console_feedback_capture_wall_ms": {
+          "n": 10,
+          "p50": 0.0008770075510255992,
+          "p95": 0.0012299926311243321
+        },
+        "file_audio_to_readback_wall_ms": {
+          "n": 18,
+          "p50": 322.40750300115906,
+          "p95": 681.8075969480559
+        }
+      }
+    },
+    "D": {
+      "observations": 18,
+      "completed": 18,
+      "tts_completed": 18,
+      "speech_scored": 18,
+      "speech_exact": 7,
+      "character_edits": 22,
+      "reference_characters": 104,
+      "cer": 0.21153846153846154,
+      "home_speech_scored": 10,
+      "home_speech_exact": 3,
+      "home_character_edits": 15,
+      "home_reference_characters": 88,
+      "home_cer": 0.17045454545454544,
+      "home_semantics_passed": 4,
+      "normal_semantics_passed": 2,
+      "abnormal_semantics_passed": 2,
+      "abnormal_state_preserved": 5,
+      "primary_mock_execute_attempts": 3,
+      "focal_total": 15,
+      "focal_observed": 15,
+      "focal_passed": 15,
+      "native_surface_preserved": 18,
+      "error_counts": {
+        "request:UNKNOWN_DEVICE": 3,
+        "semantic:AUDIO_TO_STATE_ORACLE_MISMATCH": 6,
+        "transcript:ASR_TRANSCRIPT_MISMATCH": 11,
+        "request:REQUEST_ARGUMENT_INVALID": 2,
+        "intent:ROUTE_UNSUPPORTED": 1,
+        "device:DEVICE_OFFLINE": 1,
+        "request:REQUEST_TARGET_AMBIGUOUS": 1
+      },
+      "latency_ms": {
+        "tts_generation_wall_ms": {
+          "n": 18,
+          "p50": 34.86824801075272,
+          "p95": 62.49241669866023
+        },
+        "pcm_read_convert_wall_ms": {
+          "n": 18,
+          "p50": 0.15082249592524022,
+          "p95": 0.23045914713293308
+        },
+        "asr_replay_wall_ms": {
+          "n": 18,
+          "p50": 329.327290506626,
+          "p95": 631.4489275937375
+        },
+        "decode_only_ms": {
+          "n": 18,
+          "p50": 305.59194201487117,
+          "p95": 592.8245945913658
+        },
+        "voice_control_feedback_wall_ms": {
+          "n": 10,
+          "p50": 0.4209300022921525,
+          "p95": 1.3087880040984592
+        },
+        "explicit_final_readback_wall_ms": {
+          "n": 10,
+          "p50": 0.16859649622347206,
+          "p95": 0.4289576027076688
+        },
+        "console_feedback_capture_wall_ms": {
+          "n": 10,
+          "p50": 0.0007310009095817804,
+          "p95": 0.001695159153314306
+        },
+        "file_audio_to_readback_wall_ms": {
+          "n": 18,
+          "p50": 330.38854749611346,
+          "p95": 632.3888646489648
+        }
+      }
+    },
+    "strict_frontend_gates": {
+      "two_target_focals": true,
+      "thirteen_non_target_focals": true,
+      "all_fifteen_focals": true,
+      "sixteen_non_target_exact_artifacts": true,
+      "all_native_sequences_complete": true,
+      "worker_input_integrity": true,
+      "all_literal_surfaces_and_no_oov": true
+    },
+    "strict_frontend_regression_gate": true,
+    "target_focal_checks": [
+      {
+        "id": "W16-TN02",
+        "text": "调到",
+        "char_start": 6,
+        "char_end": 8,
+        "base_pinyin": [
+          "tiao2",
+          "dao4"
+        ],
+        "expected_phones": [
+          "t",
+          "iao2",
+          "#0",
+          "d",
+          "ao4",
+          "#0"
+        ],
+        "dictionary_url": "https://dict.mini.moe.edu.tw/SearchIndex/word_detail?breadcrumbs=Search_%E8%AA%BF_one&dictSearchField=%E8%AA%BF&wordID=D0001107",
+        "scope": "Canonical lexical reading; sentence coarticulation/sandhi and intelligibility require separate listening.",
+        "actual_phones": [
+          "t",
+          "iao2",
+          "#0",
+          "d",
+          "ao4",
+          "#0"
+        ],
+        "matched": true,
+        "evidence": "Derived from actual native words plus frozen lexicon; not acoustic listening."
+      },
+      {
+        "id": "W16-TA02",
+        "text": "调到",
+        "char_start": 6,
+        "char_end": 8,
+        "base_pinyin": [
+          "tiao2",
+          "dao4"
+        ],
+        "expected_phones": [
+          "t",
+          "iao2",
+          "#0",
+          "d",
+          "ao4",
+          "#0"
+        ],
+        "dictionary_url": "https://dict.mini.moe.edu.tw/SearchIndex/word_detail?breadcrumbs=Search_%E8%AA%BF_one&dictSearchField=%E8%AA%BF&wordID=D0001107",
+        "scope": "Canonical lexical reading; sentence coarticulation/sandhi and intelligibility require separate listening.",
+        "actual_phones": [
+          "t",
+          "iao2",
+          "#0",
+          "d",
+          "ao4",
+          "#0"
+        ],
+        "matched": true,
+        "evidence": "Derived from actual native words plus frozen lexicon; not acoustic listening."
+      }
+    ],
+    "protected_focal_checks": [
+      {
+        "id": "W16-TN01",
+        "text": "空调",
+        "char_start": 4,
+        "char_end": 6,
+        "base_pinyin": [
+          "kong1",
+          "tiao2"
+        ],
+        "expected_phones": [
+          "k",
+          "ong1",
+          "#0",
+          "t",
+          "iao2",
+          "#0"
+        ],
+        "dictionary_url": "https://dict.revised.moe.edu.tw/dictView.jsp?ID=78791&la=0&powerMode=0",
+        "scope": "Canonical lexical reading; sentence coarticulation/sandhi and intelligibility require separate listening.",
+        "actual_phones": [
+          "k",
+          "ong1",
+          "#0",
+          "t",
+          "iao2",
+          "#0"
+        ],
+        "matched": true,
+        "evidence": "Derived from actual native words plus frozen lexicon; not acoustic listening."
+      },
+      {
+        "id": "W16-TN02",
+        "text": "空调",
+        "char_start": 2,
+        "char_end": 4,
+        "base_pinyin": [
+          "kong1",
+          "tiao2"
+        ],
+        "expected_phones": [
+          "k",
+          "ong1",
+          "#0",
+          "t",
+          "iao2",
+          "#0"
+        ],
+        "dictionary_url": "https://dict.revised.moe.edu.tw/dictView.jsp?ID=78791&la=0&powerMode=0",
+        "scope": "Canonical lexical reading; sentence coarticulation/sandhi and intelligibility require separate listening.",
+        "actual_phones": [
+          "k",
+          "ong1",
+          "#0",
+          "t",
+          "iao2",
+          "#0"
+        ],
+        "matched": true,
+        "evidence": "Derived from actual native words plus frozen lexicon; not acoustic listening."
+      },
+      {
+        "id": "W16-TN04",
+        "text": "窗帘",
+        "char_start": 5,
+        "char_end": 7,
+        "base_pinyin": [
+          "chuang1",
+          "lian2"
+        ],
+        "expected_phones": [
+          "ch",
+          "uang1",
+          "#0",
+          "l",
+          "ian2",
+          "#0"
+        ],
+        "dictionary_url": "https://dict.revised.moe.edu.tw/dictView.jsp?ID=126445&la=0&powerMode=0",
+        "scope": "Canonical lexical reading; sentence coarticulation/sandhi and intelligibility require separate listening.",
+        "actual_phones": [
+          "ch",
+          "uang1",
+          "#0",
+          "l",
+          "ian2",
+          "#0"
+        ],
+        "matched": true,
+        "evidence": "Derived from actual native words plus frozen lexicon; not acoustic listening."
+      },
+      {
+        "id": "W16-TA01",
+        "text": "空调",
+        "char_start": 4,
+        "char_end": 6,
+        "base_pinyin": [
+          "kong1",
+          "tiao2"
+        ],
+        "expected_phones": [
+          "k",
+          "ong1",
+          "#0",
+          "t",
+          "iao2",
+          "#0"
+        ],
+        "dictionary_url": "https://dict.revised.moe.edu.tw/dictView.jsp?ID=78791&la=0&powerMode=0",
+        "scope": "Canonical lexical reading; sentence coarticulation/sandhi and intelligibility require separate listening.",
+        "actual_phones": [
+          "k",
+          "ong1",
+          "#0",
+          "t",
+          "iao2",
+          "#0"
+        ],
+        "matched": true,
+        "evidence": "Derived from actual native words plus frozen lexicon; not acoustic listening."
+      },
+      {
+        "id": "W16-TA02",
+        "text": "空调",
+        "char_start": 2,
+        "char_end": 4,
+        "base_pinyin": [
+          "kong1",
+          "tiao2"
+        ],
+        "expected_phones": [
+          "k",
+          "ong1",
+          "#0",
+          "t",
+          "iao2",
+          "#0"
+        ],
+        "dictionary_url": "https://dict.revised.moe.edu.tw/dictView.jsp?ID=78791&la=0&powerMode=0",
+        "scope": "Canonical lexical reading; sentence coarticulation/sandhi and intelligibility require separate listening.",
+        "actual_phones": [
+          "k",
+          "ong1",
+          "#0",
+          "t",
+          "iao2",
+          "#0"
+        ],
+        "matched": true,
+        "evidence": "Derived from actual native words plus frozen lexicon; not acoustic listening."
+      },
+      {
+        "id": "W16-TP01",
+        "text": "空调",
+        "char_start": 0,
+        "char_end": 2,
+        "base_pinyin": [
+          "kong1",
+          "tiao2"
+        ],
+        "expected_phones": [
+          "k",
+          "ong1",
+          "#0",
+          "t",
+          "iao2",
+          "#0"
+        ],
+        "dictionary_url": "https://dict.revised.moe.edu.tw/dictView.jsp?ID=78791&la=0&powerMode=0",
+        "scope": "Canonical lexical reading; sentence coarticulation/sandhi and intelligibility require separate listening.",
+        "actual_phones": [
+          "k",
+          "ong1",
+          "#0",
+          "t",
+          "iao2",
+          "#0"
+        ],
+        "matched": true,
+        "evidence": "Derived from actual native words plus frozen lexicon; not acoustic listening."
+      },
+      {
+        "id": "W16-TP02",
+        "text": "调查",
+        "char_start": 0,
+        "char_end": 2,
+        "base_pinyin": [
+          "diao4",
+          "cha2"
+        ],
+        "expected_phones": [
+          "d",
+          "iao4",
+          "#0",
+          "ch",
+          "a2",
+          "#0"
+        ],
+        "dictionary_url": "https://dict.revised.moe.edu.tw/dictView.jsp?ID=46036&la=0&powerMode=0",
+        "scope": "Canonical lexical reading; sentence coarticulation/sandhi and intelligibility require separate listening.",
+        "actual_phones": [
+          "d",
+          "iao4",
+          "#0",
+          "ch",
+          "a2",
+          "#0"
+        ],
+        "matched": true,
+        "evidence": "Derived from actual native words plus frozen lexicon; not acoustic listening."
+      },
+      {
+        "id": "W16-TP03",
+        "text": "重复",
+        "char_start": 0,
+        "char_end": 2,
+        "base_pinyin": [
+          "chong2",
+          "fu4"
+        ],
+        "expected_phones": [
+          "ch",
+          "ong2",
+          "#0",
+          "f",
+          "u4",
+          "#0"
+        ],
+        "dictionary_url": "https://dict.revised.moe.edu.tw/dictView.jsp?ID=126798&la=0&powerMode=0",
+        "scope": "Canonical lexical reading; sentence coarticulation/sandhi and intelligibility require separate listening.",
+        "actual_phones": [
+          "ch",
+          "ong2",
+          "#0",
+          "f",
+          "u4",
+          "#0"
+        ],
+        "matched": true,
+        "evidence": "Derived from actual native words plus frozen lexicon; not acoustic listening."
+      },
+      {
+        "id": "W16-TP04",
+        "text": "重量",
+        "char_start": 0,
+        "char_end": 2,
+        "base_pinyin": [
+          "zhong4",
+          "liang4"
+        ],
+        "expected_phones": [
+          "zh",
+          "ong4",
+          "#0",
+          "l",
+          "iang4",
+          "#0"
+        ],
+        "dictionary_url": "https://dict.revised.moe.edu.tw/dictView.jsp?ID=120479&la=0&powerMode=0",
+        "scope": "Canonical lexical reading; sentence coarticulation/sandhi and intelligibility require separate listening.",
+        "actual_phones": [
+          "zh",
+          "ong4",
+          "#0",
+          "l",
+          "iang4",
+          "#0"
+        ],
+        "matched": true,
+        "evidence": "Derived from actual native words plus frozen lexicon; not acoustic listening."
+      },
+      {
+        "id": "W16-TP05",
+        "text": "音乐",
+        "char_start": 0,
+        "char_end": 2,
+        "base_pinyin": [
+          "yin1",
+          "yue4"
+        ],
+        "expected_phones": [
+          "^",
+          "in1",
+          "#0",
+          "^",
+          "ve4",
+          "#0"
+        ],
+        "dictionary_url": "https://dict.revised.moe.edu.tw/dictView.jsp?ID=156330&la=0&powerMode=0",
+        "scope": "Canonical lexical reading; sentence coarticulation/sandhi and intelligibility require separate listening.",
+        "actual_phones": [
+          "^",
+          "in1",
+          "#0",
+          "^",
+          "ve4",
+          "#0"
+        ],
+        "matched": true,
+        "evidence": "Derived from actual native words plus frozen lexicon; not acoustic listening."
+      },
+      {
+        "id": "W16-TP06",
+        "text": "快乐",
+        "char_start": 0,
+        "char_end": 2,
+        "base_pinyin": [
+          "kuai4",
+          "le4"
+        ],
+        "expected_phones": [
+          "k",
+          "uai4",
+          "#0",
+          "l",
+          "e4",
+          "#0"
+        ],
+        "dictionary_url": "https://dict.revised.moe.edu.tw/dictView.jsp?ID=78094&la=0&powerMode=0",
+        "scope": "Canonical lexical reading; sentence coarticulation/sandhi and intelligibility require separate listening.",
+        "actual_phones": [
+          "k",
+          "uai4",
+          "#0",
+          "l",
+          "e4",
+          "#0"
+        ],
+        "matched": true,
+        "evidence": "Derived from actual native words plus frozen lexicon; not acoustic listening."
+      },
+      {
+        "id": "W16-TP07",
+        "text": "客厅",
+        "char_start": 0,
+        "char_end": 2,
+        "base_pinyin": [
+          "ke4",
+          "ting1"
+        ],
+        "expected_phones": [
+          "k",
+          "e4",
+          "#0",
+          "t",
+          "ing1",
+          "#0"
+        ],
+        "dictionary_url": "https://dict.revised.moe.edu.tw/dictView.jsp?ID=76402&la=0&powerMode=0",
+        "scope": "Canonical lexical reading; sentence coarticulation/sandhi and intelligibility require separate listening.",
+        "actual_phones": [
+          "k",
+          "e4",
+          "#0",
+          "t",
+          "ing1",
+          "#0"
+        ],
+        "matched": true,
+        "evidence": "Derived from actual native words plus frozen lexicon; not acoustic listening."
+      },
+      {
+        "id": "W16-TP08",
+        "text": "窗帘",
+        "char_start": 0,
+        "char_end": 2,
+        "base_pinyin": [
+          "chuang1",
+          "lian2"
+        ],
+        "expected_phones": [
+          "ch",
+          "uang1",
+          "#0",
+          "l",
+          "ian2",
+          "#0"
+        ],
+        "dictionary_url": "https://dict.revised.moe.edu.tw/dictView.jsp?ID=126445&la=0&powerMode=0",
+        "scope": "Canonical lexical reading; sentence coarticulation/sandhi and intelligibility require separate listening.",
+        "actual_phones": [
+          "ch",
+          "uang1",
+          "#0",
+          "l",
+          "ian2",
+          "#0"
+        ],
+        "matched": true,
+        "evidence": "Derived from actual native words plus frozen lexicon; not acoustic listening."
+      }
+    ],
+    "non_target_comparisons": [
+      {
+        "id": "W16-TN01",
+        "derived_phones_equal": true,
+        "float_sha256_equal": true,
+        "wav_sha256_equal": true,
+        "native_words_equal": true,
+        "strict_equal": true
+      },
+      {
+        "id": "W16-TN03",
+        "derived_phones_equal": true,
+        "float_sha256_equal": true,
+        "wav_sha256_equal": true,
+        "native_words_equal": true,
+        "strict_equal": true
+      },
+      {
+        "id": "W16-TN04",
+        "derived_phones_equal": true,
+        "float_sha256_equal": true,
+        "wav_sha256_equal": true,
+        "native_words_equal": true,
+        "strict_equal": true
+      },
+      {
+        "id": "W16-TN05",
+        "derived_phones_equal": true,
+        "float_sha256_equal": true,
+        "wav_sha256_equal": true,
+        "native_words_equal": true,
+        "strict_equal": true
+      },
+      {
+        "id": "W16-TA01",
+        "derived_phones_equal": true,
+        "float_sha256_equal": true,
+        "wav_sha256_equal": true,
+        "native_words_equal": true,
+        "strict_equal": true
+      },
+      {
+        "id": "W16-TA03",
+        "derived_phones_equal": true,
+        "float_sha256_equal": true,
+        "wav_sha256_equal": true,
+        "native_words_equal": true,
+        "strict_equal": true
+      },
+      {
+        "id": "W16-TA04",
+        "derived_phones_equal": true,
+        "float_sha256_equal": true,
+        "wav_sha256_equal": true,
+        "native_words_equal": true,
+        "strict_equal": true
+      },
+      {
+        "id": "W16-TA05",
+        "derived_phones_equal": true,
+        "float_sha256_equal": true,
+        "wav_sha256_equal": true,
+        "native_words_equal": true,
+        "strict_equal": true
+      },
+      {
+        "id": "W16-TP01",
+        "derived_phones_equal": true,
+        "float_sha256_equal": true,
+        "wav_sha256_equal": true,
+        "native_words_equal": true,
+        "strict_equal": true
+      },
+      {
+        "id": "W16-TP02",
+        "derived_phones_equal": true,
+        "float_sha256_equal": true,
+        "wav_sha256_equal": true,
+        "native_words_equal": true,
+        "strict_equal": true
+      },
+      {
+        "id": "W16-TP03",
+        "derived_phones_equal": true,
+        "float_sha256_equal": true,
+        "wav_sha256_equal": true,
+        "native_words_equal": true,
+        "strict_equal": true
+      },
+      {
+        "id": "W16-TP04",
+        "derived_phones_equal": true,
+        "float_sha256_equal": true,
+        "wav_sha256_equal": true,
+        "native_words_equal": true,
+        "strict_equal": true
+      },
+      {
+        "id": "W16-TP05",
+        "derived_phones_equal": true,
+        "float_sha256_equal": true,
+        "wav_sha256_equal": true,
+        "native_words_equal": true,
+        "strict_equal": true
+      },
+      {
+        "id": "W16-TP06",
+        "derived_phones_equal": true,
+        "float_sha256_equal": true,
+        "wav_sha256_equal": true,
+        "native_words_equal": true,
+        "strict_equal": true
+      },
+      {
+        "id": "W16-TP07",
+        "derived_phones_equal": true,
+        "float_sha256_equal": true,
+        "wav_sha256_equal": true,
+        "native_words_equal": true,
+        "strict_equal": true
+      },
+      {
+        "id": "W16-TP08",
+        "derived_phones_equal": true,
+        "float_sha256_equal": true,
+        "wav_sha256_equal": true,
+        "native_words_equal": true,
+        "strict_equal": true
+      }
+    ],
+    "neutral_controls_passed": true,
+    "home_semantic_gate": false,
+    "development_candidate_gate": false,
+    "tts_generation_attempts": 18,
+    "unverified_reported_tts_generation_attempts": null,
+    "asr_attempts": 18,
+    "archived_reference_oracle_matches": 10,
+    "new_reference_control_calls": 0,
+    "network_attempts": 0,
+    "warmups": 0,
+    "retries": 0,
+    "new_control_B_generations": 0,
+    "human_listening_accepted": false,
+    "actual_acoustic_pronunciation_accepted": false,
+    "human_household_material_accepted": false,
+    "personal_understanding_accepted": false,
+    "automatic_product_promotion": false,
+    "asr_weight_license_verified": false,
+    "overflow_resolution_accepted": false,
+    "real_ha_accepted": false,
+    "physical_completion_accepted": false,
+    "audible_feedback_accepted": false,
+    "arm_hardware_accepted": false,
+    "live_e2e_ms": null,
+    "latency_policy": "D18 different fixed texts once each; no warmup/repetition or contemporaneous B speed control. Offline split timings are descriptive, not live/acoustic E2E or an optimization benchmark.",
+    "limitations": [
+      "Original B18/C and all original A/B scores/waveforms are preserved. D uses the same disclosed development texts, not held-out generalization.",
+      "Native FD2 words and 49 normalization steps are observed; reconstructed sidecar lexicon phones are derived, not a captured neural input tensor or acoustic hearing.",
+      "One resource-bundle switch comprises the appended context FAR and sidecar lexicon; individual file causal effects are not identified.",
+      "Strict 16 non-target float/WAV SHA gates are not relaxed after results; all failed observations remain retained.",
+      "Archived ten independent text controls are read and checked, not rerun and not used as ASR fallback.",
+      "ASR transcription is not an independent pronunciation judge; human hearing, authorized human recordings and personal understanding remain pending.",
+      "Home state is Mock with explicit software readback; no real HA/physical completion, playback, microphone, ARM, live latency or overflow acceptance."
+    ]
+  },
+  "context_bundle": {
+    "path": "/home/kxj/zte_ws/edge-smart-home-ai/evaluation/20261113-w16-context-bundle-v1/manifest.json",
+    "bytes": 94853,
+    "sha256": "1bc9dfa7b0d12916f22af0f67c9f8d77a98b25a3bdc8e23b4fbeb692bcff67bd"
+  },
+  "resources": {
+    "context_far": {
+      "path": "/home/kxj/zte_ws/edge-smart-home-ai/evaluation/20261113-w16-context-bundle-v1/context_temperature_tiaodao_v1.far",
+      "bytes": 148576,
+      "sha256": "f6be940472dd964b772678bb727a9890c7375f6217b831f9e3e97fcb52ff1638"
+    },
+    "sidecar_lexicon": {
+      "path": "/home/kxj/zte_ws/edge-smart-home-ai/evaluation/20261113-w16-context-bundle-v1/lexicon-context-temperature-tiaodao-v1.txt",
+      "bytes": 2042969,
+      "sha256": "a4152f78eeb76265dd299fcdcf1ef3be9c81d0eb522924b9a59ffcedc1069e0d"
+    }
+  },
+  "compiler": {
+    "path": "/home/kxj/zte_ws/edge-smart-home-ai/evaluation/20261113-w16-context-toolchain/toolchain.json",
+    "bytes": 19974,
+    "sha256": "eac27ad342964b2e67069eef94ed0c6c4ed8eee7ff93d1675b61ebd28e116283"
+  },
+  "compiler_scope": "Separate Python3.10.21/Pynini2.1.6.post1 cp310 wheel; native bytes/metadata locked with PYTHONPATH=src; unchanged edge_ai inference environment.",
+  "reproducible_resource_hashes": true,
+  "context_candidate_implemented": true,
+  "context_candidate_executed": true,
+  "model_sessions": {
+    "tts": 1,
+    "asr": 1
+  },
+  "tts_model_load_ms": 1471.443187998375,
+  "asr_model_load_ms": 4507.507191010518,
+  "native_configuration_abort": null,
+  "all18_raw_asr_transcripts_equal_to_archived_B": true,
+  "target_diagnostics": [
+    {
+      "id": "W16-TN02",
+      "reference_text": "卧室空调温度调到二十四度",
+      "C_words": [
+        "卧",
+        "室",
+        "空调",
+        "温度",
+        "调",
+        "到",
+        "二",
+        "十",
+        "四",
+        "度"
+      ],
+      "D_words": [
+        "卧",
+        "室",
+        "空调",
+        "温度",
+        "调到",
+        "二",
+        "十",
+        "四",
+        "度"
+      ],
+      "C_transcript": "不过是空调温度调到二十四度",
+      "D_transcript": "不过是空调温度调到二十四度",
+      "C_float_sha256": "342f18d65d062a5db8cf81fedbf075d2cd7861944c7f60fad2185010b56ca914",
+      "D_float_sha256": "b40b72699ff4b9752a7e313c10f352e1846e836720a8998c1bff18e5f7c39151",
+      "C_wav_sha256": "1dd67ec8887c9341b4330a13c314ad3674b8932e9dd5992c57755664ae859f4b",
+      "D_wav_sha256": "da6881cd7d85118a59f04454138a07227e2e53d1f2eedb11dcb7aecae752ffdb",
+      "D_primary_status": "request_rejected",
+      "D_primary_error_code": "UNKNOWN_DEVICE",
+      "D_semantics_passed": false,
+      "frozen_oracle": {
+        "status": "executed",
+        "error_code": null,
+        "attributes": {
+          "bedroom_air_conditioner": {
+            "power": true,
+            "temperature": 24,
+            "hvac_mode": "cool"
+          }
+        },
+        "unchanged": false
+      }
+    },
+    {
+      "id": "W16-TA02",
+      "reference_text": "卧室空调温度调到三十二度",
+      "C_words": [
+        "卧",
+        "室",
+        "空调",
+        "温度",
+        "调",
+        "到",
+        "三",
+        "十",
+        "二",
+        "度"
+      ],
+      "D_words": [
+        "卧",
+        "室",
+        "空调",
+        "温度",
+        "调到",
+        "三",
+        "十",
+        "二",
+        "度"
+      ],
+      "C_transcript": "不过是空调温度调到三十二度",
+      "D_transcript": "不过是空调温度调到三十二度",
+      "C_float_sha256": "a058eb39aacd605eda7222b025f4a7174aaedf9fb3debc951447870436376864",
+      "D_float_sha256": "45cb362a1555eb1453fd246487cec9f154ddd738899b09333123acc8891d824e",
+      "C_wav_sha256": "b8acfba857b8437a1c9389b4cce49ca1448f24773798e20ed822de3057603fe9",
+      "D_wav_sha256": "b33d2aa64f1d13233976cb8d8c21e3ea35f2026cd48acb525b8c8482989fdc61",
+      "D_primary_status": "request_rejected",
+      "D_primary_error_code": "UNKNOWN_DEVICE",
+      "D_semantics_passed": false,
+      "frozen_oracle": {
+        "status": "request_rejected",
+        "error_code": "REQUEST_ARGUMENT_INVALID",
+        "attributes": {},
+        "unchanged": true
+      }
+    }
+  ],
+  "quantization": {
+    "clipped_samples": 0,
+    "max_abs_quantization_error": 1.52587890625e-05,
+    "original_float_saved": true,
+    "export_trim_gain_or_resampling": false
+  },
+  "validation": {
+    "raw_index_artifacts": 100,
+    "run_total_files": 103,
+    "worker_raw_artifacts": 76,
+    "records": 18,
+    "worker_records": 18,
+    "coordinator_ledger_events": 36,
+    "worker_ledger_events": 36,
+    "new_reference_controls": 0,
+    "archived_reference_controls_verified": 10,
+    "readonly_summary_report_byte_identical": true,
+    "negative_cli_cases": 6,
+    "negative_preserved_new_files": 118,
+    "old_immutable_artifacts_preserved": 1241,
+    "initial_prior_index_artifacts_verified": 1247,
+    "navigation_task_paths_allowed_to_change": 7,
+    "extra_generation_inference_control_or_resource_builds_for_negative_checks": 0
+  },
+  "automatic_product_promotion": false,
+  "actual_acoustic_pronunciation_accepted": false,
+  "human_listening_accepted": false,
+  "human_household_material_accepted": false,
+  "personal_understanding_accepted": false,
+  "asr_weight_license_verified": false,
+  "overflow_resolution_accepted": false,
+  "real_ha_accepted": false,
+  "physical_completion_accepted": false,
+  "audible_feedback_accepted": false,
+  "arm_hardware_accepted": false,
+  "request_id_idempotency_implemented": false,
+  "independent_compiled_review": {
+    "path": "edge-smart-home-ai/evaluation/20261113-w16-context-d-compiled-review/compiled-compatibility-review.json",
+    "bytes": 10385,
+    "sha256": "0d5b600aba18b28193dcc9b6f6c095522c838bbef863e8059e524a8fd83d1476"
+  },
+  "independent_preformal_review": {
+    "path": "edge-smart-home-ai/evaluation/20261113-w16-context-d-audit/preformal-review.json",
+    "bytes": 8743,
+    "sha256": "bd4fa787931ea9f5c3c1e55e2d3adb8bdd96f257274794168a8a344af3330804"
+  },
+  "limitations": [
+    "Original B18/C and all original A/B scores/waveforms are preserved. D uses the same disclosed development texts, not held-out generalization.",
+    "Native FD2 words and 49 normalization steps are observed; reconstructed sidecar lexicon phones are derived, not a captured neural input tensor or acoustic hearing.",
+    "One resource-bundle switch comprises the appended context FAR and sidecar lexicon; individual file causal effects are not identified.",
+    "Strict 16 non-target float/WAV SHA gates are not relaxed after results; all failed observations remain retained.",
+    "Archived ten independent text controls are read and checked, not rerun and not used as ASR fallback.",
+    "ASR transcription is not an independent pronunciation judge; human hearing, authorized human recordings and personal understanding remain pending.",
+    "Home state is Mock with explicit software readback; no real HA/physical completion, playback, microphone, ARM, live latency or overflow acceptance.",
+    "Both target waveforms changed, but every18 raw ASR transcript and all home scores remain identical to archived B; no ASR or semantic accuracy gain.",
+    "Targets still transcribe 卧室 as 不过是 and return UNKNOWN_DEVICE; do not uniquely attribute this to TTS/ASR or change labels/references.",
+    "Native words and derived lexicon phones are not captured final neural phone tensors or human acoustic judgements.",
+    "Bundle/frontend gate passed; full home/candidate gate failed and product defaults stay unchanged. Human recordings/listening/personal understanding pending.",
+    "Per-case once-only timing describes this debug/file batch; old C is not contemporaneous and no speed benefit is claimed.",
+    "New phonetic fixtures are not added; the independent generalization corpus and authorized human evidence remain pending.",
+    "Raw audio/FST/sidecar/tools/logs remain local ignored files; Git hashes are not backups. No push/release/verified tag."
+  ],
+  "independent_formal_review": {
+    "path": "edge-smart-home-ai/evaluation/20261113-w16-context-d-formal-review/summary.json",
+    "bytes": 12050,
+    "sha256": "2dd16ab599af033d9166516f76bd59164ef7c34d5a55b60bb0a2a658435d0f0e"
+  }
+}
