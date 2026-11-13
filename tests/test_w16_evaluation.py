@@ -153,6 +153,15 @@ class W16EvaluationTests(unittest.TestCase):
             self.assertEqual(row['reference_text_control']['status'], 'request_rejected')
             self.assertIn('semantic:AUDIO_TO_STATE_ORACLE_MISMATCH', summary['overall']['error_counts'])
 
+    def test_markdown_keeps_failed_primary_oracle_visible(self):
+        summary = {'passed': True, 'primary_all_semantics_passed': False, 'limitations': []}
+        rows = [{'id': 'failed', 'source_kind': 'synthetic_audio', 'category': 'normal',
+                 'recognizer_output': '', 'primary': {'status': 'not_routed', 'error_code': None},
+                 'primary_semantics_passed': False}]
+        report = W16.markdown(summary, rows)
+        self.assertIn('| failed | synthetic_audio | normal |  | not_routed |  | False |', report)
+        self.assertIn('Primary all semantic oracles passed: False', report)
+
     def test_decode_failure_is_saved_without_retry_and_without_device_effect(self):
         with TemporaryDirectory() as temp:
             root = Path(temp); summary, _, fake = self.run_fake(root, fail_at=2)

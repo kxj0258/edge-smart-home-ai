@@ -393,7 +393,7 @@ def markdown(summary, rows):
     for r in rows:
         primary = r["primary"] or {}
         cells = [r["id"], r["source_kind"], r["category"], r["recognizer_output"], primary.get("status"), primary.get("error_code"), r["primary_semantics_passed"]]
-        lines.append("| " + " | ".join(str(v or "").replace("|", "\\|").replace("\n", " ") for v in cells) + " |")
+        lines.append("| " + " | ".join(("" if v is None else str(v)).replace("|", "\\|").replace("\n", " ") for v in cells) + " |")
     lines += ["", "## Boundaries", ""] + ["- " + note for note in summary["limitations"]]
     return "\n".join(lines) + "\n"
 
