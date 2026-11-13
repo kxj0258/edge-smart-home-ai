@@ -1,0 +1,315 @@
+{
+  "schema_version": 1,
+  "kind": "w16_temperature_context_resource_bundle_preregistration",
+  "version": "v1",
+  "state": "preregistered_not_implemented_or_executed",
+  "created_at": "2026-11-13T05:37:02.898360+00:00",
+  "baseline_root_commit": "2807ec4a7d6bd1509e309e3ede9fa08e45203cb9",
+  "baseline_child_commit": "3d80dfeef37db1c9e13f98fdbb2d6c2e5217dd3a",
+  "fixture": {
+    "path": "edge-smart-home-ai/configs/w16-pronunciation-cases-v1.json",
+    "bytes": 24673,
+    "sha256": "edd9c02dc8e0e1d7a07633597c7f42639f34e9dc3213f8ad02a04f13b894a522"
+  },
+  "original_run_protocol": {
+    "path": "edge-smart-home-ai/evaluation/20261113-w16-pronunciation-run/protocol.json",
+    "bytes": 327823,
+    "sha256": "84f6d454d00a1651f0de393ca307e5c37cc2a88065643c67f98e78447774993a"
+  },
+  "original_raw_index": {
+    "path": "edge-smart-home-ai/evaluation/20261113-w16-pronunciation-run/raw-index.json",
+    "bytes": 40046,
+    "sha256": "07158dbbfdb8c2d23043ca1c5f071cb9b5e291417d2af4ff5e62721831a5b238"
+  },
+  "official_research": {
+    "path": "edge-smart-home-ai/evaluation/20261113-w16-review-context-sources/summary.json",
+    "bytes": 15321,
+    "sha256": "1409fc79aec29bfa5f9c865f2d5bbf36a12be2f175a246b519b11b2d4f34e630"
+  },
+  "official_commit": "1cb484af5e69d3c7803c1eb0b3b5ab8041e0e911",
+  "official_source_urls": [
+    "https://github.com/k2-fsa/sherpa-onnx/blob/1cb484af5e69d3c7803c1eb0b3b5ab8041e0e911/LICENSE",
+    "https://github.com/k2-fsa/sherpa-onnx/blob/1cb484af5e69d3c7803c1eb0b3b5ab8041e0e911/sherpa-onnx/csrc/lexicon.cc",
+    "https://github.com/k2-fsa/sherpa-onnx/blob/1cb484af5e69d3c7803c1eb0b3b5ab8041e0e911/sherpa-onnx/csrc/offline-tts-vits-impl.h",
+    "https://github.com/k2-fsa/sherpa-onnx/blob/1cb484af5e69d3c7803c1eb0b3b5ab8041e0e911/sherpa-onnx/csrc/offline-tts.h",
+    "https://github.com/k2-fsa/sherpa-onnx/blob/1cb484af5e69d3c7803c1eb0b3b5ab8041e0e911/sherpa-onnx/python/csrc/offline-tts.cc"
+  ],
+  "original_model_files": [
+    {
+      "path": "/home/kxj/zte_ws/models/tts/vits-icefall-zh-aishell3/date.fst",
+      "bytes": 59154,
+      "sha256": "eb8aa079ae3cb81d8f4404992f39d61a0cb990947512b5b8d1e54d1f6980e718"
+    },
+    {
+      "path": "/home/kxj/zte_ws/models/tts/vits-icefall-zh-aishell3/lexicon.txt",
+      "bytes": 2042943,
+      "sha256": "ab2e61d357551e7b24ddd965d924aca784c20165ff58c150794e539c6b5e9e35"
+    },
+    {
+      "path": "/home/kxj/zte_ws/models/tts/vits-icefall-zh-aishell3/model.onnx",
+      "bytes": 30482262,
+      "sha256": "5511d651b7840c0a93a6bbfd4afd070a2c7f39ca1ec3ff2ecd73191519bbb852"
+    },
+    {
+      "path": "/home/kxj/zte_ws/models/tts/vits-icefall-zh-aishell3/new_heteronym.fst",
+      "bytes": 21974,
+      "sha256": "ca14b2127e27baa571664e4bb791e143e7425f56a6bc29db08d74f97e6aa4e29"
+    },
+    {
+      "path": "/home/kxj/zte_ws/models/tts/vits-icefall-zh-aishell3/number.fst",
+      "bytes": 64482,
+      "sha256": "743f402181fcfebf76cc2f0546b71fa26476e626fbe4e460fb7b4c3a7a8bd5bd"
+    },
+    {
+      "path": "/home/kxj/zte_ws/models/tts/vits-icefall-zh-aishell3/phone.fst",
+      "bytes": 88630,
+      "sha256": "1ac2b6fa56b1442320c4de7db08353bab8963a2b57f365eebcdd3a2d3562f8d7"
+    },
+    {
+      "path": "/home/kxj/zte_ws/models/tts/vits-icefall-zh-aishell3/rule.far",
+      "bytes": 180717014,
+      "sha256": "b090ed05e333fe125b62d8b1de5f1a1d4579fb237c606e7ac0b84707c863a01f"
+    },
+    {
+      "path": "/home/kxj/zte_ws/models/tts/vits-icefall-zh-aishell3/speakers.txt",
+      "bytes": 1392,
+      "sha256": "50a825fc9a89172eee04a4d68869d933d0eca0d847f3b6fcffff9514cc72442d"
+    },
+    {
+      "path": "/home/kxj/zte_ws/models/tts/vits-icefall-zh-aishell3/tokens.txt",
+      "bytes": 1671,
+      "sha256": "50b45a7b7de1752fd3c7b4755661c285f1547f59186eca2281089a81307ad953"
+    }
+  ],
+  "targets": [
+    {
+      "id": "W16-TN02",
+      "reference_text": "卧室空调温度调到二十四度",
+      "span": [
+        6,
+        8
+      ],
+      "expected_phones": [
+        "t",
+        "iao2",
+        "#0",
+        "d",
+        "ao4",
+        "#0"
+      ],
+      "expected_ids": [
+        25,
+        100,
+        3,
+        11,
+        52,
+        3
+      ],
+      "raw_trace": {
+        "path": "edge-smart-home-ai/evaluation/20261113-w16-pronunciation-run/workers/B/native/W16-TN02.stderr",
+        "bytes": 6800,
+        "sha256": "2f1d7b39b01adccfee0b58b590282c169d9bbd95b3e302130a050809201bce8b"
+      },
+      "previous_final_normalized": "卧室#$|空调|$##$|温度|$#调到二十四度",
+      "previous_native_words": [
+        "卧",
+        "室",
+        "空调",
+        "温度",
+        "调",
+        "到",
+        "二",
+        "十",
+        "四",
+        "度"
+      ],
+      "previous_focal_matched": false,
+      "oracle_unchanged": {
+        "status": "executed",
+        "error_code": null,
+        "attributes": {
+          "bedroom_air_conditioner": {
+            "power": true,
+            "temperature": 24,
+            "hvac_mode": "cool"
+          }
+        },
+        "unchanged": false
+      }
+    },
+    {
+      "id": "W16-TA02",
+      "reference_text": "卧室空调温度调到三十二度",
+      "span": [
+        6,
+        8
+      ],
+      "expected_phones": [
+        "t",
+        "iao2",
+        "#0",
+        "d",
+        "ao4",
+        "#0"
+      ],
+      "expected_ids": [
+        25,
+        100,
+        3,
+        11,
+        52,
+        3
+      ],
+      "raw_trace": {
+        "path": "edge-smart-home-ai/evaluation/20261113-w16-pronunciation-run/workers/B/native/W16-TA02.stderr",
+        "bytes": 6800,
+        "sha256": "328be79990048731d6d8a8ab255307d9f50732212df16bf6fee0d636aa6a5052"
+      },
+      "previous_final_normalized": "卧室#$|空调|$##$|温度|$#调到三十二度",
+      "previous_native_words": [
+        "卧",
+        "室",
+        "空调",
+        "温度",
+        "调",
+        "到",
+        "三",
+        "十",
+        "二",
+        "度"
+      ],
+      "previous_focal_matched": false,
+      "oracle_unchanged": {
+        "status": "request_rejected",
+        "error_code": "REQUEST_ARGUMENT_INVALID",
+        "attributes": {},
+        "unchanged": true
+      }
+    }
+  ],
+  "one_factor": {
+    "scope": "Future one switch: context pronunciation bundle, composed of one appended normalizer plus one append-only derived lexicon; do not attribute gains to FST-only or lexicon-only. Not implemented or executed here.",
+    "control_C": "Frozen original B configuration/word traces/waves; rule_fsts phone.fst,number.fst; rule_fars original rule.far; original lexicon. Reuse original B audio identities as control.",
+    "candidate_D": "Same model weights/tokens/speaker13/speed1/CPU2/8k/zero noise/settings/18 texts/oracles; switch complete bundle: append missing 调到 line to a sidecar lexicon and append a one-rule FAR AFTER original rule.far. Do not edit original files.",
+    "normalizer_slot": "rule_fars=[original_rule.far,context_temperature_tiaodao_v1.far]; rule_fsts stay phone.fst,number.fst. Appending a rule_fsts path does NOT mean last overall: official constructor always loads all rule_fsts before every rule_fars.",
+    "normalizer_count_control": 48,
+    "normalizer_count_candidate": 49,
+    "left_context_literal_after_original_far": "#$|温度|$#",
+    "match_literal": "调到",
+    "right_context_language": "one or more characters from 零〇一二两三四五六七八九十百 followed immediately by 度",
+    "replacement_literal": "#$|调到|$#",
+    "effective_match_expression_for_documentation_only": "(?<=#\\$\\|温度\\|\\$#)调到(?=[零〇一二两三四五六七八九十百]+度)",
+    "no_global_character_replacement": true,
+    "preserve_surface_after_marker_removal": true,
+    "no_temperature_range_filter": "Both twenty-four normal and thirty-two invalid get lexical tiao2; original invalid32 request rejection oracle stays unchanged.",
+    "exact_lexicon_delta": "Original lexicon byte prefix unchanged; add newline if required plus exactly one missing entry. Original parsed keys/values unchanged, no duplicate override.",
+    "compiled_resource_requirement": "One standard-arc FAR entry; freeze compiler/tool version, source rule, artifact hashes and ordering before native model generation. Do not claim the pseudoregex is a compiled FST.",
+    "native_preexecution_gates": [
+      "All 18 original fixture/oracle/model/token identities match; original 36 A/B WAV+float+traces unchanged.",
+      "Static compiled normalizer checks confirm every original B normalized string maps identically except the two target spans; stripping marker syntax recovers exact input.",
+      "Sidecar lexicon differs only by missing 调到 entry, all six phones/IDs valid in fixed alphabet, all old parsed mappings remain unchanged.",
+      "Native debug confirms exact rule_fars ordering and D49 normalization steps, with final desired marker and no OOV/unmatched surface. If not, stop and retain failure rather than changing rule/order or rerunning."
+    ],
+    "future_run_policy": "Only after later implementation/source commit and frozen runtime protocol. Each required D case once in original order, complete all 18, save every result/failure; no result-based retries. C is reused original B, not a new speed benchmark. This task generates no new waveform.",
+    "development_frontend_gates": [
+      "Target TN02 and TA02 调到 2/2 derived matches.",
+      "All 13 previous non-target focal matches retained, total15/15; no degraded native mapping/OOV.",
+      "All16 non-target utterance derived phones and full float/WAV hashes equal fixed original B on same environment; two neutral controls unchanged.",
+      "All original home oracle/status/state targets unchanged, including invalid32 remains rejection; no text/reference/ASR-output rewriting."
+    ],
+    "separate_acceptance": [
+      "Human listening must be explicitly completed for all original A/B36 slots; ASR is not phonetic ground truth.",
+      "Future D acoustic listening and valid authorized human recordings are separate gates; no automatic product promotion from a derived15/15.",
+      "Home semantic10/10 and abnormal unchanged5/5 remain the existing full gate; preserve original C4/10 and A3/10 scores even if D improves.",
+      "New independent validation material and participant/source split must be frozen before any model run; collecting same18 spoken by humans is independent recording domain, not unseen-text generalization."
+    ],
+    "stop_conditions": [
+      "Any original data/hash or source fixture changes; non-target mapping/acoustic difference; extra normalization rules or duplicate lexicon override.",
+      "Wrong append ordering, marker leakage/OOV/dropped characters, invalid32 oracle change, or any sample omitted.",
+      "Compiled FST/reproducible build not available, independent human evidence incomplete, ASR license still unknown: retain pending/no promotion, do not silently replace mechanism."
+    ]
+  },
+  "future_observation_policy": {
+    "control": "C denotes archived original B18; no regenerated A/B, no contemporaneous speed or latency A/B claim. Existing results remain separately labeled.",
+    "candidate": "D18 is planned only for a later implementation after compiler/source/bundle hashes and clean source commit are frozen; original order, once per each of18, all failures retained. This phase does not implement/compile/generate D.",
+    "new_asr_if_later_executed": "Every D waveform decoded once with unchanged original ASR and configuration; existing18 fixture and10home oracles unchanged. No reference-output substitution or result-driven retries.",
+    "strict_numeric_non_target_gate": "All16 non-target utterances must retain C derived phones and full float/WAV SHA in the frozen same machine/runtime; exact equality, no relaxed epsilon after results. Targets may differ acoustically only as planned.",
+    "candidate_vs_acceptance": "Frontend target2/2 and15/15 plus exact non-target gate are an engineering frontend gate; full home10/10, abnormal safe5/5, human acoustic judgement, authorized recordings and personal understanding are separate and not automatically accepted."
+  },
+  "frozen_original_scores": {
+    "A_focal": [
+      6,
+      15
+    ],
+    "B_focal": [
+      13,
+      15
+    ],
+    "A_home": [
+      3,
+      10
+    ],
+    "B_home": [
+      4,
+      10
+    ],
+    "A_normal": [
+      1,
+      5
+    ],
+    "B_normal": [
+      2,
+      5
+    ],
+    "first_speech_cer": [
+      42,
+      73
+    ],
+    "combined_speech_cer": [
+      43,
+      73
+    ],
+    "all_original_failed_candidates_retained": true
+  },
+  "workflow_scope": {
+    "original_listening_slots": 36,
+    "original_focals_two_arms": 30,
+    "human_reading_cases_per_speaker": 18,
+    "planned_speakers": 2,
+    "human_recording_slots": 36,
+    "split": "P01/session-dev versus P02/session-validation, all18 texts each; same public prompts, not unseen-text/independent generalization test.",
+    "required_new_human_text_generalization_set": "Not prepared in this phase; must be separately sourced/authored, labeled and frozen before future generalization evaluation."
+  },
+  "current_execution": {
+    "new_tts_generations": 0,
+    "new_asr_calls": 0,
+    "candidate_resource_files_created": 0,
+    "candidate_models_loaded": 0,
+    "human_listening_submissions": 0,
+    "human_recordings": 0,
+    "microphone_calls": 0,
+    "playback_calls": 0,
+    "ha_or_physical_calls": 0
+  },
+  "acceptance": {
+    "automatic_product_promotion": false,
+    "context_candidate_implemented": false,
+    "context_candidate_passed": false,
+    "actual_acoustic_pronunciation_accepted": false,
+    "human_household_material_accepted": false,
+    "human_listening_accepted": false,
+    "personal_understanding_accepted": false,
+    "asr_weight_license_verified": false,
+    "overflow_resolution_accepted": false,
+    "real_ha_accepted": false,
+    "physical_completion_accepted": false
+  },
+  "constraints": [
+    "Do not edit original18 fixture/text/focal spans/labels/home oracles or original9 model files.",
+    "Do not globally override 调/調 or use post-ASR reference substitutions.",
+    "Do not claim one-file/FST-only intervention; one explicit on/off treatment is an inseparable two-file context resource bundle.",
+    "A pseudoregex is a specification, not a built or validated native FAR. Pin compiler/tool version and resource SHA before any future run.",
+    "No synthetic/mock/history without recorded permission may count as authorized human household recordings.",
+    "Retain original/default product configuration and no-model text fallback. W16-P0-1 remains in_progress; no W17 or fabricated learning hours."
+  ]
+}
