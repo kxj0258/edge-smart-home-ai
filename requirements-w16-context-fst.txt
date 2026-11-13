@@ -1,0 +1,2 @@
+# Independent Python3.10 Linux x86_64 compiler; never install into edge_ai.
+pynini==2.1.6.post1 --hash=sha256:10f0717fc6bf09330c41978e4d958a000b790b9b344cbc1117d33b008edf4fde
