@@ -1,0 +1,577 @@
+{
+  "schema_version": 1,
+  "kind": "w16_materials_and_frozen_first_waveforms",
+  "local_work_date": "2026-11-13",
+  "timezone": "Asia/Shanghai",
+  "source_inventory": {
+    "path": "configs/w16-material-source-v1.json",
+    "bytes": 9539,
+    "sha256": "1ed287208cf6373aa66630197fb2c07a5c574b3d176de409fd45188e99ceffa8"
+  },
+  "source_inventory_contents": {
+    "schema_version": 1,
+    "kind": "w16_material_source_inventory",
+    "local_work_date": "2026-11-13",
+    "timezone": "Asia/Shanghai",
+    "tts": {
+      "model_dir": "/home/kxj/zte_ws/models/tts/vits-icefall-zh-aishell3",
+      "source_repository": "https://huggingface.co/csukuangfj/icefall-tts-aishell3-vits-low-2024-04-06",
+      "source_revision": "57345c004e13ed640e408c4c29ab56187b18f065",
+      "license": "Apache-2.0",
+      "source_data": "AISHELL-3 / OpenSLR93",
+      "source_data_url": "https://www.openslr.org/93/",
+      "source_data_license": "Apache-2.0",
+      "files": [
+        {
+          "path": "/home/kxj/zte_ws/models/tts/vits-icefall-zh-aishell3/date.fst",
+          "bytes": 59154,
+          "sha256": "eb8aa079ae3cb81d8f4404992f39d61a0cb990947512b5b8d1e54d1f6980e718",
+          "upstream_path": "data/date.fst",
+          "upstream_lfs_sha256": null,
+          "upstream_git_blob_oid": "20ec7f4c077f9ec85ca9d01c4b4f4581f6e552ee",
+          "upstream_size": 59154,
+          "matches_pinned_upstream": true
+        },
+        {
+          "path": "/home/kxj/zte_ws/models/tts/vits-icefall-zh-aishell3/lexicon.txt",
+          "bytes": 2042943,
+          "sha256": "ab2e61d357551e7b24ddd965d924aca784c20165ff58c150794e539c6b5e9e35",
+          "upstream_path": "data/lexicon.txt",
+          "upstream_lfs_sha256": null,
+          "upstream_git_blob_oid": "d6ef4d23e7fa1cffffca92ec4e18ebd127f21e90",
+          "upstream_size": 2042943,
+          "matches_pinned_upstream": true
+        },
+        {
+          "path": "/home/kxj/zte_ws/models/tts/vits-icefall-zh-aishell3/model.onnx",
+          "bytes": 30482262,
+          "sha256": "5511d651b7840c0a93a6bbfd4afd070a2c7f39ca1ec3ff2ecd73191519bbb852",
+          "upstream_path": "exp/vits-epoch-960.onnx",
+          "upstream_lfs_sha256": "5511d651b7840c0a93a6bbfd4afd070a2c7f39ca1ec3ff2ecd73191519bbb852",
+          "upstream_git_blob_oid": "8c6a4bcff7d44729ef35b7a50724510f2479d583",
+          "upstream_size": 30482262,
+          "matches_pinned_upstream": true
+        },
+        {
+          "path": "/home/kxj/zte_ws/models/tts/vits-icefall-zh-aishell3/new_heteronym.fst",
+          "bytes": 21974,
+          "sha256": "ca14b2127e27baa571664e4bb791e143e7425f56a6bc29db08d74f97e6aa4e29",
+          "upstream_path": "data/new_heteronym.fst",
+          "upstream_lfs_sha256": null,
+          "upstream_git_blob_oid": "478a809252067229211f7f414414f34f98314d9d",
+          "upstream_size": 21974,
+          "matches_pinned_upstream": true
+        },
+        {
+          "path": "/home/kxj/zte_ws/models/tts/vits-icefall-zh-aishell3/number.fst",
+          "bytes": 64482,
+          "sha256": "743f402181fcfebf76cc2f0546b71fa26476e626fbe4e460fb7b4c3a7a8bd5bd",
+          "upstream_path": "data/number.fst",
+          "upstream_lfs_sha256": null,
+          "upstream_git_blob_oid": "66c0bd468903fc98d212cd6c3c5b2793ce8eb2c3",
+          "upstream_size": 64482,
+          "matches_pinned_upstream": true
+        },
+        {
+          "path": "/home/kxj/zte_ws/models/tts/vits-icefall-zh-aishell3/phone.fst",
+          "bytes": 88630,
+          "sha256": "1ac2b6fa56b1442320c4de7db08353bab8963a2b57f365eebcdd3a2d3562f8d7",
+          "upstream_path": "data/phone.fst",
+          "upstream_lfs_sha256": null,
+          "upstream_git_blob_oid": "2eba908c27ec0767281cad25d322008b16869c5b",
+          "upstream_size": 88630,
+          "matches_pinned_upstream": true
+        },
+        {
+          "path": "/home/kxj/zte_ws/models/tts/vits-icefall-zh-aishell3/rule.far",
+          "bytes": 180717014,
+          "sha256": "b090ed05e333fe125b62d8b1de5f1a1d4579fb237c606e7ac0b84707c863a01f",
+          "upstream_path": "data/rule.far",
+          "upstream_lfs_sha256": "b090ed05e333fe125b62d8b1de5f1a1d4579fb237c606e7ac0b84707c863a01f",
+          "upstream_git_blob_oid": "cdebf2456ac4305db73883abba162f317ca10189",
+          "upstream_size": 180717014,
+          "matches_pinned_upstream": true
+        },
+        {
+          "path": "/home/kxj/zte_ws/models/tts/vits-icefall-zh-aishell3/speakers.txt",
+          "bytes": 1392,
+          "sha256": "50a825fc9a89172eee04a4d68869d933d0eca0d847f3b6fcffff9514cc72442d",
+          "upstream_path": "data/speakers.txt",
+          "upstream_lfs_sha256": null,
+          "upstream_git_blob_oid": "25579716d3aaef1c4c41b0327fc44b1aa9adcec4",
+          "upstream_size": 1392,
+          "matches_pinned_upstream": true
+        },
+        {
+          "path": "/home/kxj/zte_ws/models/tts/vits-icefall-zh-aishell3/tokens.txt",
+          "bytes": 1671,
+          "sha256": "50b45a7b7de1752fd3c7b4755661c285f1547f59186eca2281089a81307ad953",
+          "upstream_path": "data/tokens.txt",
+          "upstream_lfs_sha256": null,
+          "upstream_git_blob_oid": "aef20b9e37f64bfc271a888fa10b4cb40a05cdbc",
+          "upstream_size": 1671,
+          "matches_pinned_upstream": true
+        }
+      ],
+      "speaker_id": 13,
+      "speed": 1.0,
+      "num_threads": 2,
+      "provider": "cpu",
+      "model_sample_rate": 8000,
+      "model_speakers": 174,
+      "use": "Local synthetic fixture and optional saved feedback waveform generation; no speaker playback or voice cloning request",
+      "output_rights_note": "Self-authored common household fixture text and generated local waveforms are separate from upstream model/data licenses; no claim that the model license automatically licenses all output."
+    },
+    "asr": {
+      "existing_inventory": "configs/asr-model-source-v1.json",
+      "model": {
+        "name": "sherpa-onnx-streaming-zipformer-zh-xlarge-int8-2025-06-30",
+        "type": "online transducer / streaming zipformer2, feature=whisper",
+        "weight_variant": "upstream INT8 encoder/joiner and FP32 decoder; not self-performed PTQ",
+        "source_repository": "https://huggingface.co/csukuangfj/sherpa-onnx-streaming-zipformer-zh-xlarge-int8-2025-06-30",
+        "source_revision": "18f31ce4644ac3bcf544eea692d7242b798d508f",
+        "original_repository": "https://huggingface.co/yuekai/icefall-asr-multi-zh-hans-zipformer-xl",
+        "original_revision": "d590e01487685985c9982b6ab128969611be49c8",
+        "original_gated": "auto",
+        "license": "NOT_VERIFIED",
+        "license_note": "Neither accessible converted repository card/tree nor original repository API provides a weight license. Original gated README was unavailable. Framework Apache-2.0 is not assigned to the weights. Existing local evaluation only; no new gated weights fetched or model redistributed.",
+        "deployment_license_accepted": false,
+        "feature_sample_rate": 16000,
+        "files": [
+          {
+            "path": "models/sherpa-onnx-streaming-zipformer-zh-xlarge-int8-2025-06-30/README.md",
+            "bytes": 311,
+            "sha256": "9bd6af44d7ad96de4c3457613a8a95c75dbd91a40b26fb988a1b42d07a190f36",
+            "upstream_lfs_sha256": null,
+            "upstream_size_matches": true,
+            "upstream_lfs_sha256_matches": null
+          },
+          {
+            "path": "models/sherpa-onnx-streaming-zipformer-zh-xlarge-int8-2025-06-30/bpe.model",
+            "bytes": 263956,
+            "sha256": "867a7355801cb43939962ad757ba1cb7941b6171b5a6902772483b4e3a623377",
+            "upstream_lfs_sha256": "867a7355801cb43939962ad757ba1cb7941b6171b5a6902772483b4e3a623377",
+            "upstream_size_matches": true,
+            "upstream_lfs_sha256_matches": true
+          },
+          {
+            "path": "models/sherpa-onnx-streaming-zipformer-zh-xlarge-int8-2025-06-30/decoder.onnx",
+            "bytes": 8533022,
+            "sha256": "8f9c903da2818f207304a3f30b9eeb30028e30398f333c1e95e12c97704173e6",
+            "upstream_lfs_sha256": "8f9c903da2818f207304a3f30b9eeb30028e30398f333c1e95e12c97704173e6",
+            "upstream_size_matches": true,
+            "upstream_lfs_sha256_matches": true
+          },
+          {
+            "path": "models/sherpa-onnx-streaming-zipformer-zh-xlarge-int8-2025-06-30/encoder.int8.onnx",
+            "bytes": 761133737,
+            "sha256": "f2c543a0330e1ed0bd09c82e4ae7d3f1cbee10a15feca638fcc4f88083a36b8a",
+            "upstream_lfs_sha256": "f2c543a0330e1ed0bd09c82e4ae7d3f1cbee10a15feca638fcc4f88083a36b8a",
+            "upstream_size_matches": true,
+            "upstream_lfs_sha256_matches": true
+          },
+          {
+            "path": "models/sherpa-onnx-streaming-zipformer-zh-xlarge-int8-2025-06-30/joiner.int8.onnx",
+            "bytes": 1545417,
+            "sha256": "f76ffce14b6ef80098cfdbce8846896ff68133970abc314eafab632f910df0d7",
+            "upstream_lfs_sha256": "f76ffce14b6ef80098cfdbce8846896ff68133970abc314eafab632f910df0d7",
+            "upstream_size_matches": true,
+            "upstream_lfs_sha256_matches": true
+          },
+          {
+            "path": "models/sherpa-onnx-streaming-zipformer-zh-xlarge-int8-2025-06-30/tokens.txt",
+            "bytes": 18626,
+            "sha256": "6722bd1585f46f84456b29c3550a343a3cc375b971645773c02ed8e0b4e2405c",
+            "upstream_lfs_sha256": null,
+            "upstream_size_matches": true,
+            "upstream_lfs_sha256_matches": null
+          }
+        ]
+      },
+      "runtime_sherpa_version": "1.13.6",
+      "runtime_bundled_ort_reported_version": "1.27.1",
+      "license_status": "UNKNOWN_NOT_VERIFIED",
+      "new_weights_downloaded": false,
+      "use": "Existing local research replay, not deployment licensing clearance"
+    },
+    "human_home_command_materials": {
+      "current_licensed_human_recordings_selected": 0,
+      "historical_capture_is_not_consent_or_license": true,
+      "status": "PENDING permission/provenance and present-day home-command recording acceptance"
+    },
+    "official_evidence": "evaluation/20261113-w16-sources/summary.json",
+    "speech_groups": "human / synthetic_audio / synthetic_signal / synthetic_transcript or Mock must be counted separately",
+    "physical_device_or_live_acceptance": false
+  },
+  "preparation": {
+    "path": "evaluation/20261113-w16-audio/preparation.json",
+    "bytes": 21284,
+    "sha256": "e107747d89b9b562d8e82fcb4fdb4ef48e7f734709aba1d267185594cfc83970"
+  },
+  "source_git": {
+    "commit": "ddf8c2748bb06db67c8bddfc29eff7c3e3010e15",
+    "status": ""
+  },
+  "generator": {
+    "speaker_id": 13,
+    "speed": 1.0,
+    "num_threads": 2,
+    "provider": "cpu",
+    "model_sample_rate": 8000
+  },
+  "synthesis_attempts": 9,
+  "synthetic_signals_created": 1,
+  "verified_human_home_recordings": 0,
+  "clips": [
+    {
+      "id": "W16-N01",
+      "case_id": "W16-N01",
+      "reference_text": "打开客厅灯",
+      "wav": "/home/kxj/zte_ws/edge-smart-home-ai/evaluation/20261113-w16-audio/pcm16/W16-N01.wav",
+      "sha256": "058b8486838d8f56cf6e7d7ab664bdfaa8d962a7f5f1749dfcfce9bfbaa7c45d",
+      "bytes": 18462,
+      "source_kind": "synthetic_audio",
+      "source_url": "https://huggingface.co/csukuangfj/icefall-tts-aishell3-vits-low-2024-04-06/tree/57345c004e13ed640e408c4c29ab56187b18f065",
+      "license": "project-generated; upstream model/data Apache-2.0",
+      "attribution": "Project-authored household fixture; k2-fsa/icefall AISHELL3 VITS model and AISHELL-3 corpus",
+      "provenance_note": "Synthetic TTS audio, fixed sid13/speed1/CPU/2threads; not a human recording",
+      "float_npy": {
+        "path": "/home/kxj/zte_ws/edge-smart-home-ai/evaluation/20261113-w16-audio/float/W16-N01.npy",
+        "bytes": 36964,
+        "sha256": "43f13c001179869d2d214e6c75b511ef541d414e1447bc935bd6b01849c03c11"
+      },
+      "conversion": {
+        "sample_rate": 8000,
+        "channels": 1,
+        "sample_frames": 9209,
+        "audio_seconds": 1.151125,
+        "original_dtype": "float32",
+        "format": "PCM16_LE",
+        "formula": "q=clip(rint(float64(x)*32768),-32768,32767); ties to even",
+        "origin_peak_abs": 0.2528996467590332,
+        "clipped_sample_count": 0,
+        "derived_peak_abs": 0.252899169921875,
+        "max_abs_quantization_error": 1.5256926417350769e-05,
+        "resampled": false,
+        "trimmed": false
+      },
+      "tts_generation_wall_ms": 33.3934579975903
+    },
+    {
+      "id": "W16-N02",
+      "case_id": "W16-N02",
+      "reference_text": "把客厅灯亮度设置为50",
+      "wav": "/home/kxj/zte_ws/edge-smart-home-ai/evaluation/20261113-w16-audio/pcm16/W16-N02.wav",
+      "sha256": "6c90cdd51fe9d98848fa100528c87952fe97af9f6e1c9e8f6ceef76ff4c1ddd3",
+      "bytes": 36716,
+      "source_kind": "synthetic_audio",
+      "source_url": "https://huggingface.co/csukuangfj/icefall-tts-aishell3-vits-low-2024-04-06/tree/57345c004e13ed640e408c4c29ab56187b18f065",
+      "license": "project-generated; upstream model/data Apache-2.0",
+      "attribution": "Project-authored household fixture; k2-fsa/icefall AISHELL3 VITS model and AISHELL-3 corpus",
+      "provenance_note": "Synthetic TTS audio, fixed sid13/speed1/CPU/2threads; not a human recording",
+      "float_npy": {
+        "path": "/home/kxj/zte_ws/edge-smart-home-ai/evaluation/20261113-w16-audio/float/W16-N02.npy",
+        "bytes": 73472,
+        "sha256": "5ad40f8b2bf0ec887aa05bcda47dd5452771f6049f3fab2397fced40c2a3ed88"
+      },
+      "conversion": {
+        "sample_rate": 8000,
+        "channels": 1,
+        "sample_frames": 18336,
+        "audio_seconds": 2.292,
+        "original_dtype": "float32",
+        "format": "PCM16_LE",
+        "formula": "q=clip(rint(float64(x)*32768),-32768,32767); ties to even",
+        "origin_peak_abs": 0.21614721417427063,
+        "clipped_sample_count": 0,
+        "derived_peak_abs": 0.216156005859375,
+        "max_abs_quantization_error": 1.5256926417350769e-05,
+        "resampled": false,
+        "trimmed": false
+      },
+      "tts_generation_wall_ms": 52.49932099832222
+    },
+    {
+      "id": "W16-N03",
+      "case_id": "W16-N03",
+      "reference_text": "把客厅空调温度设置为26度",
+      "wav": "/home/kxj/zte_ws/edge-smart-home-ai/evaluation/20261113-w16-audio/pcm16/W16-N03.wav",
+      "sha256": "263fa38725454085bd329a7143f10bd28201902d69d9cdd67c3b240f1a46fbd2",
+      "bytes": 49050,
+      "source_kind": "synthetic_audio",
+      "source_url": "https://huggingface.co/csukuangfj/icefall-tts-aishell3-vits-low-2024-04-06/tree/57345c004e13ed640e408c4c29ab56187b18f065",
+      "license": "project-generated; upstream model/data Apache-2.0",
+      "attribution": "Project-authored household fixture; k2-fsa/icefall AISHELL3 VITS model and AISHELL-3 corpus",
+      "provenance_note": "Synthetic TTS audio, fixed sid13/speed1/CPU/2threads; not a human recording",
+      "float_npy": {
+        "path": "/home/kxj/zte_ws/edge-smart-home-ai/evaluation/20261113-w16-audio/float/W16-N03.npy",
+        "bytes": 98140,
+        "sha256": "f3205ad20a8d0f6def64b08c19109580349d5b04f7f5f407fb752002dc610d42"
+      },
+      "conversion": {
+        "sample_rate": 8000,
+        "channels": 1,
+        "sample_frames": 24503,
+        "audio_seconds": 3.062875,
+        "original_dtype": "float32",
+        "format": "PCM16_LE",
+        "formula": "q=clip(rint(float64(x)*32768),-32768,32767); ties to even",
+        "origin_peak_abs": 0.23606616258621216,
+        "clipped_sample_count": 0,
+        "derived_peak_abs": 0.236053466796875,
+        "max_abs_quantization_error": 1.52587890625e-05,
+        "resampled": false,
+        "trimmed": false
+      },
+      "tts_generation_wall_ms": 58.81231899547856
+    },
+    {
+      "id": "W16-N04",
+      "case_id": "W16-N04",
+      "reference_text": "打开客厅窗帘",
+      "wav": "/home/kxj/zte_ws/edge-smart-home-ai/evaluation/20261113-w16-audio/pcm16/W16-N04.wav",
+      "sha256": "8869acd74859aed0a3f9a3e2fa06c5bde95890467dfc3ed11f64497ec785bee8",
+      "bytes": 22764,
+      "source_kind": "synthetic_audio",
+      "source_url": "https://huggingface.co/csukuangfj/icefall-tts-aishell3-vits-low-2024-04-06/tree/57345c004e13ed640e408c4c29ab56187b18f065",
+      "license": "project-generated; upstream model/data Apache-2.0",
+      "attribution": "Project-authored household fixture; k2-fsa/icefall AISHELL3 VITS model and AISHELL-3 corpus",
+      "provenance_note": "Synthetic TTS audio, fixed sid13/speed1/CPU/2threads; not a human recording",
+      "float_npy": {
+        "path": "/home/kxj/zte_ws/edge-smart-home-ai/evaluation/20261113-w16-audio/float/W16-N04.npy",
+        "bytes": 45568,
+        "sha256": "471313c0ce411d5eeb110d6087f84d9cd51499c6bc45c60f6c1219609d0827ae"
+      },
+      "conversion": {
+        "sample_rate": 8000,
+        "channels": 1,
+        "sample_frames": 11360,
+        "audio_seconds": 1.42,
+        "original_dtype": "float32",
+        "format": "PCM16_LE",
+        "formula": "q=clip(rint(float64(x)*32768),-32768,32767); ties to even",
+        "origin_peak_abs": 0.2737121284008026,
+        "clipped_sample_count": 0,
+        "derived_peak_abs": 0.273712158203125,
+        "max_abs_quantization_error": 1.52587890625e-05,
+        "resampled": false,
+        "trimmed": false
+      },
+      "tts_generation_wall_ms": 36.36319300858304
+    },
+    {
+      "id": "W16-N05",
+      "case_id": "W16-N05",
+      "reference_text": "关闭客厅灯",
+      "wav": "/home/kxj/zte_ws/edge-smart-home-ai/evaluation/20261113-w16-audio/pcm16/W16-N05.wav",
+      "sha256": "e168207c9da774cd5cad9a2532b60998711888feb43fcb19d962aeee63c86a5a",
+      "bytes": 19424,
+      "source_kind": "synthetic_audio",
+      "source_url": "https://huggingface.co/csukuangfj/icefall-tts-aishell3-vits-low-2024-04-06/tree/57345c004e13ed640e408c4c29ab56187b18f065",
+      "license": "project-generated; upstream model/data Apache-2.0",
+      "attribution": "Project-authored household fixture; k2-fsa/icefall AISHELL3 VITS model and AISHELL-3 corpus",
+      "provenance_note": "Synthetic TTS audio, fixed sid13/speed1/CPU/2threads; not a human recording",
+      "float_npy": {
+        "path": "/home/kxj/zte_ws/edge-smart-home-ai/evaluation/20261113-w16-audio/float/W16-N05.npy",
+        "bytes": 38888,
+        "sha256": "9e194c2ba435f77a32931e60b80a3cc94cb23da02a17b80ca7cd04386f7f49a2"
+      },
+      "conversion": {
+        "sample_rate": 8000,
+        "channels": 1,
+        "sample_frames": 9690,
+        "audio_seconds": 1.21125,
+        "original_dtype": "float32",
+        "format": "PCM16_LE",
+        "formula": "q=clip(rint(float64(x)*32768),-32768,32767); ties to even",
+        "origin_peak_abs": 0.15935933589935303,
+        "clipped_sample_count": 0,
+        "derived_peak_abs": 0.15936279296875,
+        "max_abs_quantization_error": 1.5255063772201538e-05,
+        "resampled": false,
+        "trimmed": false
+      },
+      "tts_generation_wall_ms": 31.042106013046578
+    },
+    {
+      "id": "W16-A01",
+      "case_id": "W16-A01",
+      "reference_text": "打开书房灯",
+      "wav": "/home/kxj/zte_ws/edge-smart-home-ai/evaluation/20261113-w16-audio/pcm16/W16-A01.wav",
+      "sha256": "520b9bc0af113dd0dea6789e61e02bc4411e8e7c31936aeca3363b62b2d51039",
+      "bytes": 20990,
+      "source_kind": "synthetic_audio",
+      "source_url": "https://huggingface.co/csukuangfj/icefall-tts-aishell3-vits-low-2024-04-06/tree/57345c004e13ed640e408c4c29ab56187b18f065",
+      "license": "project-generated; upstream model/data Apache-2.0",
+      "attribution": "Project-authored household fixture; k2-fsa/icefall AISHELL3 VITS model and AISHELL-3 corpus",
+      "provenance_note": "Synthetic TTS audio, fixed sid13/speed1/CPU/2threads; not a human recording",
+      "float_npy": {
+        "path": "/home/kxj/zte_ws/edge-smart-home-ai/evaluation/20261113-w16-audio/float/W16-A01.npy",
+        "bytes": 42020,
+        "sha256": "8c2e6907348b068bfb3d14dd3f35d4c2ec87c842bc525ea937d69e496e0ff626"
+      },
+      "conversion": {
+        "sample_rate": 8000,
+        "channels": 1,
+        "sample_frames": 10473,
+        "audio_seconds": 1.309125,
+        "original_dtype": "float32",
+        "format": "PCM16_LE",
+        "formula": "q=clip(rint(float64(x)*32768),-32768,32767); ties to even",
+        "origin_peak_abs": 0.25324690341949463,
+        "clipped_sample_count": 0,
+        "derived_peak_abs": 0.25323486328125,
+        "max_abs_quantization_error": 1.52587890625e-05,
+        "resampled": false,
+        "trimmed": false
+      },
+      "tts_generation_wall_ms": 31.465662003029138
+    },
+    {
+      "id": "W16-A02",
+      "case_id": "W16-A02",
+      "reference_text": "把客厅空调温度设置为31度",
+      "wav": "/home/kxj/zte_ws/edge-smart-home-ai/evaluation/20261113-w16-audio/pcm16/W16-A02.wav",
+      "sha256": "92ff81d936733cbcbe865f8978757a5c19e40fcb91075d302e089b3cf2841fe8",
+      "bytes": 47184,
+      "source_kind": "synthetic_audio",
+      "source_url": "https://huggingface.co/csukuangfj/icefall-tts-aishell3-vits-low-2024-04-06/tree/57345c004e13ed640e408c4c29ab56187b18f065",
+      "license": "project-generated; upstream model/data Apache-2.0",
+      "attribution": "Project-authored household fixture; k2-fsa/icefall AISHELL3 VITS model and AISHELL-3 corpus",
+      "provenance_note": "Synthetic TTS audio, fixed sid13/speed1/CPU/2threads; not a human recording",
+      "float_npy": {
+        "path": "/home/kxj/zte_ws/edge-smart-home-ai/evaluation/20261113-w16-audio/float/W16-A02.npy",
+        "bytes": 94408,
+        "sha256": "c043318b99864e645effbc46e71006d29df919d1b7e8f8f9582ba4b19d8573df"
+      },
+      "conversion": {
+        "sample_rate": 8000,
+        "channels": 1,
+        "sample_frames": 23570,
+        "audio_seconds": 2.94625,
+        "original_dtype": "float32",
+        "format": "PCM16_LE",
+        "formula": "q=clip(rint(float64(x)*32768),-32768,32767); ties to even",
+        "origin_peak_abs": 0.23714956641197205,
+        "clipped_sample_count": 0,
+        "derived_peak_abs": 0.237152099609375,
+        "max_abs_quantization_error": 1.52587890625e-05,
+        "resampled": false,
+        "trimmed": false
+      },
+      "tts_generation_wall_ms": 56.16284999996424
+    },
+    {
+      "id": "W16-A03",
+      "case_id": "W16-A03",
+      "reference_text": "把客厅灯亮度设置一下",
+      "wav": "/home/kxj/zte_ws/edge-smart-home-ai/evaluation/20261113-w16-audio/pcm16/W16-A03.wav",
+      "sha256": "62adf2e4b89ff76c22710387878d5c526ac32733e7ae811d086bf477ab7f2db6",
+      "bytes": 32692,
+      "source_kind": "synthetic_audio",
+      "source_url": "https://huggingface.co/csukuangfj/icefall-tts-aishell3-vits-low-2024-04-06/tree/57345c004e13ed640e408c4c29ab56187b18f065",
+      "license": "project-generated; upstream model/data Apache-2.0",
+      "attribution": "Project-authored household fixture; k2-fsa/icefall AISHELL3 VITS model and AISHELL-3 corpus",
+      "provenance_note": "Synthetic TTS audio, fixed sid13/speed1/CPU/2threads; not a human recording",
+      "float_npy": {
+        "path": "/home/kxj/zte_ws/edge-smart-home-ai/evaluation/20261113-w16-audio/float/W16-A03.npy",
+        "bytes": 65424,
+        "sha256": "bb25e765f86de78e74bf67064b4145b5fd0b6850eb108ee599ec428ecea9ef33"
+      },
+      "conversion": {
+        "sample_rate": 8000,
+        "channels": 1,
+        "sample_frames": 16324,
+        "audio_seconds": 2.0405,
+        "original_dtype": "float32",
+        "format": "PCM16_LE",
+        "formula": "q=clip(rint(float64(x)*32768),-32768,32767); ties to even",
+        "origin_peak_abs": 0.23320704698562622,
+        "clipped_sample_count": 0,
+        "derived_peak_abs": 0.23321533203125,
+        "max_abs_quantization_error": 1.52587890625e-05,
+        "resampled": false,
+        "trimmed": false
+      },
+      "tts_generation_wall_ms": 44.868516008136794
+    },
+    {
+      "id": "W16-A04",
+      "case_id": "W16-A04",
+      "reference_text": "打开客厅灯",
+      "wav": "/home/kxj/zte_ws/edge-smart-home-ai/evaluation/20261113-w16-audio/pcm16/W16-A04.wav",
+      "sha256": "30bfd89495d042ccec88886cea8aaf9041244c422f67eb7b7d539629caaf6347",
+      "bytes": 18298,
+      "source_kind": "synthetic_audio",
+      "source_url": "https://huggingface.co/csukuangfj/icefall-tts-aishell3-vits-low-2024-04-06/tree/57345c004e13ed640e408c4c29ab56187b18f065",
+      "license": "project-generated; upstream model/data Apache-2.0",
+      "attribution": "Project-authored household fixture; k2-fsa/icefall AISHELL3 VITS model and AISHELL-3 corpus",
+      "provenance_note": "Synthetic TTS audio, fixed sid13/speed1/CPU/2threads; not a human recording",
+      "float_npy": {
+        "path": "/home/kxj/zte_ws/edge-smart-home-ai/evaluation/20261113-w16-audio/float/W16-A04.npy",
+        "bytes": 36636,
+        "sha256": "d9a423e73a537b7fd29b36c2ccdf0e691cf552ca067fa80eabda2375813549fc"
+      },
+      "conversion": {
+        "sample_rate": 8000,
+        "channels": 1,
+        "sample_frames": 9127,
+        "audio_seconds": 1.140875,
+        "original_dtype": "float32",
+        "format": "PCM16_LE",
+        "formula": "q=clip(rint(float64(x)*32768),-32768,32767); ties to even",
+        "origin_peak_abs": 0.21425290405750275,
+        "clipped_sample_count": 0,
+        "derived_peak_abs": 0.214263916015625,
+        "max_abs_quantization_error": 1.52587890625e-05,
+        "resampled": false,
+        "trimmed": false
+      },
+      "tts_generation_wall_ms": 28.85165398765821
+    },
+    {
+      "id": "W16-A05",
+      "case_id": "W16-A05",
+      "reference_text": "",
+      "wav": "/home/kxj/zte_ws/edge-smart-home-ai/evaluation/20261113-w16-audio/pcm16/W16-A05.wav",
+      "sha256": "56d4af65701c26df20bd4021eda95b6e830348ce3a746086079fe89285548dc9",
+      "bytes": 16044,
+      "source_kind": "synthetic_signal",
+      "source_url": "project://w16/programmatic-silence",
+      "license": "project-generated synthetic signal",
+      "attribution": "Project-authored deterministic zero waveform",
+      "provenance_note": "One second of programmatic silence; not synthesized speech or a human recording",
+      "float_npy": {
+        "path": "/home/kxj/zte_ws/edge-smart-home-ai/evaluation/20261113-w16-audio/float/W16-A05.npy",
+        "bytes": 32128,
+        "sha256": "973da460eeef7fbd23a0cb229c596036279fde15ec7aa1ec83bfb783b762746b"
+      },
+      "conversion": {
+        "sample_rate": 8000,
+        "channels": 1,
+        "sample_frames": 8000,
+        "audio_seconds": 1.0,
+        "original_dtype": "float32",
+        "format": "PCM16_LE",
+        "formula": "q=clip(rint(float64(x)*32768),-32768,32767); ties to even",
+        "origin_peak_abs": 0.0,
+        "clipped_sample_count": 0,
+        "derived_peak_abs": 0.0,
+        "max_abs_quantization_error": 0.0,
+        "resampled": false,
+        "trimmed": false
+      },
+      "tts_generation_wall_ms": null
+    }
+  ],
+  "source_groups": {
+    "human_home": 0,
+    "synthetic_audio": 9,
+    "synthetic_signal": 1,
+    "mock_transcripts_in_primary": 0
+  },
+  "float_pcm_policy": "Preserve first native float and PCM16; no regeneration, trim, resample or ASR-driven selection; exact quantization formula in each clip. Native ASR resamples true 8k to 16k.",
+  "rights_policy": "Self-authored fixture text, upstream model/data license and generated waveform provenance are separate; no blanket output copyright or human-consent claim.",
+  "asr_weight_license_verified": false,
+  "human_acceptance": false
+}

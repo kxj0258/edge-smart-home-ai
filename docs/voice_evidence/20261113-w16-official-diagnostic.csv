@@ -1,0 +1,11 @@
+id,source_kind,reference_text,original_recognizer_output,diagnostic_recognizer_output,original_character_edits,diagnostic_character_edits,reference_characters,diagnostic_exact,original_primary_status,original_primary_error_code,original_primary_semantics_passed,diagnostic_state_or_semantics_evaluated
+W16-N01,synthetic_audio,打开客厅灯,打开设定中,打开设定中,3,3,5,False,not_routed,ROUTE_UNSUPPORTED,False,False
+W16-N02,synthetic_audio,把客厅灯亮度设置为50,打破金端面柱设置为五十,打破金端面柱设置为五十,8,8,11,False,clarification_required,REQUEST_TARGET_AMBIGUOUS,False,False
+W16-N03,synthetic_audio,把客厅空调温度设置为26度,下客厅空调温度设置为二十六度,下客厅空调温度设置为二十六度,4,4,13,False,request_rejected,UNKNOWN_DEVICE,False,False
+W16-N04,synthetic_audio,打开客厅窗帘,打开特勤创业,打开特勤创业,4,4,6,False,not_routed,ROUTE_UNSUPPORTED,False,False
+W16-N05,synthetic_audio,关闭客厅灯,房地客厅,房地客新增,3,4,5,False,not_routed,ROUTE_UNSUPPORTED,False,False
+W16-A01,synthetic_audio,打开书房灯,摆拍出房子跟,摆拍出房子跟,5,5,5,False,not_routed,ROUTE_UNSUPPORTED,False,False
+W16-A02,synthetic_audio,把客厅空调温度设置为31度,打开净空调温度设置为三十一度,打开净空调温度设置为三十一度,6,6,13,False,request_rejected,UNKNOWN_DEVICE,False,False
+W16-A03,synthetic_audio,把客厅灯亮度设置一下,假设期增艳度设置一场,假设期增量度设置一场,6,6,10,False,not_routed,ROUTE_UNSUPPORTED,False,False
+W16-A04,synthetic_audio,打开客厅灯,打开擎,打开擎,3,3,5,False,not_routed,ROUTE_UNSUPPORTED,False,False
+W16-A05,synthetic_signal,,,,0,0,0,True,empty_transcript,ASR_EMPTY_TRANSCRIPT,True,False

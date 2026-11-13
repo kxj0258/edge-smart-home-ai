@@ -1,0 +1,470 @@
+{
+  "schema_version": 1,
+  "kind": "tts_native_feedback_generation",
+  "started_at": "2026-11-13T02:07:38.237530+00:00",
+  "source_git": {
+    "commit": "ddf8c2748bb06db67c8bddfc29eff7c3e3010e15",
+    "status": ""
+  },
+  "source_run": "/home/kxj/zte_ws/edge-smart-home-ai/evaluation/20261113-w16-chain",
+  "generator": {
+    "speaker_id": 13,
+    "speed": 1.0,
+    "num_threads": 2,
+    "provider": "cpu",
+    "model_sample_rate": 8000
+  },
+  "tts_source_repository": "https://huggingface.co/csukuangfj/icefall-tts-aishell3-vits-low-2024-04-06",
+  "tts_source_revision": "57345c004e13ed640e408c4c29ab56187b18f065",
+  "upstream_model_data_license": "Apache-2.0",
+  "output_rights_note": "Project feedback messages and generated waveforms are separate from upstream licenses; no blanket output-copyright claim.",
+  "message_source": "record.primary.console_feedback",
+  "feedback": [
+    {
+      "id": "W16-N01",
+      "messages": [
+        "未识别到支持的家庭指令，可切换文本输入。"
+      ],
+      "text": "未识别到支持的家庭指令，可切换文本输入。",
+      "source_record": {
+        "path": "/home/kxj/zte_ws/edge-smart-home-ai/evaluation/20261113-w16-chain/records/0000.json",
+        "bytes": 48446,
+        "sha256": "7e8bc7d4e537c70bb6801f71d0ef5883bb00066c92cd2d4ecc44fa392896aa48"
+      },
+      "primary_semantics_passed": false,
+      "primary_status": "not_routed",
+      "primary_error_code": "ROUTE_UNSUPPORTED",
+      "source_kind": "synthetic_feedback_audio",
+      "float_npy": {
+        "path": "/home/kxj/zte_ws/edge-smart-home-ai/evaluation/20261113-w16-feedback/float/W16-N01.npy",
+        "bytes": 113696,
+        "sha256": "959fbe6c875cd7dade3fcd076b73fb6cf7c44d52d88d21ff0a12050d6d741aa5"
+      },
+      "wav": {
+        "path": "/home/kxj/zte_ws/edge-smart-home-ai/evaluation/20261113-w16-feedback/pcm16/W16-N01.wav",
+        "bytes": 56828,
+        "sha256": "e4008b5ecfb43944da0b642e63f8534b01122d29b47d4e12033f9c2428b0e3a5"
+      },
+      "tts_generation_wall_ms": 85.19324199005496,
+      "conversion": {
+        "sample_rate": 8000,
+        "channels": 1,
+        "sample_frames": 28392,
+        "audio_seconds": 3.549,
+        "original_dtype": "float32",
+        "format": "PCM16_LE",
+        "formula": "q=clip(rint(float64(x)*32768),-32768,32767); ties to even",
+        "origin_peak_abs": 0.23675043880939484,
+        "clipped_sample_count": 0,
+        "derived_peak_abs": 0.23675537109375,
+        "max_abs_quantization_error": 1.52587890625e-05,
+        "resampled": false,
+        "trimmed": false
+      }
+    },
+    {
+      "id": "W16-N02",
+      "messages": [
+        "需要补充信息：请明确目标设备和完整参数后再控制。"
+      ],
+      "text": "需要补充信息：请明确目标设备和完整参数后再控制。",
+      "source_record": {
+        "path": "/home/kxj/zte_ws/edge-smart-home-ai/evaluation/20261113-w16-chain/records/0001.json",
+        "bytes": 48393,
+        "sha256": "26627136f570a1ac37e20721f88d228de92cb5c3edeaa2687d4c2493713b9745"
+      },
+      "primary_semantics_passed": false,
+      "primary_status": "clarification_required",
+      "primary_error_code": "REQUEST_TARGET_AMBIGUOUS",
+      "source_kind": "synthetic_feedback_audio",
+      "float_npy": {
+        "path": "/home/kxj/zte_ws/edge-smart-home-ai/evaluation/20261113-w16-feedback/float/W16-N02.npy",
+        "bytes": 143512,
+        "sha256": "d4deb11cf293068eb42ee394fb4f34d94520b066789ee7bb0783eb4c598c256d"
+      },
+      "wav": {
+        "path": "/home/kxj/zte_ws/edge-smart-home-ai/evaluation/20261113-w16-feedback/pcm16/W16-N02.wav",
+        "bytes": 71736,
+        "sha256": "7758958fb4c7c4ea298273b7583986a079449db5bcf0fc8572a9f8f341d84327"
+      },
+      "tts_generation_wall_ms": 104.07647199463099,
+      "conversion": {
+        "sample_rate": 8000,
+        "channels": 1,
+        "sample_frames": 35846,
+        "audio_seconds": 4.48075,
+        "original_dtype": "float32",
+        "format": "PCM16_LE",
+        "formula": "q=clip(rint(float64(x)*32768),-32768,32767); ties to even",
+        "origin_peak_abs": 0.2499149590730667,
+        "clipped_sample_count": 0,
+        "derived_peak_abs": 0.249908447265625,
+        "max_abs_quantization_error": 1.52587890625e-05,
+        "resampled": false,
+        "trimmed": false
+      }
+    },
+    {
+      "id": "W16-N03",
+      "messages": [
+        "指令不符合安全规则，已拒绝执行。"
+      ],
+      "text": "指令不符合安全规则，已拒绝执行。",
+      "source_record": {
+        "path": "/home/kxj/zte_ws/edge-smart-home-ai/evaluation/20261113-w16-chain/records/0002.json",
+        "bytes": 48599,
+        "sha256": "a9522beef90b509e2359a9239dac56f6a72590ffe3aa39a55b2cc65cc0a632d9"
+      },
+      "primary_semantics_passed": false,
+      "primary_status": "request_rejected",
+      "primary_error_code": "UNKNOWN_DEVICE",
+      "source_kind": "synthetic_feedback_audio",
+      "float_npy": {
+        "path": "/home/kxj/zte_ws/edge-smart-home-ai/evaluation/20261113-w16-feedback/float/W16-N03.npy",
+        "bytes": 95704,
+        "sha256": "12d5918429010640ab368653a46af7edf611f47c50f1d2ce69f3ddaf63e4040b"
+      },
+      "wav": {
+        "path": "/home/kxj/zte_ws/edge-smart-home-ai/evaluation/20261113-w16-feedback/pcm16/W16-N03.wav",
+        "bytes": 47832,
+        "sha256": "5199c1734c366a9b5909a25fa4b9ef29d96df2b2c0b4dece43f2a075f7a31c6d"
+      },
+      "tts_generation_wall_ms": 67.15204200008884,
+      "conversion": {
+        "sample_rate": 8000,
+        "channels": 1,
+        "sample_frames": 23894,
+        "audio_seconds": 2.98675,
+        "original_dtype": "float32",
+        "format": "PCM16_LE",
+        "formula": "q=clip(rint(float64(x)*32768),-32768,32767); ties to even",
+        "origin_peak_abs": 0.22820191085338593,
+        "clipped_sample_count": 0,
+        "derived_peak_abs": 0.22821044921875,
+        "max_abs_quantization_error": 1.5257857739925385e-05,
+        "resampled": false,
+        "trimmed": false
+      }
+    },
+    {
+      "id": "W16-N04",
+      "messages": [
+        "未识别到支持的家庭指令，可切换文本输入。"
+      ],
+      "text": "未识别到支持的家庭指令，可切换文本输入。",
+      "source_record": {
+        "path": "/home/kxj/zte_ws/edge-smart-home-ai/evaluation/20261113-w16-chain/records/0003.json",
+        "bytes": 48501,
+        "sha256": "a0eb9a8e43cc1b9328cac30dc0535060793461d0966d887cd7d141a65f07d82a"
+      },
+      "primary_semantics_passed": false,
+      "primary_status": "not_routed",
+      "primary_error_code": "ROUTE_UNSUPPORTED",
+      "source_kind": "synthetic_feedback_audio",
+      "float_npy": {
+        "path": "/home/kxj/zte_ws/edge-smart-home-ai/evaluation/20261113-w16-feedback/float/W16-N04.npy",
+        "bytes": 120428,
+        "sha256": "136338df1a58d358ec6161003d3ce98c9c78b615d1a83943766cfddd71563dae"
+      },
+      "wav": {
+        "path": "/home/kxj/zte_ws/edge-smart-home-ai/evaluation/20261113-w16-feedback/pcm16/W16-N04.wav",
+        "bytes": 60194,
+        "sha256": "975fff36f26697b1d454ca64c0b9e8a1aa51eb9e35965f4676163d929ec3734b"
+      },
+      "tts_generation_wall_ms": 84.90968000842258,
+      "conversion": {
+        "sample_rate": 8000,
+        "channels": 1,
+        "sample_frames": 30075,
+        "audio_seconds": 3.759375,
+        "original_dtype": "float32",
+        "format": "PCM16_LE",
+        "formula": "q=clip(rint(float64(x)*32768),-32768,32767); ties to even",
+        "origin_peak_abs": 0.2144622504711151,
+        "clipped_sample_count": 0,
+        "derived_peak_abs": 0.214447021484375,
+        "max_abs_quantization_error": 1.52587890625e-05,
+        "resampled": false,
+        "trimmed": false
+      }
+    },
+    {
+      "id": "W16-N05",
+      "messages": [
+        "未识别到支持的家庭指令，可切换文本输入。"
+      ],
+      "text": "未识别到支持的家庭指令，可切换文本输入。",
+      "source_record": {
+        "path": "/home/kxj/zte_ws/edge-smart-home-ai/evaluation/20261113-w16-chain/records/0004.json",
+        "bytes": 50441,
+        "sha256": "ba2982e4fe3f883a48df275a4718a017cb12e81e183bf05b44754f33ac3b6973"
+      },
+      "primary_semantics_passed": false,
+      "primary_status": "not_routed",
+      "primary_error_code": "ROUTE_UNSUPPORTED",
+      "source_kind": "synthetic_feedback_audio",
+      "float_npy": {
+        "path": "/home/kxj/zte_ws/edge-smart-home-ai/evaluation/20261113-w16-feedback/float/W16-N05.npy",
+        "bytes": 117960,
+        "sha256": "ac9ca0407e77ee2fc088ce23ad2eea0a3915f49e175e717721f42e639a65f5b1"
+      },
+      "wav": {
+        "path": "/home/kxj/zte_ws/edge-smart-home-ai/evaluation/20261113-w16-feedback/pcm16/W16-N05.wav",
+        "bytes": 58960,
+        "sha256": "6504da3da7ba2e3355f63bd9dc18f46ac4d9412b98396b485b65a95d8f7539a4"
+      },
+      "tts_generation_wall_ms": 79.88845198997296,
+      "conversion": {
+        "sample_rate": 8000,
+        "channels": 1,
+        "sample_frames": 29458,
+        "audio_seconds": 3.68225,
+        "original_dtype": "float32",
+        "format": "PCM16_LE",
+        "formula": "q=clip(rint(float64(x)*32768),-32768,32767); ties to even",
+        "origin_peak_abs": 0.25019997358322144,
+        "clipped_sample_count": 0,
+        "derived_peak_abs": 0.250213623046875,
+        "max_abs_quantization_error": 1.52587890625e-05,
+        "resampled": false,
+        "trimmed": false
+      }
+    },
+    {
+      "id": "W16-A01",
+      "messages": [
+        "未识别到支持的家庭指令，可切换文本输入。"
+      ],
+      "text": "未识别到支持的家庭指令，可切换文本输入。",
+      "source_record": {
+        "path": "/home/kxj/zte_ws/edge-smart-home-ai/evaluation/20261113-w16-chain/records/0005.json",
+        "bytes": 45940,
+        "sha256": "4de73e4557a33b45c9421e70d81d10a60bff6aa93954e8544c7df452109b00df"
+      },
+      "primary_semantics_passed": false,
+      "primary_status": "not_routed",
+      "primary_error_code": "ROUTE_UNSUPPORTED",
+      "source_kind": "synthetic_feedback_audio",
+      "float_npy": {
+        "path": "/home/kxj/zte_ws/edge-smart-home-ai/evaluation/20261113-w16-feedback/float/W16-A01.npy",
+        "bytes": 115972,
+        "sha256": "491003eb5bbc4e1a5b0fab2805b6f4e1d53b71e57d1c5d6f9a4f8aad63558e1c"
+      },
+      "wav": {
+        "path": "/home/kxj/zte_ws/edge-smart-home-ai/evaluation/20261113-w16-feedback/pcm16/W16-A01.wav",
+        "bytes": 57966,
+        "sha256": "63f051f2d43c81713795ef6392678e5af09eb13b32b7577467870007dca2515c"
+      },
+      "tts_generation_wall_ms": 74.74526099395007,
+      "conversion": {
+        "sample_rate": 8000,
+        "channels": 1,
+        "sample_frames": 28961,
+        "audio_seconds": 3.620125,
+        "original_dtype": "float32",
+        "format": "PCM16_LE",
+        "formula": "q=clip(rint(float64(x)*32768),-32768,32767); ties to even",
+        "origin_peak_abs": 0.2081112116575241,
+        "clipped_sample_count": 0,
+        "derived_peak_abs": 0.208099365234375,
+        "max_abs_quantization_error": 1.52587890625e-05,
+        "resampled": false,
+        "trimmed": false
+      }
+    },
+    {
+      "id": "W16-A02",
+      "messages": [
+        "指令不符合安全规则，已拒绝执行。"
+      ],
+      "text": "指令不符合安全规则，已拒绝执行。",
+      "source_record": {
+        "path": "/home/kxj/zte_ws/edge-smart-home-ai/evaluation/20261113-w16-chain/records/0006.json",
+        "bytes": 45846,
+        "sha256": "240167fbe07d66423cc830050c32888b1dc5835be03fb39e27d1f3b16af0a7f0"
+      },
+      "primary_semantics_passed": false,
+      "primary_status": "request_rejected",
+      "primary_error_code": "UNKNOWN_DEVICE",
+      "source_kind": "synthetic_feedback_audio",
+      "float_npy": {
+        "path": "/home/kxj/zte_ws/edge-smart-home-ai/evaluation/20261113-w16-feedback/float/W16-A02.npy",
+        "bytes": 90828,
+        "sha256": "60c9760989971e381185d9cbe53352775310ed0c598c96db03b8479dc41871dd"
+      },
+      "wav": {
+        "path": "/home/kxj/zte_ws/edge-smart-home-ai/evaluation/20261113-w16-feedback/pcm16/W16-A02.wav",
+        "bytes": 45394,
+        "sha256": "9a3c3c0530875e9da050b73536ded49b619afc4a1372e71d4c671474271891a1"
+      },
+      "tts_generation_wall_ms": 65.20166200061794,
+      "conversion": {
+        "sample_rate": 8000,
+        "channels": 1,
+        "sample_frames": 22675,
+        "audio_seconds": 2.834375,
+        "original_dtype": "float32",
+        "format": "PCM16_LE",
+        "formula": "q=clip(rint(float64(x)*32768),-32768,32767); ties to even",
+        "origin_peak_abs": 0.16414441168308258,
+        "clipped_sample_count": 0,
+        "derived_peak_abs": 0.164154052734375,
+        "max_abs_quantization_error": 1.5253201127052307e-05,
+        "resampled": false,
+        "trimmed": false
+      }
+    },
+    {
+      "id": "W16-A03",
+      "messages": [
+        "未识别到支持的家庭指令，可切换文本输入。"
+      ],
+      "text": "未识别到支持的家庭指令，可切换文本输入。",
+      "source_record": {
+        "path": "/home/kxj/zte_ws/edge-smart-home-ai/evaluation/20261113-w16-chain/records/0007.json",
+        "bytes": 46033,
+        "sha256": "ea4747ac54c415b2a2a82ca92a5aac07b0ddd760c10ca3c8940e08698209a312"
+      },
+      "primary_semantics_passed": false,
+      "primary_status": "not_routed",
+      "primary_error_code": "ROUTE_UNSUPPORTED",
+      "source_kind": "synthetic_feedback_audio",
+      "float_npy": {
+        "path": "/home/kxj/zte_ws/edge-smart-home-ai/evaluation/20261113-w16-feedback/float/W16-A03.npy",
+        "bytes": 111312,
+        "sha256": "4d51640471dc58914cc770461f63e23084c5257e9b52be0130736cec352e5471"
+      },
+      "wav": {
+        "path": "/home/kxj/zte_ws/edge-smart-home-ai/evaluation/20261113-w16-feedback/pcm16/W16-A03.wav",
+        "bytes": 55636,
+        "sha256": "f66aed23ec1f82182fa47ddb1226536a93989b396bead093074083b1b87c4f37"
+      },
+      "tts_generation_wall_ms": 75.97108000481967,
+      "conversion": {
+        "sample_rate": 8000,
+        "channels": 1,
+        "sample_frames": 27796,
+        "audio_seconds": 3.4745,
+        "original_dtype": "float32",
+        "format": "PCM16_LE",
+        "formula": "q=clip(rint(float64(x)*32768),-32768,32767); ties to even",
+        "origin_peak_abs": 0.22355930507183075,
+        "clipped_sample_count": 0,
+        "derived_peak_abs": 0.22357177734375,
+        "max_abs_quantization_error": 1.52587890625e-05,
+        "resampled": false,
+        "trimmed": false
+      }
+    },
+    {
+      "id": "W16-A04",
+      "messages": [
+        "未识别到支持的家庭指令，可切换文本输入。"
+      ],
+      "text": "未识别到支持的家庭指令，可切换文本输入。",
+      "source_record": {
+        "path": "/home/kxj/zte_ws/edge-smart-home-ai/evaluation/20261113-w16-chain/records/0008.json",
+        "bytes": 47690,
+        "sha256": "c79d908694a843b13f7457b5422812fd66940ccbda0baa97a03faa1c4bf7978f"
+      },
+      "primary_semantics_passed": false,
+      "primary_status": "not_routed",
+      "primary_error_code": "ROUTE_UNSUPPORTED",
+      "source_kind": "synthetic_feedback_audio",
+      "float_npy": {
+        "path": "/home/kxj/zte_ws/edge-smart-home-ai/evaluation/20261113-w16-feedback/float/W16-A04.npy",
+        "bytes": 121752,
+        "sha256": "400cd2699fbe68a67b26d789f45da70d18afb788ade1850857e9c187c81c9bcd"
+      },
+      "wav": {
+        "path": "/home/kxj/zte_ws/edge-smart-home-ai/evaluation/20261113-w16-feedback/pcm16/W16-A04.wav",
+        "bytes": 60856,
+        "sha256": "f494d5f2533b9703859fbcb9e5af85c732d12e66b5fe06bb2a7ed526acd90b92"
+      },
+      "tts_generation_wall_ms": 86.13798099395353,
+      "conversion": {
+        "sample_rate": 8000,
+        "channels": 1,
+        "sample_frames": 30406,
+        "audio_seconds": 3.80075,
+        "original_dtype": "float32",
+        "format": "PCM16_LE",
+        "formula": "q=clip(rint(float64(x)*32768),-32768,32767); ties to even",
+        "origin_peak_abs": 0.20638319849967957,
+        "clipped_sample_count": 0,
+        "derived_peak_abs": 0.206390380859375,
+        "max_abs_quantization_error": 1.52587890625e-05,
+        "resampled": false,
+        "trimmed": false
+      }
+    },
+    {
+      "id": "W16-A05",
+      "messages": [
+        "未识别到明确指令，可切换文本输入。"
+      ],
+      "text": "未识别到明确指令，可切换文本输入。",
+      "source_record": {
+        "path": "/home/kxj/zte_ws/edge-smart-home-ai/evaluation/20261113-w16-chain/records/0009.json",
+        "bytes": 23840,
+        "sha256": "bea31659ff40376cc5c6a4d4e0ca10c722a88d7d9744b1b48e53df000a83e9b9"
+      },
+      "primary_semantics_passed": true,
+      "primary_status": "empty_transcript",
+      "primary_error_code": "ASR_EMPTY_TRANSCRIPT",
+      "source_kind": "synthetic_feedback_audio",
+      "float_npy": {
+        "path": "/home/kxj/zte_ws/edge-smart-home-ai/evaluation/20261113-w16-feedback/float/W16-A05.npy",
+        "bytes": 110444,
+        "sha256": "553e7027ec4d2320f73645ac07f57248c685584e19139dc1f9d14e8a8eb24706"
+      },
+      "wav": {
+        "path": "/home/kxj/zte_ws/edge-smart-home-ai/evaluation/20261113-w16-feedback/pcm16/W16-A05.wav",
+        "bytes": 55202,
+        "sha256": "2d04734fa822acc0147ef8e6c9ef6af9a4e80148c29314eb633e1b9a7430bd4e"
+      },
+      "tts_generation_wall_ms": 73.94062500679865,
+      "conversion": {
+        "sample_rate": 8000,
+        "channels": 1,
+        "sample_frames": 27579,
+        "audio_seconds": 3.447375,
+        "original_dtype": "float32",
+        "format": "PCM16_LE",
+        "formula": "q=clip(rint(float64(x)*32768),-32768,32767); ties to even",
+        "origin_peak_abs": 0.21761634945869446,
+        "clipped_sample_count": 0,
+        "derived_peak_abs": 0.217620849609375,
+        "max_abs_quantization_error": 1.52587890625e-05,
+        "resampled": false,
+        "trimmed": false
+      }
+    }
+  ],
+  "synthesis_attempts": 10,
+  "passed": true,
+  "playback_calls": 0,
+  "asr_calls": 0,
+  "control_calls": 0,
+  "microphone_calls": 0,
+  "primary_latency_modified": false,
+  "source_primary_semantics_promoted": false,
+  "limitations": [
+    "Saved waveforms only; no speaker device, echo, acoustic latency or live feedback test.",
+    "This standalone generation wall time is not added to the primary audio-to-state latency.",
+    "Original primary messages and semantic verdicts are preserved; generation does not repair or certify them.",
+    "No retries, regeneration-based selection or cross-generation bitwise guarantee."
+  ],
+  "tts_model_load_wall_ms": 334.939709995524,
+  "finished_at": "2026-11-13T02:07:39.517527+00:00",
+  "raw_summary": {
+    "path": "evaluation/20261113-w16-feedback/summary.json",
+    "bytes": 25641,
+    "sha256": "50ad3926cfdb3d19ee9eaec613fdd28a647be4c0eabb5cabe86849fb30e7c491"
+  },
+  "generation_wall_ms_across_messages": {
+    "n": 10,
+    "p50": 77.92976599739632,
+    "p95": 96.00415104432612
+  }
+}

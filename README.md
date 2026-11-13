@@ -42,6 +42,12 @@
 
 [W15结果](docs/stages/D0-w15-results.md) · [设备合同/复现](docs/W15_DEVICES.md) · [137项结果表](docs/device_evidence/20261113-w15-cases.csv) · [能力/参数/字段清单](docs/device_evidence/20261113-w15-catalog.json) · [机器基线](baselines/20261113-w15-device-simulator-v0.json)。HA配置仍缺14动作映射边/16初始字段映射边，不用实体数或Mock成绩代替实机验收。
 
+## W16：文件语音链路、失败反馈与文本备用
+
+复用现有ASR/意图/Mock回读，固定5正常＋5异常：9条合法来源合成语音＋1程序静音，真实native各解码一次。记录完整性通过，但主语义仅静音1/10、正常0/5，语音Exact0/9、CER57.53%，**正常语音控制未通过**。异常状态5/5保持、独立新Mock文本9/9分列；官方整段＋0.66秒尾静音独立诊断仍Exact0/9，不替换首轮结果。511项离线测试/网络0，明确错误/空识别反馈与`text --no-model`备用，observer失败保留已执行状态且不重试；10条实际反馈已保存TTS WAV，未播放。
+
+[W16结果](docs/stages/E0-w16-results.md) · [复现/安全文本入口](docs/W16_VOICE_HOME.md) · [10条结果表](docs/voice_evidence/20261113-w16-cases.csv) · [材料/许可](configs/w16-material-source-v1.json) · [机器候选基线](baselines/20261113-w16-voice-home-v0.json) · [证据索引](docs/voice_evidence/20261113-w16-results.json)。P0-1继续进行中；合法真人家庭录音、ASR权重许可、现场E2E/overflow、真实HA/实物与个人理解待补，不以旧RTF或Mock证明实机通过。
+
 ## 2026-09-09 增量负载诊断与队列修复
 
 已新增五阶段音频负载诊断入口、固定口令协议和 JSON/CSV 对比，
