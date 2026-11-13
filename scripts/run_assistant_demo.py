@@ -15,7 +15,7 @@ def main() -> None:
     if args.mode == "text":
         from edge_smart_home.app.cli import main as run
 
-        _launch(run, ["edge-smart-home"])
+        _launch(run, ["edge-smart-home", *(["--no-model"] if args.no_model else [])])
     elif args.mode == "text-benchmark":
         from benchmark_text_e2e import main as run
 
@@ -121,7 +121,8 @@ def _build_parser() -> argparse.ArgumentParser:
         "--backend", choices=("mock", "home_assistant"), default="mock"
     )
     subparsers = parser.add_subparsers(dest="mode", required=True)
-    subparsers.add_parser("text", help="Interactive text control")
+    text = subparsers.add_parser("text", help="Interactive text control")
+    text.add_argument("--no-model", action="store_true", help="deterministic text fallback without LLM construction/preload")
     subparsers.add_parser("gesture-sim", help="Dependency-free gesture simulation")
 
     text_benchmark = subparsers.add_parser(

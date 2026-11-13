@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 from collections.abc import Iterator
-from dataclasses import dataclass, field
+from dataclasses import dataclass, field, replace
 from time import monotonic_ns
 from uuid import uuid4
 from edge_smart_home.common.observability import activate, Trace
@@ -36,6 +36,10 @@ class VoiceControlResult:
     error_code: str | None = None
     request_accepted: bool | None = None
     observed_state: DeviceState | None = None
+    text_fallback: str | None = None
+    feedback_error: str | None = None
+    diagnostic_error: str | None = None
+    error_stage: str | None = None
 
 
 class VoiceControlPipeline:
@@ -80,7 +84,7 @@ class VoiceControlPipeline:
             yield recognition
 
     def process_recognition(
-        self, recognition: StreamingRecognition
+        self, recognition: StreamingRecognition, *, report_empty: bool = False,
     ) -> VoiceControlResult | None:
         """Route one already-decoded endpoint outside the audio consumer."""
         trace = recognition.trace
@@ -92,12 +96,45 @@ class VoiceControlPipeline:
             trace.add("recognition_dispatch_wait", trace.marks["recognition_ready"], now)
         trace.mark("command_worker_start", now)
         with activate(trace):
+            if not recognition.text.strip() and report_empty:
+                result = self._publish_result(VoiceControlResult(
+                    text="", status="empty_transcript", error_code="ASR_EMPTY_TRANSCRIPT",
+                    error_stage="asr_output",
+                    message="未识别到明确指令，可切换文本输入。",
+                    text_fallback="可切换文本输入，重新输入明确家庭指令。",
+                    audio_seconds=recognition.audio_seconds, decode_seconds=recognition.decode_seconds,
+                    rtf=recognition.rtf, trace=trace,
+                ))
+                trace.emit("voice_result", status=result.status)
+                return result
             try:
                 result = self._handle_recognition(recognition)
             except Exception as error:
                 result = self._handle_processing_error(recognition, error)
             trace.emit("voice_result", status=result.status if result else "empty_transcript")
             return result
+
+    def process_audio_error(self, error: Exception, *, stage: str = "asr_decode") -> VoiceControlResult:
+        """Report an explicit utterance input/dependency/decode failure safely.
+
+        Callers own file/model loading and select its observed stage. This does
+        not retry ASR, route reference text, consume microphone input or execute
+        a command. Live background silence keeps its legacy no-result behavior.
+        """
+        if stage not in {"audio_input", "asr_dependency", "asr_decode"}:
+            raise ValueError("unsupported audio failure stage")
+        code = getattr(error, "code", None) or {
+            "audio_input": "AUDIO_INPUT_FAILED",
+            "asr_dependency": "ASR_DEPENDENCY_UNAVAILABLE",
+            "asr_decode": "ASR_DECODE_FAILED",
+        }[stage]
+        return self._publish_result(VoiceControlResult(
+            text="", status="asr_error", error_code=code,
+            error_stage=stage,
+            error=f"{type(error).__name__}: {error}",
+            message="语音输入或识别不可用，可切换文本输入。",
+            text_fallback="可切换文本输入，重新输入明确家庭指令。",
+        ))
 
     def finish(self) -> Iterator[VoiceControlResult]:
         for recognition in self.asr.finish():
@@ -112,8 +149,6 @@ class VoiceControlPipeline:
         text = recognition.text.strip()
         if not text:
             return None
-        if self.feedback:
-            self.feedback.processing_error()
         result = VoiceControlResult(
             text=text,
             error=f"{type(error).__name__}: {error}",
@@ -123,22 +158,10 @@ class VoiceControlPipeline:
             decode_seconds=recognition.decode_seconds,
             rtf=recognition.rtf,
             trace=recognition.trace,
+            text_fallback="请先核对设备状态，再使用文本入口；不会自动重试。",
+            error_stage="intent_pipeline",
         )
-        if self.diagnostics:
-            self.diagnostics.record_result(
-                text,
-                result.status,
-                {
-                    "error": result.error,
-                    "error_code": result.error_code,
-                    "trace": recognition.trace.snapshot(),
-                    "processing_ms": result.processing_ms,
-                    "audio_seconds": result.audio_seconds,
-                    "decode_seconds": result.decode_seconds,
-                    "rtf": result.rtf,
-                },
-            )
-        return result
+        return self._publish_result(result)
 
     def _handle_recognition(
         self, recognition: StreamingRecognition
@@ -159,56 +182,10 @@ class VoiceControlPipeline:
             "trace": recognition.trace,
         }
         response = self.orchestrator.handle_event(event)
-        if self.feedback:
-            self.feedback.response(response)
-        if response.outcome is None:
-            result = VoiceControlResult(
-                text=text,
-                message=(
-                    completion_message(response)
-                    if response.status == "executed"
-                    else response.confirmation_message
-                    or (
-                        response.intelligent_result.message
-                        if response.intelligent_result
-                        else None
-                    )
-                ),
-                error=response.error,
-                error_code=response.error_code,
-                request_accepted=response.request_accepted,
-                observed_state=response.observed_state,
-                status=response.status,
-                processing_ms=response.processing_ms,
-                path=response.path,
-                provider=response.provider,
-                llm_calls=response.llm_calls,
-                llm_latency_ms=response.llm_latency_ms,
-                **metrics,
-            )
-            if self.diagnostics:
-                self.diagnostics.record_result(
-                    text,
-                    response.status,
-                    {
-                        "message": result.message,
-                        "error": response.error,
-                        "error_code": response.error_code,
-                        "request_accepted": response.request_accepted,
-                        "observed_state": _diagnostic_detail(response.observed_state) if response.observed_state else None,
-                        "processing_ms": response.processing_ms,
-                        "path": response.path,
-                        "provider": response.provider,
-                        "llm_calls": response.llm_calls,
-                        "llm_latency_ms": response.llm_latency_ms,
-                        **{**metrics, "trace": recognition.trace.snapshot()},
-                    },
-                )
-            return result
         result = VoiceControlResult(
             text=text,
             message=(
-                completion_message(response)
+                "设备结果已记录，请查看状态回读。"
                 if response.status == "executed"
                 else response.confirmation_message
                 or (
@@ -228,23 +205,60 @@ class VoiceControlPipeline:
             provider=response.provider,
             llm_calls=response.llm_calls,
             llm_latency_ms=response.llm_latency_ms,
+            error_stage={"device_error": "device", "partial_failure": "device", "plan_rejected": "plan_validation",
+                         "request_rejected": "request", "clarification_required": "request", "not_routed": "intent",
+                         "needs_intelligence": "intent", "unavailable": "intent"}.get(response.status),
+            text_fallback=(None if response.status in {"executed", "responded"} else
+                           "请在当前会话确认或取消；切换文本入口需重新说明请求。"
+                           if response.status == "confirmation_required" else
+                           "请先核对设备状态，再使用文本入口；不会自动重试。"
+                           if response.status in {"device_error", "partial_failure"} else
+                           "可切换文本输入，重新输入明确家庭指令。"),
             **metrics,
         )
+        return self._publish_result(result, response)
+
+    def _publish_result(self, result: VoiceControlResult, response=None) -> VoiceControlResult:
+        """Observers cannot reclassify a command that already took effect."""
+        if response is not None and result.status == "executed":
+            try:
+                result = replace(result, message=completion_message(response))
+            except Exception as error:
+                result = replace(result, feedback_error=f"{type(error).__name__}: {error}",
+                                 text_fallback="动作结果已记录，请查看文字反馈，勿重复提交。")
+        if self.feedback:
+            try:
+                self.feedback.response(response if response is not None else result)
+            except Exception as error:
+                detail = f"{type(error).__name__}: {error}"
+                result = replace(result, feedback_error="; ".join(v for v in (result.feedback_error, detail) if v),
+                                 text_fallback=("动作结果已记录，请查看文字反馈，勿重复提交。"
+                                                if result.state is not None else result.text_fallback))
         if self.diagnostics:
-            detail = {
-                **_diagnostic_detail(response.outcome),
-                "message": result.message,
-                "error": result.error,
-                "error_code": result.error_code,
-                "backend_kind": result.state.backend_kind if result.state and isinstance(result.state, DeviceState) else None,
-                "processing_ms": response.processing_ms,
-                "path": response.path,
-                "provider": response.provider,
-                "llm_calls": response.llm_calls,
-                "llm_latency_ms": response.llm_latency_ms,
-                **{**metrics, "trace": recognition.trace.snapshot()},
-            }
-            self.diagnostics.record_result(text, response.status, detail)
+            try:
+                detail = {
+                    **(_diagnostic_detail(result.state) if result.state is not None else {}),
+                    "message": result.message,
+                    "error": result.error,
+                    "error_code": result.error_code,
+                    "request_accepted": result.request_accepted,
+                    "observed_state": _diagnostic_detail(result.observed_state) if result.observed_state else None,
+                    "feedback_error": result.feedback_error,
+                    "text_fallback": result.text_fallback,
+                    "error_stage": result.error_stage,
+                    "processing_ms": result.processing_ms,
+                    "path": result.path,
+                    "provider": result.provider,
+                    "llm_calls": result.llm_calls,
+                    "llm_latency_ms": result.llm_latency_ms,
+                    "audio_seconds": result.audio_seconds,
+                    "decode_seconds": result.decode_seconds,
+                    "rtf": result.rtf,
+                    "trace": result.trace.snapshot() if result.trace else None,
+                }
+                self.diagnostics.record_result(result.text, result.status, detail)
+            except Exception as error:
+                result = replace(result, diagnostic_error=f"{type(error).__name__}: {error}")
         return result
 
 
@@ -257,7 +271,9 @@ def _diagnostic_detail(outcome: ControlOutcome) -> dict:
     if isinstance(outcome, DeviceState):
         return {
             "device_id": outcome.device_id,
+            "available": outcome.available,
             "attributes": dict(outcome.attributes),
+            "updated_at": outcome.updated_at.isoformat(),
             "backend_kind": outcome.backend_kind,
             "completion_scope": outcome.completion_scope,
         }

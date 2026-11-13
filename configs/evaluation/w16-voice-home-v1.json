@@ -1,0 +1,19 @@
+{
+  "schema_version": 1,
+  "kind": "w16_voice_home_cases",
+  "version": "v1",
+  "selection": "Five normal and five abnormal household cases authored before audio generation or ASR; no recognition-driven selection or oracle edits.",
+  "scope": "File audio to native ASR to deterministic W13/W15 intent and Mock readback; no real devices or human microphone acceptance.",
+  "cases": [
+    {"id":"W16-N01","category":"normal","reference_text":"打开客厅灯","setup":[],"expect":{"status":"executed","error_code":null,"attributes":{"living_room_light":{"power":true,"brightness":100}},"unchanged":false}},
+    {"id":"W16-N02","category":"normal","reference_text":"把客厅灯亮度设置为50","setup":[],"expect":{"status":"executed","error_code":null,"attributes":{"living_room_light":{"power":true,"brightness":50}},"unchanged":false}},
+    {"id":"W16-N03","category":"normal","reference_text":"把客厅空调温度设置为26度","setup":[],"expect":{"status":"executed","error_code":null,"attributes":{"living_room_air_conditioner":{"power":true,"temperature":26}},"unchanged":false}},
+    {"id":"W16-N04","category":"normal","reference_text":"打开客厅窗帘","setup":[],"expect":{"status":"executed","error_code":null,"attributes":{"living_room_curtain":{"position":"open","position_percent":100}},"unchanged":false}},
+    {"id":"W16-N05","category":"normal","reference_text":"关闭客厅灯","setup":[{"command":{"device_id":"living_room_light","action":"turn_on","arguments":{}}}],"expect":{"status":"executed","error_code":null,"attributes":{"living_room_light":{"power":false,"brightness":0}},"unchanged":false}},
+    {"id":"W16-A01","category":"abnormal","reference_text":"打开书房灯","setup":[],"expect":{"status":"request_rejected","error_code":"UNKNOWN_DEVICE","attributes":{},"unchanged":true}},
+    {"id":"W16-A02","category":"abnormal","reference_text":"把客厅空调温度设置为31度","setup":[],"expect":{"status":"request_rejected","error_code":"REQUEST_ARGUMENT_INVALID","attributes":{},"unchanged":true}},
+    {"id":"W16-A03","category":"abnormal","reference_text":"把客厅灯亮度设置一下","setup":[],"expect":{"status":"clarification_required","error_code":"REQUEST_ARGUMENT_MISSING","attributes":{},"unchanged":true}},
+    {"id":"W16-A04","category":"abnormal","reference_text":"打开客厅灯","setup":[{"availability":{"device_id":"living_room_light","value":false}}],"expect":{"status":"device_error","error_code":"DEVICE_OFFLINE","attributes":{},"unchanged":true}},
+    {"id":"W16-A05","category":"abnormal","reference_text":"","audio_kind":"silence","setup":[],"expect":{"status":"empty_transcript","error_code":"ASR_EMPTY_TRANSCRIPT","attributes":{},"unchanged":true}}
+  ]
+}

@@ -1,0 +1,195 @@
+{
+  "schema_version": 1,
+  "kind": "w16_material_source_inventory",
+  "local_work_date": "2026-11-13",
+  "timezone": "Asia/Shanghai",
+  "tts": {
+    "model_dir": "/home/kxj/zte_ws/models/tts/vits-icefall-zh-aishell3",
+    "source_repository": "https://huggingface.co/csukuangfj/icefall-tts-aishell3-vits-low-2024-04-06",
+    "source_revision": "57345c004e13ed640e408c4c29ab56187b18f065",
+    "license": "Apache-2.0",
+    "source_data": "AISHELL-3 / OpenSLR93",
+    "source_data_url": "https://www.openslr.org/93/",
+    "source_data_license": "Apache-2.0",
+    "files": [
+      {
+        "path": "/home/kxj/zte_ws/models/tts/vits-icefall-zh-aishell3/date.fst",
+        "bytes": 59154,
+        "sha256": "eb8aa079ae3cb81d8f4404992f39d61a0cb990947512b5b8d1e54d1f6980e718",
+        "upstream_path": "data/date.fst",
+        "upstream_lfs_sha256": null,
+        "upstream_git_blob_oid": "20ec7f4c077f9ec85ca9d01c4b4f4581f6e552ee",
+        "upstream_size": 59154,
+        "matches_pinned_upstream": true
+      },
+      {
+        "path": "/home/kxj/zte_ws/models/tts/vits-icefall-zh-aishell3/lexicon.txt",
+        "bytes": 2042943,
+        "sha256": "ab2e61d357551e7b24ddd965d924aca784c20165ff58c150794e539c6b5e9e35",
+        "upstream_path": "data/lexicon.txt",
+        "upstream_lfs_sha256": null,
+        "upstream_git_blob_oid": "d6ef4d23e7fa1cffffca92ec4e18ebd127f21e90",
+        "upstream_size": 2042943,
+        "matches_pinned_upstream": true
+      },
+      {
+        "path": "/home/kxj/zte_ws/models/tts/vits-icefall-zh-aishell3/model.onnx",
+        "bytes": 30482262,
+        "sha256": "5511d651b7840c0a93a6bbfd4afd070a2c7f39ca1ec3ff2ecd73191519bbb852",
+        "upstream_path": "exp/vits-epoch-960.onnx",
+        "upstream_lfs_sha256": "5511d651b7840c0a93a6bbfd4afd070a2c7f39ca1ec3ff2ecd73191519bbb852",
+        "upstream_git_blob_oid": "8c6a4bcff7d44729ef35b7a50724510f2479d583",
+        "upstream_size": 30482262,
+        "matches_pinned_upstream": true
+      },
+      {
+        "path": "/home/kxj/zte_ws/models/tts/vits-icefall-zh-aishell3/new_heteronym.fst",
+        "bytes": 21974,
+        "sha256": "ca14b2127e27baa571664e4bb791e143e7425f56a6bc29db08d74f97e6aa4e29",
+        "upstream_path": "data/new_heteronym.fst",
+        "upstream_lfs_sha256": null,
+        "upstream_git_blob_oid": "478a809252067229211f7f414414f34f98314d9d",
+        "upstream_size": 21974,
+        "matches_pinned_upstream": true
+      },
+      {
+        "path": "/home/kxj/zte_ws/models/tts/vits-icefall-zh-aishell3/number.fst",
+        "bytes": 64482,
+        "sha256": "743f402181fcfebf76cc2f0546b71fa26476e626fbe4e460fb7b4c3a7a8bd5bd",
+        "upstream_path": "data/number.fst",
+        "upstream_lfs_sha256": null,
+        "upstream_git_blob_oid": "66c0bd468903fc98d212cd6c3c5b2793ce8eb2c3",
+        "upstream_size": 64482,
+        "matches_pinned_upstream": true
+      },
+      {
+        "path": "/home/kxj/zte_ws/models/tts/vits-icefall-zh-aishell3/phone.fst",
+        "bytes": 88630,
+        "sha256": "1ac2b6fa56b1442320c4de7db08353bab8963a2b57f365eebcdd3a2d3562f8d7",
+        "upstream_path": "data/phone.fst",
+        "upstream_lfs_sha256": null,
+        "upstream_git_blob_oid": "2eba908c27ec0767281cad25d322008b16869c5b",
+        "upstream_size": 88630,
+        "matches_pinned_upstream": true
+      },
+      {
+        "path": "/home/kxj/zte_ws/models/tts/vits-icefall-zh-aishell3/rule.far",
+        "bytes": 180717014,
+        "sha256": "b090ed05e333fe125b62d8b1de5f1a1d4579fb237c606e7ac0b84707c863a01f",
+        "upstream_path": "data/rule.far",
+        "upstream_lfs_sha256": "b090ed05e333fe125b62d8b1de5f1a1d4579fb237c606e7ac0b84707c863a01f",
+        "upstream_git_blob_oid": "cdebf2456ac4305db73883abba162f317ca10189",
+        "upstream_size": 180717014,
+        "matches_pinned_upstream": true
+      },
+      {
+        "path": "/home/kxj/zte_ws/models/tts/vits-icefall-zh-aishell3/speakers.txt",
+        "bytes": 1392,
+        "sha256": "50a825fc9a89172eee04a4d68869d933d0eca0d847f3b6fcffff9514cc72442d",
+        "upstream_path": "data/speakers.txt",
+        "upstream_lfs_sha256": null,
+        "upstream_git_blob_oid": "25579716d3aaef1c4c41b0327fc44b1aa9adcec4",
+        "upstream_size": 1392,
+        "matches_pinned_upstream": true
+      },
+      {
+        "path": "/home/kxj/zte_ws/models/tts/vits-icefall-zh-aishell3/tokens.txt",
+        "bytes": 1671,
+        "sha256": "50b45a7b7de1752fd3c7b4755661c285f1547f59186eca2281089a81307ad953",
+        "upstream_path": "data/tokens.txt",
+        "upstream_lfs_sha256": null,
+        "upstream_git_blob_oid": "aef20b9e37f64bfc271a888fa10b4cb40a05cdbc",
+        "upstream_size": 1671,
+        "matches_pinned_upstream": true
+      }
+    ],
+    "speaker_id": 13,
+    "speed": 1.0,
+    "num_threads": 2,
+    "provider": "cpu",
+    "model_sample_rate": 8000,
+    "model_speakers": 174,
+    "use": "Local synthetic fixture and optional saved feedback waveform generation; no speaker playback or voice cloning request",
+    "output_rights_note": "Self-authored common household fixture text and generated local waveforms are separate from upstream model/data licenses; no claim that the model license automatically licenses all output."
+  },
+  "asr": {
+    "existing_inventory": "configs/asr-model-source-v1.json",
+    "model": {
+      "name": "sherpa-onnx-streaming-zipformer-zh-xlarge-int8-2025-06-30",
+      "type": "online transducer / streaming zipformer2, feature=whisper",
+      "weight_variant": "upstream INT8 encoder/joiner and FP32 decoder; not self-performed PTQ",
+      "source_repository": "https://huggingface.co/csukuangfj/sherpa-onnx-streaming-zipformer-zh-xlarge-int8-2025-06-30",
+      "source_revision": "18f31ce4644ac3bcf544eea692d7242b798d508f",
+      "original_repository": "https://huggingface.co/yuekai/icefall-asr-multi-zh-hans-zipformer-xl",
+      "original_revision": "d590e01487685985c9982b6ab128969611be49c8",
+      "original_gated": "auto",
+      "license": "NOT_VERIFIED",
+      "license_note": "Neither accessible converted repository card/tree nor original repository API provides a weight license. Original gated README was unavailable. Framework Apache-2.0 is not assigned to the weights. Existing local evaluation only; no new gated weights fetched or model redistributed.",
+      "deployment_license_accepted": false,
+      "feature_sample_rate": 16000,
+      "files": [
+        {
+          "path": "models/sherpa-onnx-streaming-zipformer-zh-xlarge-int8-2025-06-30/README.md",
+          "bytes": 311,
+          "sha256": "9bd6af44d7ad96de4c3457613a8a95c75dbd91a40b26fb988a1b42d07a190f36",
+          "upstream_lfs_sha256": null,
+          "upstream_size_matches": true,
+          "upstream_lfs_sha256_matches": null
+        },
+        {
+          "path": "models/sherpa-onnx-streaming-zipformer-zh-xlarge-int8-2025-06-30/bpe.model",
+          "bytes": 263956,
+          "sha256": "867a7355801cb43939962ad757ba1cb7941b6171b5a6902772483b4e3a623377",
+          "upstream_lfs_sha256": "867a7355801cb43939962ad757ba1cb7941b6171b5a6902772483b4e3a623377",
+          "upstream_size_matches": true,
+          "upstream_lfs_sha256_matches": true
+        },
+        {
+          "path": "models/sherpa-onnx-streaming-zipformer-zh-xlarge-int8-2025-06-30/decoder.onnx",
+          "bytes": 8533022,
+          "sha256": "8f9c903da2818f207304a3f30b9eeb30028e30398f333c1e95e12c97704173e6",
+          "upstream_lfs_sha256": "8f9c903da2818f207304a3f30b9eeb30028e30398f333c1e95e12c97704173e6",
+          "upstream_size_matches": true,
+          "upstream_lfs_sha256_matches": true
+        },
+        {
+          "path": "models/sherpa-onnx-streaming-zipformer-zh-xlarge-int8-2025-06-30/encoder.int8.onnx",
+          "bytes": 761133737,
+          "sha256": "f2c543a0330e1ed0bd09c82e4ae7d3f1cbee10a15feca638fcc4f88083a36b8a",
+          "upstream_lfs_sha256": "f2c543a0330e1ed0bd09c82e4ae7d3f1cbee10a15feca638fcc4f88083a36b8a",
+          "upstream_size_matches": true,
+          "upstream_lfs_sha256_matches": true
+        },
+        {
+          "path": "models/sherpa-onnx-streaming-zipformer-zh-xlarge-int8-2025-06-30/joiner.int8.onnx",
+          "bytes": 1545417,
+          "sha256": "f76ffce14b6ef80098cfdbce8846896ff68133970abc314eafab632f910df0d7",
+          "upstream_lfs_sha256": "f76ffce14b6ef80098cfdbce8846896ff68133970abc314eafab632f910df0d7",
+          "upstream_size_matches": true,
+          "upstream_lfs_sha256_matches": true
+        },
+        {
+          "path": "models/sherpa-onnx-streaming-zipformer-zh-xlarge-int8-2025-06-30/tokens.txt",
+          "bytes": 18626,
+          "sha256": "6722bd1585f46f84456b29c3550a343a3cc375b971645773c02ed8e0b4e2405c",
+          "upstream_lfs_sha256": null,
+          "upstream_size_matches": true,
+          "upstream_lfs_sha256_matches": null
+        }
+      ]
+    },
+    "runtime_sherpa_version": "1.13.6",
+    "runtime_bundled_ort_reported_version": "1.27.1",
+    "license_status": "UNKNOWN_NOT_VERIFIED",
+    "new_weights_downloaded": false,
+    "use": "Existing local research replay, not deployment licensing clearance"
+  },
+  "human_home_command_materials": {
+    "current_licensed_human_recordings_selected": 0,
+    "historical_capture_is_not_consent_or_license": true,
+    "status": "PENDING permission/provenance and present-day home-command recording acceptance"
+  },
+  "official_evidence": "evaluation/20261113-w16-sources/summary.json",
+  "speech_groups": "human / synthetic_audio / synthetic_signal / synthetic_transcript or Mock must be counted separately",
+  "physical_device_or_live_acceptance": false
+}

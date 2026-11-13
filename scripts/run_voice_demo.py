@@ -1,17 +1,22 @@
 from __future__ import annotations
 
 import argparse
+from dataclasses import replace
 import json
 from pathlib import Path
+import shlex
+import sys
 
 from edge_smart_home.app import AssistantOrchestrator
+from edge_smart_home.app.cli import serialize_outcome
 from edge_smart_home.app.pipeline import _load_json
 from edge_smart_home.common import DeviceState
 from edge_smart_home.audio.microphone import SoundDeviceMicrophone
 from edge_smart_home.audio.diagnostics import AudioDiagnosticRecorder
 from edge_smart_home.audio.feedback import create_feedback
-from edge_smart_home.audio.pipeline import VoiceControlPipeline
-from edge_smart_home.audio.sherpa_onnx_adapters import SherpaOnnxStreamingAsr
+from edge_smart_home.audio.pipeline import VoiceControlPipeline, VoiceControlResult
+from edge_smart_home.audio.sherpa_onnx_adapters import SherpaOnnxStreamingAsr, VoiceDependencyError
+from edge_smart_home.audio.validation import AudioInputError
 
 
 def main() -> None:
@@ -72,12 +77,8 @@ def main() -> None:
             },
         )
         print(f"Diagnostics: {diagnostics.session_dir}")
-    source = SoundDeviceMicrophone(
-        int(audio["chunk_duration_ms"]),
-        args.device,
-        args.mic_sample_rate or audio.get("microphone_sample_rate"),
-    )
-    recognizer = SherpaOnnxStreamingAsr(
+    try:
+        recognizer = SherpaOnnxStreamingAsr(
             args.tokens,
             args.encoder,
             args.decoder,
@@ -85,6 +86,24 @@ def main() -> None:
             sample_rate,
             audio["asr"],
             args.hotwords or root / "configs" / "hotwords.txt",
+        )
+    except Exception as error:
+        result = _initialization_error_result(error)
+        if diagnostics:
+            try:
+                diagnostics.record_result("", result.status, {**_result_payload(result), "microphone_started": False})
+            except Exception as diagnostic_error:
+                result = replace(result, diagnostic_error=f"{type(diagnostic_error).__name__}: {diagnostic_error}")
+            try:
+                diagnostics.close()
+            except Exception as close_error:
+                detail = f"{type(close_error).__name__}: {close_error}"
+                result = replace(result, diagnostic_error="; ".join(v for v in (result.diagnostic_error, detail) if v))
+        parser.exit(2, json.dumps({**_result_payload(result), "microphone_started": False}, ensure_ascii=False) + "\n")
+    source = SoundDeviceMicrophone(
+        int(audio["chunk_duration_ms"]),
+        args.device,
+        args.mic_sample_rate or audio.get("microphone_sample_rate"),
     )
     print(
         f"Hotwords: {len(recognizer.hotword_validation.valid)} valid, "
@@ -135,8 +154,29 @@ def _preload_model(orchestrator: AssistantOrchestrator) -> None:
             print(f"小兴模型已预热：{latency_ms:.1f} ms")
 
 
+def _initialization_error_result(error: Exception) -> VoiceControlResult:
+    if isinstance(error, VoiceDependencyError):
+        stage, code = "asr_dependency", "ASR_DEPENDENCY_UNAVAILABLE"
+    elif isinstance(error, AudioInputError):
+        stage, code = "audio_input", error.code
+    else:
+        # The exception's type/detail is evidence; do not guess a missing
+        # dependency, decoding fault or device effect from its human message.
+        stage, code = "asr_initialization", "ASR_INITIALIZATION_FAILED"
+    return VoiceControlResult(
+        text="", status="asr_error", error_code=code, error_stage=stage,
+        error=f"{type(error).__name__}: {error}",
+        message="语音初始化失败，可使用文本输入。",
+        text_fallback=("在项目根目录运行：PYTHONPATH=src " + shlex.quote(sys.executable) +
+                       " scripts/run_assistant_demo.py --backend mock text --no-model"),
+    )
+
+
 def _result_payload(result) -> dict:
     payload = {
+        "status": result.status,
+        "error_code": result.error_code,
+        "error": result.error,
         "text": result.text,
         "message": result.message,
         "audio_seconds": round(result.audio_seconds, 3),
@@ -146,26 +186,26 @@ def _result_payload(result) -> dict:
         "provider": result.provider,
         "llm_calls": result.llm_calls,
         "llm_latency_ms": result.llm_latency_ms,
+        "text_fallback": result.text_fallback,
+        "feedback_error": result.feedback_error,
+        "diagnostic_error": result.diagnostic_error,
+        "error_stage": result.error_stage,
+        "request_accepted": result.request_accepted,
+        "observed_state": serialize_outcome(result.observed_state) if result.observed_state else None,
     }
     if isinstance(result.state, DeviceState):
         payload.update({
-            "status": "executed",
             "device_id": result.state.device_id,
             "attributes": dict(result.state.attributes),
+            "available": result.state.available,
+            "updated_at": result.state.updated_at.isoformat(),
+            "backend_kind": result.state.backend_kind,
+            "completion_scope": result.state.completion_scope,
         })
     elif result.state is not None:
         payload.update({
-            "status": "executed" if result.state.succeeded else "partial_failure",
             "scene_id": result.state.scene_id,
-            "results": [
-                {
-                    "device_id": item.command.device_id,
-                    "action": item.command.action,
-                    "succeeded": item.succeeded,
-                    "error": item.error,
-                }
-                for item in result.state.results
-            ],
+            "results": serialize_outcome(result.state)["results"],
         })
     else:
         payload.update({"status": result.status, "error": result.error})

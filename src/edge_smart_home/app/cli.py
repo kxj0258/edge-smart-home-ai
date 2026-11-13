@@ -1,23 +1,32 @@
 from __future__ import annotations
 
 import json
+import argparse
 from pathlib import Path
 
 from edge_smart_home.app.orchestrator import AssistantOrchestrator, AssistantResponse
-from edge_smart_home.app.pipeline import ControlOutcome
+from edge_smart_home.app.pipeline import ControlOutcome, TextControlPipeline
 from edge_smart_home.common import DeviceState, SceneExecutionResult
 
 
-def main() -> None:
+def main(argv: list[str] | None = None) -> None:
+    parser = argparse.ArgumentParser(description="Interactive text control and voice fallback")
+    parser.add_argument("--no-model", action="store_true",
+                        help="use deterministic text control without constructing or preloading an LLM")
+    args = parser.parse_args(argv)
     project_root = Path(__file__).resolve().parents[3]
-    orchestrator = AssistantOrchestrator.from_config_dir(project_root / "configs")
-    try:
-        latency_ms = orchestrator.preload_model()
-    except Exception as error:
-        print(f"小兴模型预热失败，将在需要时安全降级：{type(error).__name__}: {error}")
+    if args.no_model:
+        orchestrator = AssistantOrchestrator(TextControlPipeline.from_config_dir(project_root / "configs"))
+        print("文本备用已启用，请输入明确的设备与操作。")
     else:
-        if latency_ms is not None:
-            print(f"小兴模型已预热：{latency_ms:.1f} ms")
+        orchestrator = AssistantOrchestrator.from_config_dir(project_root / "configs")
+        try:
+            latency_ms = orchestrator.preload_model()
+        except Exception as error:
+            print(f"小兴模型预热失败，将在需要时安全降级：{type(error).__name__}: {error}")
+        else:
+            if latency_ms is not None:
+                print(f"小兴模型已预热：{latency_ms:.1f} ms")
     print("小兴（Edge AI Smart Home Assistant，输入“退出”结束）")
     while True:
         text = input("> ").strip()

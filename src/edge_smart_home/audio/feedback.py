@@ -226,11 +226,17 @@ class AssistantFeedback:
             )
         elif status == "processing_error":
             self.processing_error()
+        elif status == "empty_transcript":
+            self._speak("未识别到明确指令，可切换文本输入。")
+        elif status == "asr_error":
+            self._speak("语音识别不可用，可切换文本输入。")
+        elif status == "not_routed":
+            self._speak("未识别到支持的家庭指令，可切换文本输入。")
         else:
             self._speak("处理结果无法确认，请再说一遍。")
 
     def processing_error(self) -> None:
-        self._speak("没有听清，请再说一遍。")
+        self._speak("语音处理失败，请先核对设备状态，可切换文本输入。")
 
     def _speak(self, text: str) -> None:
         """Keep TTS concise while preserving the full result for the UI/log."""
