@@ -1,0 +1,705 @@
+{
+  "schema_version": 1,
+  "kind": "w16_independent_chinese_frontend_speech_development_results",
+  "created_at": "2026-11-13T04:03:15.286492+00:00",
+  "local_work_date": "2026-11-13",
+  "timezone": "Asia/Shanghai",
+  "engineering_evidence_passed": true,
+  "runtime_source_commit": "f758ec0c1cb9b9752d5aec023133df3c5a613daa",
+  "root_preregistration_commit": "54c48dc8b006d0d91595b62a772c4a08dc590dca",
+  "protocol": {
+    "path": "evaluation/20261113-w16-pronunciation-run/protocol.json",
+    "bytes": 327823,
+    "sha256": "84f6d454d00a1651f0de393ca307e5c37cc2a88065643c67f98e78447774993a"
+  },
+  "fixture": {
+    "path": "configs/w16-pronunciation-cases-v1.json",
+    "bytes": 24673,
+    "sha256": "edd9c02dc8e0e1d7a07633597c7f42639f34e9dc3213f8ad02a04f13b894a522"
+  },
+  "settings": {
+    "speaker_id": 13,
+    "speed": 1.0,
+    "num_threads": 2,
+    "provider": "cpu",
+    "sample_rate": 8000,
+    "num_speakers": 174,
+    "noise_scale": 0.0,
+    "noise_scale_w": 0.0,
+    "debug": true,
+    "silence_scale": 0.2,
+    "rule_fst_names": [
+      "phone.fst",
+      "number.fst"
+    ],
+    "arm_rule_far_names": {
+      "A": [],
+      "B": [
+        "rule.far"
+      ]
+    }
+  },
+  "dependencies": {
+    "python": "3.10.21",
+    "executable": "/home/kxj/miniforge3/envs/edge_ai/bin/python3.10",
+    "platform": "Linux-6.8.0-138-generic-x86_64-with-glibc2.35",
+    "packages": {
+      "numpy": "2.2.6",
+      "sherpa-onnx": "1.13.6",
+      "sherpa-onnx-core": "1.13.6",
+      "sounddevice": "0.5.6"
+    },
+    "sherpa_onnx_python_version": "1.13.6",
+    "embedded_onnxruntime_version": "1.27.1",
+    "sherpa_native_binaries": [
+      {
+        "path": "/home/kxj/miniforge3/envs/edge_ai/lib/python3.10/site-packages/sherpa_onnx/lib/_sherpa_onnx.cpython-310-x86_64-linux-gnu.so",
+        "bytes": 6200177,
+        "sha256": "4f5af873b2e4ed39d230f329e2dcb972401a0aea4f345f271039806b9e1f1452"
+      },
+      {
+        "path": "/home/kxj/miniforge3/envs/edge_ai/lib/python3.10/site-packages/sherpa_onnx/lib/libonnxruntime.so",
+        "bytes": 26407985,
+        "sha256": "c85f471e1bd5059a4556038f7f5288fa41141647613688452ae7de4879150903"
+      },
+      {
+        "path": "/home/kxj/miniforge3/envs/edge_ai/lib/python3.10/site-packages/sherpa_onnx/lib/libsherpa-onnx-c-api.so",
+        "bytes": 5101472,
+        "sha256": "e25a6cb94d0b56a1f17c0f66b07e573599d351db690eea1e8d0ae90fcb6ea0f7"
+      },
+      {
+        "path": "/home/kxj/miniforge3/envs/edge_ai/lib/python3.10/site-packages/sherpa_onnx/lib/libsherpa-onnx-cxx-api.so",
+        "bytes": 261792,
+        "sha256": "84f46a17f8bd144b2243b5121c7b582373ba4b34a0cf001ff30e26ed792ceb29"
+      }
+    ],
+    "bundled_platform_libraries": [
+      {
+        "path": "/home/kxj/miniforge3/envs/edge_ai/lib/python3.10/site-packages/sherpa_onnx.libs/libasound-fb5348bf.so.2.0.0",
+        "bytes": 5509193,
+        "sha256": "887ee61e5644956d5f29121ebee8af1b58904ae7a2cb0388fd497f8fc2303914"
+      }
+    ]
+  },
+  "source_count": 189,
+  "frozen_inputs": 504,
+  "measurement": {
+    "schema_version": 1,
+    "kind": "w16_pronunciation_ab_results",
+    "passed": true,
+    "engineering_evidence_passed": true,
+    "engineering_gates": {
+      "exact_order_and_count": true,
+      "both_workers_complete": true,
+      "all_audio_and_asr_complete": true,
+      "independent_text_controls_complete": true,
+      "returned_state_matches_readback": true,
+      "zero_network_attempts": true,
+      "runtime_inputs_preserved": true,
+      "no_global_failure": true,
+      "complete_listening_packet": true
+    },
+    "runtime_source_commit": "f758ec0c1cb9b9752d5aec023133df3c5a613daa",
+    "execution_kind": "native_tts_and_asr",
+    "by_arm": {
+      "A": {
+        "observations": 18,
+        "completed": 18,
+        "tts_completed": 18,
+        "speech_scored": 18,
+        "speech_exact": 4,
+        "character_edits": 29,
+        "reference_characters": 104,
+        "cer": 0.27884615384615385,
+        "home_speech_scored": 10,
+        "home_speech_exact": 2,
+        "home_character_edits": 17,
+        "home_reference_characters": 88,
+        "home_cer": 0.19318181818181818,
+        "home_semantics_passed": 3,
+        "normal_semantics_passed": 1,
+        "abnormal_semantics_passed": 2,
+        "abnormal_state_preserved": 5,
+        "primary_mock_execute_attempts": 2,
+        "focal_total": 15,
+        "focal_observed": 15,
+        "focal_passed": 6,
+        "native_surface_preserved": 18,
+        "error_counts": {
+          "intent:ROUTE_UNSUPPORTED": 2,
+          "semantic:AUDIO_TO_STATE_ORACLE_MISMATCH": 7,
+          "transcript:ASR_TRANSCRIPT_MISMATCH": 14,
+          "request:UNKNOWN_DEVICE": 3,
+          "request:REQUEST_ARGUMENT_INVALID": 2,
+          "device:DEVICE_OFFLINE": 1,
+          "request:REQUEST_TARGET_AMBIGUOUS": 1
+        },
+        "latency_ms": {
+          "tts_generation_wall_ms": {
+            "n": 18,
+            "p50": 32.940530494670384,
+            "p95": 52.51667464253841
+          },
+          "pcm_read_convert_wall_ms": {
+            "n": 18,
+            "p50": 0.15185049414867535,
+            "p95": 0.2243867056677117
+          },
+          "asr_replay_wall_ms": {
+            "n": 18,
+            "p50": 333.7387840001611,
+            "p95": 616.8274477393422
+          },
+          "decode_only_ms": {
+            "n": 18,
+            "p50": 310.43238248093985,
+            "p95": 578.1142100408031
+          },
+          "voice_control_feedback_wall_ms": {
+            "n": 10,
+            "p50": 0.674890005029738,
+            "p95": 1.137780251156073
+          },
+          "explicit_final_readback_wall_ms": {
+            "n": 10,
+            "p50": 0.17632149683777243,
+            "p95": 0.26541285260464065
+          },
+          "console_feedback_capture_wall_ms": {
+            "n": 10,
+            "p50": 0.0008060014806687832,
+            "p95": 0.0016020472685340788
+          },
+          "file_audio_to_readback_wall_ms": {
+            "n": 18,
+            "p50": 335.0577855017036,
+            "p95": 617.9277868497591
+          }
+        }
+      },
+      "B": {
+        "observations": 18,
+        "completed": 18,
+        "tts_completed": 18,
+        "speech_scored": 18,
+        "speech_exact": 7,
+        "character_edits": 22,
+        "reference_characters": 104,
+        "cer": 0.21153846153846154,
+        "home_speech_scored": 10,
+        "home_speech_exact": 3,
+        "home_character_edits": 15,
+        "home_reference_characters": 88,
+        "home_cer": 0.17045454545454544,
+        "home_semantics_passed": 4,
+        "normal_semantics_passed": 2,
+        "abnormal_semantics_passed": 2,
+        "abnormal_state_preserved": 5,
+        "primary_mock_execute_attempts": 3,
+        "focal_total": 15,
+        "focal_observed": 15,
+        "focal_passed": 13,
+        "native_surface_preserved": 18,
+        "error_counts": {
+          "request:UNKNOWN_DEVICE": 3,
+          "semantic:AUDIO_TO_STATE_ORACLE_MISMATCH": 6,
+          "transcript:ASR_TRANSCRIPT_MISMATCH": 11,
+          "request:REQUEST_ARGUMENT_INVALID": 2,
+          "intent:ROUTE_UNSUPPORTED": 1,
+          "device:DEVICE_OFFLINE": 1,
+          "request:REQUEST_TARGET_AMBIGUOUS": 1
+        },
+        "latency_ms": {
+          "tts_generation_wall_ms": {
+            "n": 18,
+            "p50": 37.73840299982112,
+            "p95": 57.74284530125441
+          },
+          "pcm_read_convert_wall_ms": {
+            "n": 18,
+            "p50": 0.13844500062987208,
+            "p95": 0.201160556753166
+          },
+          "asr_replay_wall_ms": {
+            "n": 18,
+            "p50": 321.18347449431894,
+            "p95": 681.1663684427912
+          },
+          "decode_only_ms": {
+            "n": 18,
+            "p50": 296.952170523582,
+            "p95": 640.1398458612674
+          },
+          "voice_control_feedback_wall_ms": {
+            "n": 10,
+            "p50": 0.40702599653741345,
+            "p95": 0.9993321975343857
+          },
+          "explicit_final_readback_wall_ms": {
+            "n": 10,
+            "p50": 0.1531630041426979,
+            "p95": 0.33137240025098413
+          },
+          "console_feedback_capture_wall_ms": {
+            "n": 10,
+            "p50": 0.0008770075510255992,
+            "p95": 0.0012299926311243321
+          },
+          "file_audio_to_readback_wall_ms": {
+            "n": 18,
+            "p50": 322.40750300115906,
+            "p95": 681.8075969480559
+          }
+        }
+      }
+    },
+    "native_word_lexicon_focal_gate": {
+      "A": false,
+      "B": false
+    },
+    "home_semantic_gate": {
+      "A": false,
+      "B": false
+    },
+    "neutral_controls": [
+      {
+        "id": "W16-TP07",
+        "derived_phones_equal": true,
+        "float_sha256_equal": true,
+        "wav_sha256_equal": true,
+        "all_equal": true
+      },
+      {
+        "id": "W16-TP08",
+        "derived_phones_equal": true,
+        "float_sha256_equal": true,
+        "wav_sha256_equal": true,
+        "all_equal": true
+      }
+    ],
+    "zero_noise_numeric_controls_passed": true,
+    "development_candidate_gate": {
+      "A": false,
+      "B": false
+    },
+    "independent_text_oracle_matches": 10,
+    "tts_generation_attempts": 36,
+    "asr_attempts": 36,
+    "network_attempts": 0,
+    "human_listening_accepted": false,
+    "actual_acoustic_pronunciation_accepted": false,
+    "human_household_material_accepted": false,
+    "personal_understanding_accepted": false,
+    "automatic_product_promotion": false,
+    "asr_weight_license_verified": false,
+    "live_e2e_ms": null,
+    "overflow_resolution_accepted": false,
+    "real_ha_accepted": false,
+    "physical_completion_accepted": false,
+    "audible_feedback_accepted": false,
+    "warmups": 0,
+    "retries": 0,
+    "latency_policy": "Different independent synthetic texts once each. TTS generation/model load separate from offline file replay; IO/decode/Voice/Mock/console nested stages are not a repeated benchmark or live/acoustic latency.",
+    "limitations": [
+      "New controlled zero-noise development material; original W16 failed scores/first WAVs remain unchanged.",
+      "Native words are captured, phones reconstructed through the frozen original lexicon are derived, not a captured TTS input tensor.",
+      "A phone oracle match, generated waveform or ASR transcript is not a human acoustic pronunciation/intelligibility verdict.",
+      "Probe words never execute Mock; all household devices/readbacks are Mock, not HA or physical completion.",
+      "Full 36-slot listening packet has no autoplay or completed human ratings; no output selection or retries."
+    ]
+  },
+  "audio_control_acceptance_passed": false,
+  "actual_acoustic_pronunciation_accepted": false,
+  "human_household_material_accepted": false,
+  "human_listening_accepted": false,
+  "personal_understanding_accepted": false,
+  "asr_weight_license_verified": false,
+  "automatic_product_promotion": false,
+  "overflow_resolution_accepted": false,
+  "real_ha_accepted": false,
+  "physical_completion_accepted": false,
+  "audible_feedback_accepted": false,
+  "arm_hardware_accepted": false,
+  "request_id_idempotency_implemented": false,
+  "tests": {
+    "full_unit": 603,
+    "new_vs_previous": 54,
+    "case_fixture": 7,
+    "adapter": 8,
+    "worker": 12,
+    "derived_and_listening": 11,
+    "coordinator": 16,
+    "network_attempts": 0,
+    "root_plan": 10,
+    "complete_test_source_worktree_and_git_blobs": 192
+  },
+  "original_failure_scores": {
+    "first_home_speech_cer": [
+      42,
+      73
+    ],
+    "combined_decode_style_cer": [
+      43,
+      73
+    ],
+    "single_factor_cers": {
+      "A": [
+        42,
+        73
+      ],
+      "Q": [
+        42,
+        73
+      ],
+      "R": [
+        40,
+        73
+      ],
+      "T": [
+        43,
+        73
+      ],
+      "C": [
+        42,
+        73
+      ]
+    },
+    "immutable_old_artifacts_preserved": 483,
+    "old_scores_and_materials_not_overwritten": true,
+    "cross_old_new_domain_causal_comparison_valid": false
+  },
+  "data_groups": {
+    "new_project_authored_literal_texts": 18,
+    "old_whole_utterance_overlap": 0,
+    "household_cases": 10,
+    "normal_cases": 5,
+    "abnormal_cases": 5,
+    "polyphone_probes": 6,
+    "neutral_controls": 2,
+    "focal_oracles_per_arm": 15,
+    "new_native_tts_generations": 36,
+    "new_native_asr_observations": 36,
+    "real_human_household_recordings": 0,
+    "scope": "New independent development fixture, not a held-out/generalization test. Both arms share zero noise; no default-noise reproduction."
+  },
+  "lexicon_focal_diagnosis": {
+    "improved_focals": 7,
+    "unchanged_correct_focals": 6,
+    "regressed_focals": 0,
+    "remaining_unmatched": [
+      {
+        "id": "W16-TN02",
+        "reference_text": "卧室空调温度调到二十四度",
+        "target": "调到",
+        "actual_derived_phones": [
+          "d",
+          "iao4",
+          "#0",
+          "d",
+          "ao4",
+          "#0"
+        ],
+        "expected_phones": [
+          "t",
+          "iao2",
+          "#0",
+          "d",
+          "ao4",
+          "#0"
+        ]
+      },
+      {
+        "id": "W16-TA02",
+        "reference_text": "卧室空调温度调到三十二度",
+        "target": "调到",
+        "actual_derived_phones": [
+          "d",
+          "iao4",
+          "#0",
+          "d",
+          "ao4",
+          "#0"
+        ],
+        "expected_phones": [
+          "t",
+          "iao2",
+          "#0",
+          "d",
+          "ao4",
+          "#0"
+        ]
+      }
+    ],
+    "evidence_scope": "Native actual normalization/words plus independently reconstructed fixed-lexicon phones; no captured neural tensor or human acoustic verdict."
+  },
+  "quantization": {
+    "clipped_samples": 0,
+    "max_abs_quantization_error": 1.52587890625e-05,
+    "original_float_saved": true,
+    "resampled_or_trimmed": false
+  },
+  "tts_model_load_wall_ms": {
+    "A": 325.89198800269514,
+    "B": 1499.8560790118063
+  },
+  "asr_model_load_wall_ms": 4751.758365993737,
+  "listening_packet": {
+    "kind": "w16_pending_human_listening_packet",
+    "path": "/home/kxj/zte_ws/edge-smart-home-ai/evaluation/20261113-w16-pronunciation-run/listening",
+    "artifacts": [
+      {
+        "path": "/home/kxj/zte_ws/edge-smart-home-ai/evaluation/20261113-w16-pronunciation-run/listening/README.txt",
+        "bytes": 409,
+        "sha256": "d7dabb062e25d04af27e61b4105c0c8a4ea11bc98e552e8ffa6d04e94fc3db6a"
+      },
+      {
+        "path": "/home/kxj/zte_ws/edge-smart-home-ai/evaluation/20261113-w16-pronunciation-run/listening/audio/review-001-X.wav",
+        "bytes": 22156,
+        "sha256": "7cfbb328405a36bf2abbe86fb98d1ba96696b44fae507e21ff71b45081587742"
+      },
+      {
+        "path": "/home/kxj/zte_ws/edge-smart-home-ai/evaluation/20261113-w16-pronunciation-run/listening/audio/review-001-Y.wav",
+        "bytes": 21132,
+        "sha256": "6a5ceb9bc6701844a6c6e2aadbbb66f1e6b10c363e65344ee6ad071d65e08b79"
+      },
+      {
+        "path": "/home/kxj/zte_ws/edge-smart-home-ai/evaluation/20261113-w16-pronunciation-run/listening/audio/review-002-X.wav",
+        "bytes": 37934,
+        "sha256": "1dd67ec8887c9341b4330a13c314ad3674b8932e9dd5992c57755664ae859f4b"
+      },
+      {
+        "path": "/home/kxj/zte_ws/edge-smart-home-ai/evaluation/20261113-w16-pronunciation-run/listening/audio/review-002-Y.wav",
+        "bytes": 37806,
+        "sha256": "8bb1f2ac07634ccba39195187a65f82c29d4743a7d6ee9dd0ca605a4c791adee"
+      },
+      {
+        "path": "/home/kxj/zte_ws/edge-smart-home-ai/evaluation/20261113-w16-pronunciation-run/listening/audio/review-003-X.wav",
+        "bytes": 31106,
+        "sha256": "084d60edafe7df2f768a5c7d9ffd838cd99a41f61f5ee3f3b2fece27cd832531"
+      },
+      {
+        "path": "/home/kxj/zte_ws/edge-smart-home-ai/evaluation/20261113-w16-pronunciation-run/listening/audio/review-003-Y.wav",
+        "bytes": 31106,
+        "sha256": "084d60edafe7df2f768a5c7d9ffd838cd99a41f61f5ee3f3b2fece27cd832531"
+      },
+      {
+        "path": "/home/kxj/zte_ws/edge-smart-home-ai/evaluation/20261113-w16-pronunciation-run/listening/audio/review-004-X.wav",
+        "bytes": 23596,
+        "sha256": "1b6627684bd3f385631ebe5c352184208ac6fcc76345685a0cc10f795aa22bbd"
+      },
+      {
+        "path": "/home/kxj/zte_ws/edge-smart-home-ai/evaluation/20261113-w16-pronunciation-run/listening/audio/review-004-Y.wav",
+        "bytes": 23596,
+        "sha256": "1b6627684bd3f385631ebe5c352184208ac6fcc76345685a0cc10f795aa22bbd"
+      },
+      {
+        "path": "/home/kxj/zte_ws/edge-smart-home-ai/evaluation/20261113-w16-pronunciation-run/listening/audio/review-005-X.wav",
+        "bytes": 18174,
+        "sha256": "9080d425f0f090a7517b0db2c5606468906be4ea00184f3bcad933d9c51a8344"
+      },
+      {
+        "path": "/home/kxj/zte_ws/edge-smart-home-ai/evaluation/20261113-w16-pronunciation-run/listening/audio/review-005-Y.wav",
+        "bytes": 18174,
+        "sha256": "9080d425f0f090a7517b0db2c5606468906be4ea00184f3bcad933d9c51a8344"
+      },
+      {
+        "path": "/home/kxj/zte_ws/edge-smart-home-ai/evaluation/20261113-w16-pronunciation-run/listening/audio/review-006-X.wav",
+        "bytes": 23212,
+        "sha256": "321741d4c09f8cf14a127fff78acf4ceaedda4c026a84c2c3637669d2b57b34b"
+      },
+      {
+        "path": "/home/kxj/zte_ws/edge-smart-home-ai/evaluation/20261113-w16-pronunciation-run/listening/audio/review-006-Y.wav",
+        "bytes": 21874,
+        "sha256": "1192c187e073fb626564c944e37e7f61a25e2bcc849fe38bb2cd68fdbcac2d81"
+      },
+      {
+        "path": "/home/kxj/zte_ws/edge-smart-home-ai/evaluation/20261113-w16-pronunciation-run/listening/audio/review-007-X.wav",
+        "bytes": 37426,
+        "sha256": "fe931046b3d77f2adef7dde0f922bc827059d26f68ded7458187ba4716101853"
+      },
+      {
+        "path": "/home/kxj/zte_ws/edge-smart-home-ai/evaluation/20261113-w16-pronunciation-run/listening/audio/review-007-Y.wav",
+        "bytes": 37878,
+        "sha256": "b8acfba857b8437a1c9389b4cce49ca1448f24773798e20ed822de3057603fe9"
+      },
+      {
+        "path": "/home/kxj/zte_ws/edge-smart-home-ai/evaluation/20261113-w16-pronunciation-run/listening/audio/review-008-X.wav",
+        "bytes": 30592,
+        "sha256": "3e8daf6fe10e62ee9e69c61aa5fc84b8ba59b9b19e05784fd419f07f38c5e5bf"
+      },
+      {
+        "path": "/home/kxj/zte_ws/edge-smart-home-ai/evaluation/20261113-w16-pronunciation-run/listening/audio/review-008-Y.wav",
+        "bytes": 30592,
+        "sha256": "3e8daf6fe10e62ee9e69c61aa5fc84b8ba59b9b19e05784fd419f07f38c5e5bf"
+      },
+      {
+        "path": "/home/kxj/zte_ws/edge-smart-home-ai/evaluation/20261113-w16-pronunciation-run/listening/audio/review-009-X.wav",
+        "bytes": 27902,
+        "sha256": "2a8ca94d07b443da83a738e637d6e89c5f16f5ae4f3f153f27df1034dff1dbe1"
+      },
+      {
+        "path": "/home/kxj/zte_ws/edge-smart-home-ai/evaluation/20261113-w16-pronunciation-run/listening/audio/review-009-Y.wav",
+        "bytes": 27902,
+        "sha256": "2a8ca94d07b443da83a738e637d6e89c5f16f5ae4f3f153f27df1034dff1dbe1"
+      },
+      {
+        "path": "/home/kxj/zte_ws/edge-smart-home-ai/evaluation/20261113-w16-pronunciation-run/listening/audio/review-010-X.wav",
+        "bytes": 46750,
+        "sha256": "d8f02d85d4ec541b47bdeeba8cbe1595938463c03b83d81cf58b5e9879658797"
+      },
+      {
+        "path": "/home/kxj/zte_ws/edge-smart-home-ai/evaluation/20261113-w16-pronunciation-run/listening/audio/review-010-Y.wav",
+        "bytes": 46750,
+        "sha256": "d8f02d85d4ec541b47bdeeba8cbe1595938463c03b83d81cf58b5e9879658797"
+      },
+      {
+        "path": "/home/kxj/zte_ws/edge-smart-home-ai/evaluation/20261113-w16-pronunciation-run/listening/audio/review-011-X.wav",
+        "bytes": 12804,
+        "sha256": "7436aec3ed4434146290e71900c0b6b6339daaf6a11eab4c59bb8f8f9383e619"
+      },
+      {
+        "path": "/home/kxj/zte_ws/edge-smart-home-ai/evaluation/20261113-w16-pronunciation-run/listening/audio/review-011-Y.wav",
+        "bytes": 11994,
+        "sha256": "d18b74cada21e9b07785599e71c3a7a7659199c4d7c8e939c9ec0b9f2fd1eda9"
+      },
+      {
+        "path": "/home/kxj/zte_ws/edge-smart-home-ai/evaluation/20261113-w16-pronunciation-run/listening/audio/review-012-X.wav",
+        "bytes": 10042,
+        "sha256": "72ec54f24c5054645a30b0f1cd933347454d11c74de86b80593942f24cc3261f"
+      },
+      {
+        "path": "/home/kxj/zte_ws/edge-smart-home-ai/evaluation/20261113-w16-pronunciation-run/listening/audio/review-012-Y.wav",
+        "bytes": 10042,
+        "sha256": "72ec54f24c5054645a30b0f1cd933347454d11c74de86b80593942f24cc3261f"
+      },
+      {
+        "path": "/home/kxj/zte_ws/edge-smart-home-ai/evaluation/20261113-w16-pronunciation-run/listening/audio/review-013-X.wav",
+        "bytes": 9928,
+        "sha256": "49f8d421c52835674dc2c44c38208a8ba07e1681787aedc3ef7e955275b67ac3"
+      },
+      {
+        "path": "/home/kxj/zte_ws/edge-smart-home-ai/evaluation/20261113-w16-pronunciation-run/listening/audio/review-013-Y.wav",
+        "bytes": 10348,
+        "sha256": "2f67127d75f8295fb03b71ea90653734367ba3002d5039d419eac34adfbed300"
+      },
+      {
+        "path": "/home/kxj/zte_ws/edge-smart-home-ai/evaluation/20261113-w16-pronunciation-run/listening/audio/review-014-X.wav",
+        "bytes": 10864,
+        "sha256": "862ebdd31e72a589047de9abf9fe935861ffebacda00969bf1ad9d1587c1a5a4"
+      },
+      {
+        "path": "/home/kxj/zte_ws/edge-smart-home-ai/evaluation/20261113-w16-pronunciation-run/listening/audio/review-014-Y.wav",
+        "bytes": 10864,
+        "sha256": "862ebdd31e72a589047de9abf9fe935861ffebacda00969bf1ad9d1587c1a5a4"
+      },
+      {
+        "path": "/home/kxj/zte_ws/edge-smart-home-ai/evaluation/20261113-w16-pronunciation-run/listening/audio/review-015-X.wav",
+        "bytes": 10424,
+        "sha256": "52aa0b496330d7f2effd9452bde315755eeda88f2e6d5a867c2f4081e5a01861"
+      },
+      {
+        "path": "/home/kxj/zte_ws/edge-smart-home-ai/evaluation/20261113-w16-pronunciation-run/listening/audio/review-015-Y.wav",
+        "bytes": 10008,
+        "sha256": "8897a82565d1769364864802e30f01576a6c246f0ebb4c2dff7c3694d8199cc7"
+      },
+      {
+        "path": "/home/kxj/zte_ws/edge-smart-home-ai/evaluation/20261113-w16-pronunciation-run/listening/audio/review-016-X.wav",
+        "bytes": 9498,
+        "sha256": "9047393bdf530932c00ab8bbd379f6128cfd2ecf15edfa7a48a2875155291c7e"
+      },
+      {
+        "path": "/home/kxj/zte_ws/edge-smart-home-ai/evaluation/20261113-w16-pronunciation-run/listening/audio/review-016-Y.wav",
+        "bytes": 9498,
+        "sha256": "9047393bdf530932c00ab8bbd379f6128cfd2ecf15edfa7a48a2875155291c7e"
+      },
+      {
+        "path": "/home/kxj/zte_ws/edge-smart-home-ai/evaluation/20261113-w16-pronunciation-run/listening/audio/review-017-X.wav",
+        "bytes": 13408,
+        "sha256": "2e288597a1e8e73b6971da5ac66e7f83c0e43c945307e5fa5b37960cbfbce17f"
+      },
+      {
+        "path": "/home/kxj/zte_ws/edge-smart-home-ai/evaluation/20261113-w16-pronunciation-run/listening/audio/review-017-Y.wav",
+        "bytes": 13408,
+        "sha256": "2e288597a1e8e73b6971da5ac66e7f83c0e43c945307e5fa5b37960cbfbce17f"
+      },
+      {
+        "path": "/home/kxj/zte_ws/edge-smart-home-ai/evaluation/20261113-w16-pronunciation-run/listening/audio/review-018-X.wav",
+        "bytes": 12318,
+        "sha256": "2e06253c36ce4233e3bc4ba3c88f0b3b4318a043d23cef0f08e1b6c1f77f4613"
+      },
+      {
+        "path": "/home/kxj/zte_ws/edge-smart-home-ai/evaluation/20261113-w16-pronunciation-run/listening/audio/review-018-Y.wav",
+        "bytes": 12318,
+        "sha256": "2e06253c36ce4233e3bc4ba3c88f0b3b4318a043d23cef0f08e1b6c1f77f4613"
+      },
+      {
+        "path": "/home/kxj/zte_ws/edge-smart-home-ai/evaluation/20261113-w16-pronunciation-run/listening/listen.html",
+        "bytes": 4480,
+        "sha256": "5709b39eff5acf54abc0f4cf238396c78f782408738aa0b4562008c309342d2d"
+      },
+      {
+        "path": "/home/kxj/zte_ws/edge-smart-home-ai/evaluation/20261113-w16-pronunciation-run/listening/mapping-key.json",
+        "bytes": 23539,
+        "sha256": "28adb02abdf516099fb3c239bc1a2f2df9ce04ec7f7ad05217fd6d3b3748ba7b"
+      },
+      {
+        "path": "/home/kxj/zte_ws/edge-smart-home-ai/evaluation/20261113-w16-pronunciation-run/listening/ratings.csv",
+        "bytes": 2606,
+        "sha256": "f2a0859f1a5e991c5a2822c80366e01d12cd9910a25d22e15130fbe3363392f9"
+      }
+    ],
+    "ratings_rows": 36,
+    "audio_copied": 36,
+    "human_listening_accepted": false,
+    "autoplay": false
+  },
+  "human_review": {
+    "status": "pending",
+    "submitted_ratings": 0,
+    "reviewer": null,
+    "reviewed_at": null,
+    "perceived_pronunciation_scores": null,
+    "instruction": "Copy ratings.csv to a new review directory outside the immutable run; retain source run and ratings identities."
+  },
+  "validation": {
+    "top_raw_artifacts": 247,
+    "records": 36,
+    "worker_records": 36,
+    "reference_text_controls": 10,
+    "coordinator_ledger_events": 92,
+    "worker_ledger_events_total": 72,
+    "independent_formal_audit": {
+      "path": "evaluation/20261113-w16-pronunciation-review/formal-run-audit.json",
+      "bytes": 15995,
+      "sha256": "c61c213c6aacbe6ae4bd0f8705e7b1a62e866b048c5ad7852dee01d8f3f2f61d"
+    },
+    "independent_integrity_audit": {
+      "path": "evaluation/20261113-w16-pronunciation-review/formal-integrity-review.json",
+      "bytes": 10358,
+      "sha256": "e84f20c37e441973d7a3135af34f25effb3f55281b44079f2443051bfb733ca4"
+    },
+    "readonly_summary_and_report_byte_identical": true,
+    "negative_cli_cases": 4,
+    "negative_helper_cases": 1,
+    "negative_preserved_files": 253,
+    "extra_generation_asr_copies_or_controls_for_checks": 0,
+    "actual_text_fallback_cli_cases": 3,
+    "worker_model_loads": 2,
+    "asr_model_loads": 1,
+    "new_tts_generations": 36,
+    "new_asr_observations": 36,
+    "microphone_playback_ha_physical_calls": 0
+  },
+  "limitations": [
+    "New controlled zero-noise development material; original W16 failed scores/first WAVs remain unchanged.",
+    "Native words are captured, phones reconstructed through the frozen original lexicon are derived, not a captured TTS input tensor.",
+    "A phone oracle match, generated waveform or ASR transcript is not a human acoustic pronunciation/intelligibility verdict.",
+    "Probe words never execute Mock; all household devices/readbacks are Mock, not HA or physical completion.",
+    "Full 36-slot listening packet has no autoplay or completed human ratings; no output selection or retries.",
+    "B still has two unmatched 调到 focal readings; no default FAR/noise promotion.",
+    "Home normal semantics A1/5, B2/5, overall A3/10, B4/10; all are Mock development results.",
+    "Same ASR is not a phonetic judge: first 空调 probe A transcript控烟网, B empty despite corrected derived phones.",
+    "Human household recordings and listening/understanding pending; ASR weight license remains unknown.",
+    "No live capture/overflow or actual acoustic delay/HA/physical/ARM acceptance; old RTF does not close those gates."
+  ]
+}

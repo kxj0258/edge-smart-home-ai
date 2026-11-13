@@ -54,6 +54,12 @@
 
 [修复诊断结果](docs/stages/E0-w16-repair-results.md) · [预登记/复现](docs/W16_REPAIR.md) · [60条表](docs/voice_evidence/20261113-w16-repair-cases.csv) · [7组摘要](docs/voice_evidence/20261113-w16-repair-summary.csv) · [机器结果](baselines/20261113-w16-repair-v1.json) · [新证据索引](docs/voice_evidence/20261113-w16-repair-results.json)。W16-P0-1继续进行中；不重合成挑样，真人家庭材料、权重许可、个人理解与现场overflow等仍待验。
 
+## W16续修：中文前端与生成声音
+
+独立18条原创材料先冻结，A/B仅改变官方FAR开关，两组共同零噪声。36次真实TTS＋36次ASR完整保存；实际native分词＋词典推导焦点匹配6/15→13/15，剩两处“调到”未覆盖，家庭语义3/10→4/10仍不通过候选。已生成全36槽待人工听辨包，音素推导/波形/ASR/人耳结论分开；不以新受控域改善覆盖旧默认噪声失败。603单测/网络0，483旧工件未变，文本备用保留。
+
+[专项结果](docs/stages/E0-w16-pronunciation-results.md) · [方案/复现](docs/W16_PRONUNCIATION.md) · [36条结果](docs/voice_evidence/20261113-w16-pronunciation-cases.csv) · [30焦点](docs/voice_evidence/20261113-w16-pronunciation-focals.csv) · [机器结果](baselines/20261113-w16-pronunciation-v1.json) · [证据索引](docs/voice_evidence/20261113-w16-pronunciation-results.json)。产品默认FAR/noise参数保持，人耳、真人家庭材料及个人理解继续待验，不启动W17。
+
 ## 2026-09-09 增量负载诊断与队列修复
 
 已新增五阶段音频负载诊断入口、固定口令协议和 JSON/CSV 对比，
