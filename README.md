@@ -48,6 +48,12 @@
 
 [W16结果](docs/stages/E0-w16-results.md) · [复现/安全文本入口](docs/W16_VOICE_HOME.md) · [10条结果表](docs/voice_evidence/20261113-w16-cases.csv) · [材料/许可](configs/w16-material-source-v1.json) · [机器候选基线](baselines/20261113-w16-voice-home-v0.json) · [证据索引](docs/voice_evidence/20261113-w16-results.json)。P0-1继续进行中；合法真人家庭录音、ASR权重许可、现场E2E/overflow、真实HA/实物与个人理解待补，不以旧RTF或Mock证明实机通过。
 
+## W16后续：预登记单因素修复诊断
+
+复用首次波形/模型/标签完成A/Q/R/T/C共50条家庭链路观测与W14已有新闻16k/8k共10条ASR诊断。A完整复现首轮，量化/分块未改善总字符错误，外部重采样42→40字符错误但正常控制仍0/5，全部候选未通过，保留原配置。新闻配对10→11/144只支持这5段窄带接入大体可识别，不能唯一归因TTS或验收家庭真人。已修复错误记录漏存error_stage，549单测/网络0；独立审计与只读报告复算通过，原失败数据不改。
+
+[修复诊断结果](docs/stages/E0-w16-repair-results.md) · [预登记/复现](docs/W16_REPAIR.md) · [60条表](docs/voice_evidence/20261113-w16-repair-cases.csv) · [7组摘要](docs/voice_evidence/20261113-w16-repair-summary.csv) · [机器结果](baselines/20261113-w16-repair-v1.json) · [新证据索引](docs/voice_evidence/20261113-w16-repair-results.json)。W16-P0-1继续进行中；不重合成挑样，真人家庭材料、权重许可、个人理解与现场overflow等仍待验。
+
 ## 2026-09-09 增量负载诊断与队列修复
 
 已新增五阶段音频负载诊断入口、固定口令协议和 JSON/CSV 对比，

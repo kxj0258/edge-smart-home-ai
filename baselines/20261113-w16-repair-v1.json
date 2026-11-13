@@ -1,0 +1,720 @@
+{
+  "schema_version": 1,
+  "kind": "w16_repair_fixed_waveform_single_factor_development_results",
+  "created_at": "2026-11-13T03:02:56.526244+00:00",
+  "local_work_date": "2026-11-13",
+  "timezone": "Asia/Shanghai",
+  "engineering_evidence_passed": true,
+  "audio_control_acceptance_passed": false,
+  "automatic_product_promotion": false,
+  "human_home_recording_accepted": false,
+  "personal_understanding_accepted": false,
+  "asr_weight_license_verified": false,
+  "overflow_resolution_accepted": false,
+  "real_ha_accepted": false,
+  "physical_completion_accepted": false,
+  "audible_feedback_accepted": false,
+  "arm_hardware_accepted": false,
+  "request_id_idempotency_implemented": false,
+  "root_preregistration_commit": "5296c46478d1c2e288bad54b0bfe0a8391cade7a",
+  "runtime_source_commit": "d6f11d6a81611b3b325d9eb19efba39bc93e2a41",
+  "original_child_archive_commit": "159364adbb4ab7e9d35f7af26b3bd9edfd3d201d",
+  "protocol": {
+    "path": "evaluation/20261113-w16-fix-run/protocol.json",
+    "bytes": 301381,
+    "sha256": "ff22142de558d2f2d3d6fdeceee6f164488d385071e016ecc1340cb9f80bf49f"
+  },
+  "dependencies": {
+    "python": "3.10.21",
+    "executable": "/home/kxj/miniforge3/envs/edge_ai/bin/python3.10",
+    "platform": "Linux-6.8.0-138-generic-x86_64-with-glibc2.35",
+    "packages": {
+      "numpy": "2.2.6",
+      "sherpa-onnx": "1.13.6",
+      "sherpa-onnx-core": "1.13.6",
+      "sounddevice": "0.5.6"
+    },
+    "sherpa_onnx_python_version": "1.13.6",
+    "embedded_onnxruntime_version": "1.27.1",
+    "sherpa_native_binaries": [
+      {
+        "path": "/home/kxj/miniforge3/envs/edge_ai/lib/python3.10/site-packages/sherpa_onnx/lib/_sherpa_onnx.cpython-310-x86_64-linux-gnu.so",
+        "bytes": 6200177,
+        "sha256": "4f5af873b2e4ed39d230f329e2dcb972401a0aea4f345f271039806b9e1f1452"
+      },
+      {
+        "path": "/home/kxj/miniforge3/envs/edge_ai/lib/python3.10/site-packages/sherpa_onnx/lib/libonnxruntime.so",
+        "bytes": 26407985,
+        "sha256": "c85f471e1bd5059a4556038f7f5288fa41141647613688452ae7de4879150903"
+      },
+      {
+        "path": "/home/kxj/miniforge3/envs/edge_ai/lib/python3.10/site-packages/sherpa_onnx/lib/libsherpa-onnx-c-api.so",
+        "bytes": 5101472,
+        "sha256": "e25a6cb94d0b56a1f17c0f66b07e573599d351db690eea1e8d0ae90fcb6ea0f7"
+      },
+      {
+        "path": "/home/kxj/miniforge3/envs/edge_ai/lib/python3.10/site-packages/sherpa_onnx/lib/libsherpa-onnx-cxx-api.so",
+        "bytes": 261792,
+        "sha256": "84f46a17f8bd144b2243b5121c7b582373ba4b34a0cf001ff30e26ed792ceb29"
+      }
+    ],
+    "bundled_platform_libraries": [
+      {
+        "path": "/home/kxj/miniforge3/envs/edge_ai/lib/python3.10/site-packages/sherpa_onnx.libs/libasound-fb5348bf.so.2.0.0",
+        "bytes": 5509193,
+        "sha256": "887ee61e5644956d5f29121ebee8af1b58904ae7a2cb0388fd497f8fc2303914"
+      }
+    ]
+  },
+  "frozen_source_files": 180,
+  "frozen_input_files": 90,
+  "tests": {
+    "full_unit": 549,
+    "new_vs_original_w16": 38,
+    "preparation_fake": 19,
+    "repair_harness_fake": 18,
+    "original_evaluator_stage_regression": 1,
+    "network_attempts": 0,
+    "root_plan": 10,
+    "combined_tested_and_preformal_review_source_files": 182,
+    "original_test_source_witness_count": 178,
+    "newly_untracked_files_added_from_preformal_review": 4
+  },
+  "measurement": {
+    "schema_version": 1,
+    "kind": "w16_repair_one_factor_results",
+    "engineering_evidence_passed": true,
+    "passed": true,
+    "engineering_gates": {
+      "exact_job_order_count": true,
+      "all_audio_and_asr_attempts_complete": true,
+      "independent_reference_controls_complete": true,
+      "returned_state_matches_readback": true,
+      "zero_network_attempts": true,
+      "no_global_failure": true,
+      "inputs_unchanged": true
+    },
+    "runtime_source_commit": "d6f11d6a81611b3b325d9eb19efba39bc93e2a41",
+    "execution_kind": "native_asr",
+    "by_arm": {
+      "A": {
+        "observations": 10,
+        "completed": 10,
+        "speech_scored": 9,
+        "speech_exact": 0,
+        "character_edits": 42,
+        "reference_characters": 73,
+        "cer": 0.5753424657534246,
+        "home_semantics_passed": 1,
+        "normal_semantics_passed": 0,
+        "abnormal_semantics_passed": 1,
+        "abnormal_state_preserved": 5,
+        "primary_mock_execute_attempts": 0,
+        "error_counts": {
+          "intent:ROUTE_UNSUPPORTED": 6,
+          "semantic:AUDIO_TO_STATE_ORACLE_MISMATCH": 9,
+          "transcript:ASR_TRANSCRIPT_MISMATCH": 9,
+          "request:REQUEST_TARGET_AMBIGUOUS": 1,
+          "request:UNKNOWN_DEVICE": 2,
+          "asr_output:ASR_EMPTY_TRANSCRIPT": 1
+        },
+        "latency_ms": {
+          "pcm_read_convert_wall_ms": {
+            "n": 10,
+            "p50": 0.29445800464600325,
+            "p95": 0.4705679071776103
+          },
+          "asr_replay_wall_ms": {
+            "n": 10,
+            "p50": 344.8277625066112,
+            "p95": 684.497836704395
+          },
+          "decode_only_ms": {
+            "n": 10,
+            "p50": 320.4780664964346,
+            "p95": 638.1274251107243
+          },
+          "voice_control_feedback_wall_ms": {
+            "n": 10,
+            "p50": 0.5218684964347631,
+            "p95": 1.0326652998628556
+          },
+          "explicit_final_readback_wall_ms": {
+            "n": 10,
+            "p50": 0.2078019970213063,
+            "p95": 0.26488099538255483
+          },
+          "console_feedback_capture_wall_ms": {
+            "n": 10,
+            "p50": 0.0012524978956207633,
+            "p95": 0.0034172531741205577
+          },
+          "file_audio_to_readback_wall_ms": {
+            "n": 10,
+            "p50": 345.9032445025514,
+            "p95": 685.6806871583103
+          }
+        }
+      },
+      "Q": {
+        "observations": 10,
+        "completed": 10,
+        "speech_scored": 9,
+        "speech_exact": 0,
+        "character_edits": 42,
+        "reference_characters": 73,
+        "cer": 0.5753424657534246,
+        "home_semantics_passed": 1,
+        "normal_semantics_passed": 0,
+        "abnormal_semantics_passed": 1,
+        "abnormal_state_preserved": 5,
+        "primary_mock_execute_attempts": 0,
+        "error_counts": {
+          "intent:ROUTE_UNSUPPORTED": 5,
+          "semantic:AUDIO_TO_STATE_ORACLE_MISMATCH": 9,
+          "transcript:ASR_TRANSCRIPT_MISMATCH": 9,
+          "request:REQUEST_TARGET_AMBIGUOUS": 2,
+          "request:UNKNOWN_DEVICE": 2,
+          "asr_output:ASR_EMPTY_TRANSCRIPT": 1
+        },
+        "latency_ms": {
+          "pcm_read_convert_wall_ms": {
+            "n": 10,
+            "p50": 0.2819139917846769,
+            "p95": 0.46366305396077223
+          },
+          "asr_replay_wall_ms": {
+            "n": 10,
+            "p50": 353.29716950218426,
+            "p95": 697.6215785427485
+          },
+          "decode_only_ms": {
+            "n": 10,
+            "p50": 328.54244499321794,
+            "p95": 651.9959320190537
+          },
+          "voice_control_feedback_wall_ms": {
+            "n": 10,
+            "p50": 0.49863850290421396,
+            "p95": 0.7659961011086124
+          },
+          "explicit_final_readback_wall_ms": {
+            "n": 10,
+            "p50": 0.17915249918587506,
+            "p95": 0.260867959150346
+          },
+          "console_feedback_capture_wall_ms": {
+            "n": 10,
+            "p50": 0.0011070005712099373,
+            "p95": 0.0016095014871098101
+          },
+          "file_audio_to_readback_wall_ms": {
+            "n": 10,
+            "p50": 354.5552650030004,
+            "p95": 698.4217233984964
+          }
+        }
+      },
+      "R": {
+        "observations": 10,
+        "completed": 10,
+        "speech_scored": 9,
+        "speech_exact": 0,
+        "character_edits": 40,
+        "reference_characters": 73,
+        "cer": 0.547945205479452,
+        "home_semantics_passed": 1,
+        "normal_semantics_passed": 0,
+        "abnormal_semantics_passed": 1,
+        "abnormal_state_preserved": 5,
+        "primary_mock_execute_attempts": 0,
+        "error_counts": {
+          "intent:ROUTE_UNSUPPORTED": 5,
+          "semantic:AUDIO_TO_STATE_ORACLE_MISMATCH": 9,
+          "transcript:ASR_TRANSCRIPT_MISMATCH": 9,
+          "request:REQUEST_TARGET_AMBIGUOUS": 2,
+          "request:UNKNOWN_DEVICE": 2,
+          "asr_output:ASR_EMPTY_TRANSCRIPT": 1
+        },
+        "latency_ms": {
+          "pcm_read_convert_wall_ms": {
+            "n": 10,
+            "p50": 0.2937165045295842,
+            "p95": 0.566634647839237
+          },
+          "asr_replay_wall_ms": {
+            "n": 10,
+            "p50": 355.02097699645674,
+            "p95": 705.537569498847
+          },
+          "decode_only_ms": {
+            "n": 10,
+            "p50": 329.9851505071274,
+            "p95": 658.9679191223695
+          },
+          "voice_control_feedback_wall_ms": {
+            "n": 10,
+            "p50": 0.49970499821938574,
+            "p95": 0.9138685942161826
+          },
+          "explicit_final_readback_wall_ms": {
+            "n": 10,
+            "p50": 0.19385549967410043,
+            "p95": 0.2673345486982725
+          },
+          "console_feedback_capture_wall_ms": {
+            "n": 10,
+            "p50": 0.0008159986464306712,
+            "p95": 0.0019355466065462674
+          },
+          "file_audio_to_readback_wall_ms": {
+            "n": 10,
+            "p50": 356.31141949852463,
+            "p95": 706.568235350278
+          }
+        }
+      },
+      "T": {
+        "observations": 10,
+        "completed": 10,
+        "speech_scored": 9,
+        "speech_exact": 0,
+        "character_edits": 43,
+        "reference_characters": 73,
+        "cer": 0.589041095890411,
+        "home_semantics_passed": 1,
+        "normal_semantics_passed": 0,
+        "abnormal_semantics_passed": 1,
+        "abnormal_state_preserved": 5,
+        "primary_mock_execute_attempts": 0,
+        "error_counts": {
+          "intent:ROUTE_UNSUPPORTED": 6,
+          "semantic:AUDIO_TO_STATE_ORACLE_MISMATCH": 9,
+          "transcript:ASR_TRANSCRIPT_MISMATCH": 9,
+          "request:REQUEST_TARGET_AMBIGUOUS": 1,
+          "request:UNKNOWN_DEVICE": 2,
+          "asr_output:ASR_EMPTY_TRANSCRIPT": 1
+        },
+        "latency_ms": {
+          "pcm_read_convert_wall_ms": {
+            "n": 10,
+            "p50": 0.2605829940875992,
+            "p95": 0.44151279726065684
+          },
+          "asr_replay_wall_ms": {
+            "n": 10,
+            "p50": 389.01393049309263,
+            "p95": 749.1683948450371
+          },
+          "decode_only_ms": {
+            "n": 10,
+            "p50": 363.31937601062236,
+            "p95": 701.6324896001605
+          },
+          "voice_control_feedback_wall_ms": {
+            "n": 10,
+            "p50": 0.4906229951302521,
+            "p95": 0.6443489968660286
+          },
+          "explicit_final_readback_wall_ms": {
+            "n": 10,
+            "p50": 0.16535099712200463,
+            "p95": 0.23198994604172185
+          },
+          "console_feedback_capture_wall_ms": {
+            "n": 10,
+            "p50": 0.0007010021363385022,
+            "p95": 0.0009899995347950605
+          },
+          "file_audio_to_readback_wall_ms": {
+            "n": 10,
+            "p50": 390.1931604996207,
+            "p95": 749.9295034984242
+          }
+        }
+      },
+      "C": {
+        "observations": 10,
+        "completed": 10,
+        "speech_scored": 9,
+        "speech_exact": 0,
+        "character_edits": 42,
+        "reference_characters": 73,
+        "cer": 0.5753424657534246,
+        "home_semantics_passed": 1,
+        "normal_semantics_passed": 0,
+        "abnormal_semantics_passed": 1,
+        "abnormal_state_preserved": 5,
+        "primary_mock_execute_attempts": 0,
+        "error_counts": {
+          "intent:ROUTE_UNSUPPORTED": 6,
+          "semantic:AUDIO_TO_STATE_ORACLE_MISMATCH": 9,
+          "transcript:ASR_TRANSCRIPT_MISMATCH": 9,
+          "request:REQUEST_TARGET_AMBIGUOUS": 1,
+          "request:UNKNOWN_DEVICE": 2,
+          "asr_output:ASR_EMPTY_TRANSCRIPT": 1
+        },
+        "latency_ms": {
+          "pcm_read_convert_wall_ms": {
+            "n": 10,
+            "p50": 0.2643899933900684,
+            "p95": 0.3766883542994036
+          },
+          "asr_replay_wall_ms": {
+            "n": 10,
+            "p50": 350.93951749877306,
+            "p95": 700.9350074462418
+          },
+          "decode_only_ms": {
+            "n": 10,
+            "p50": 326.7992220062297,
+            "p95": 655.5647698543908
+          },
+          "voice_control_feedback_wall_ms": {
+            "n": 10,
+            "p50": 0.5026154976803809,
+            "p95": 0.582126443623565
+          },
+          "explicit_final_readback_wall_ms": {
+            "n": 10,
+            "p50": 0.16160899394890293,
+            "p95": 0.2227497454441618
+          },
+          "console_feedback_capture_wall_ms": {
+            "n": 10,
+            "p50": 0.0008065035217441618,
+            "p95": 0.0012524942576419562
+          },
+          "file_audio_to_readback_wall_ms": {
+            "n": 10,
+            "p50": 351.9503550051013,
+            "p95": 701.933629096311
+          }
+        }
+      },
+      "H16": {
+        "observations": 5,
+        "completed": 5,
+        "speech_scored": 5,
+        "speech_exact": 0,
+        "character_edits": 10,
+        "reference_characters": 144,
+        "cer": 0.06944444444444445,
+        "home_semantics_passed": 0,
+        "normal_semantics_passed": 0,
+        "abnormal_semantics_passed": 0,
+        "abnormal_state_preserved": 0,
+        "primary_mock_execute_attempts": 0,
+        "error_counts": {
+          "transcript:ASR_TRANSCRIPT_MISMATCH": 5
+        },
+        "latency_ms": {
+          "pcm_read_convert_wall_ms": {
+            "n": 5,
+            "p50": 0.7481200009351596,
+            "p95": 0.987029800307937
+          },
+          "asr_replay_wall_ms": {
+            "n": 5,
+            "p50": 2177.942850990803,
+            "p95": 3917.6033925963566
+          },
+          "decode_only_ms": {
+            "n": 5,
+            "p50": 2042.0066490332829,
+            "p95": 3674.9602041760227
+          },
+          "voice_control_feedback_wall_ms": {
+            "n": 0,
+            "p50": null,
+            "p95": null
+          },
+          "explicit_final_readback_wall_ms": {
+            "n": 0,
+            "p50": null,
+            "p95": null
+          },
+          "console_feedback_capture_wall_ms": {
+            "n": 0,
+            "p50": null,
+            "p95": null
+          },
+          "file_audio_to_readback_wall_ms": {
+            "n": 5,
+            "p50": 2179.0197399968747,
+            "p95": 3918.8325022085337
+          }
+        }
+      },
+      "H8": {
+        "observations": 5,
+        "completed": 5,
+        "speech_scored": 5,
+        "speech_exact": 0,
+        "character_edits": 11,
+        "reference_characters": 144,
+        "cer": 0.0763888888888889,
+        "home_semantics_passed": 0,
+        "normal_semantics_passed": 0,
+        "abnormal_semantics_passed": 0,
+        "abnormal_state_preserved": 0,
+        "primary_mock_execute_attempts": 0,
+        "error_counts": {
+          "transcript:ASR_TRANSCRIPT_MISMATCH": 5
+        },
+        "latency_ms": {
+          "pcm_read_convert_wall_ms": {
+            "n": 5,
+            "p50": 0.3488169895717874,
+            "p95": 0.7051647990010679
+          },
+          "asr_replay_wall_ms": {
+            "n": 5,
+            "p50": 2148.811287988792,
+            "p95": 3918.6623008019524
+          },
+          "decode_only_ms": {
+            "n": 5,
+            "p50": 2017.402906989446,
+            "p95": 3681.562377011869
+          },
+          "voice_control_feedback_wall_ms": {
+            "n": 0,
+            "p50": null,
+            "p95": null
+          },
+          "explicit_final_readback_wall_ms": {
+            "n": 0,
+            "p50": null,
+            "p95": null
+          },
+          "console_feedback_capture_wall_ms": {
+            "n": 0,
+            "p50": null,
+            "p95": null
+          },
+          "file_audio_to_readback_wall_ms": {
+            "n": 5,
+            "p50": 2149.559447003412,
+            "p95": 3919.6402305940865
+          }
+        }
+      }
+    },
+    "contrasts": {
+      "Q-A": {
+        "character_edit_delta": 0,
+        "cer_delta": 0.0,
+        "speech_exact_delta": 0,
+        "changed_transcripts": 1
+      },
+      "R-A": {
+        "character_edit_delta": -2,
+        "cer_delta": -0.0273972602739726,
+        "speech_exact_delta": 0,
+        "changed_transcripts": 3
+      },
+      "T-A": {
+        "character_edit_delta": 1,
+        "cer_delta": 0.013698630136986356,
+        "speech_exact_delta": 0,
+        "changed_transcripts": 2
+      },
+      "C-A": {
+        "character_edit_delta": 0,
+        "cer_delta": 0.0,
+        "speech_exact_delta": 0,
+        "changed_transcripts": 0
+      },
+      "H8-H16": {
+        "character_edit_delta": 1,
+        "cer_delta": 0.0069444444444444475,
+        "speech_exact_delta": 0,
+        "changed_transcripts": 2
+      }
+    },
+    "development_semantic_gate": {
+      "A": false,
+      "Q": false,
+      "R": false,
+      "T": false,
+      "C": false
+    },
+    "asr_edit_reduction_vs_A": {
+      "Q": false,
+      "R": true,
+      "T": false,
+      "C": false
+    },
+    "automatic_product_promotion": false,
+    "human_home_accepted": false,
+    "personal_understanding_accepted": false,
+    "asr_weight_license_verified": false,
+    "live_e2e_ms": null,
+    "overflow_resolution_accepted": false,
+    "real_ha_accepted": false,
+    "audible_feedback_accepted": false,
+    "retries": 0,
+    "warmups": 0,
+    "asr_attempts": 60,
+    "independent_text_oracle_matches": 9,
+    "model_loads": [
+      {
+        "arm": "A",
+        "wall_ms": 4557.983781996882,
+        "error": null
+      },
+      {
+        "arm": "Q",
+        "wall_ms": 4039.304411999183,
+        "error": null
+      },
+      {
+        "arm": "R",
+        "wall_ms": 4091.2073880026583,
+        "error": null
+      },
+      {
+        "arm": "T",
+        "wall_ms": 4029.288114994415,
+        "error": null
+      },
+      {
+        "arm": "C",
+        "wall_ms": 4032.851297990419,
+        "error": null
+      },
+      {
+        "arm": "H16",
+        "wall_ms": 3938.5616979998304,
+        "error": null
+      },
+      {
+        "arm": "H8",
+        "wall_ms": 4105.699032996199,
+        "error": null
+      }
+    ],
+    "network_attempts": 0,
+    "latency_policy": "Offline different clips once; descriptive percentiles, no performance ranking. Nested decode/console timings cannot be added; model/fixture/reference excluded. PCM-named IO includes NPY load/validation for derived arms.",
+    "limitations": [
+      "Original W16 42/73 and combined-style 43/73 failures remain unchanged.",
+      "All home inputs reuse first synthetic WAV/float; no regenerated TTS or label repair.",
+      "R changes the resampler path only and cannot restore missing >4kHz information.",
+      "H16/H8 are licensed public news, not human household commands or semantic controls.",
+      "Every contrast changes one declared factor relative to shared A; no repeated output-driven search.",
+      "Native ASR text, existing Voice/Mock state and independent reference controls remain distinct."
+    ]
+  },
+  "unique_home_material": {
+    "synthetic_speech": 9,
+    "synthetic_signal": 1,
+    "consented_human_household": 0,
+    "first_tts_generation_only": true,
+    "new_tts_generations": 0
+  },
+  "public_news_diagnostic": {
+    "existing_licensed_unique_w14_clips": 5,
+    "source_kind": "human_public_news",
+    "license": "CC-BY-4.0",
+    "new_home_human_recordings": 0,
+    "state_or_semantics_evaluated": false,
+    "note": "H8 is bandlimited derived PCM data, not new speech. News summary numeric semantic counters are not applicable; only ASR measured."
+  },
+  "original_failures_preserved": {
+    "primary_speech_exact": [
+      0,
+      9
+    ],
+    "primary_cer": [
+      42,
+      73
+    ],
+    "combined_style_speech_exact": [
+      0,
+      9
+    ],
+    "combined_style_cer": [
+      43,
+      73
+    ],
+    "original_data_artifacts_hash_unchanged": 205,
+    "A_all_ten_transcripts_equal_original": true,
+    "guard": {
+      "path": "evaluation/20261113-w16-fix-executions/original-data-before.json",
+      "bytes": 42978,
+      "sha256": "ebcbaab97164c8d1876058c8568cfc82e18c6f42060cc149740fc7fbdc00ad27"
+    }
+  },
+  "source_audits": {
+    "tts_frontend": {
+      "path": "evaluation/20261113-w16-fix-sources/summary.json",
+      "bytes": 9260,
+      "sha256": "7d17d8f9ff626f95e8df23cb72f6b07da700d7a3cc50b6d516028c1cd0b0197f"
+    },
+    "native_feature_and_resampling": {
+      "path": "evaluation/20261113-w16-fix-resampling-sources/summary.json",
+      "bytes": 18718,
+      "sha256": "55a2ae1257a7f51e2b6a935de6e8cf6a75863d5cfc5a8ed3fb5a89a14f20ebd5"
+    },
+    "preformal_review": {
+      "path": "evaluation/20261113-w16-fix-review/preformal-review.json",
+      "bytes": 3779,
+      "sha256": "826687503bfc152e044a54614e1b5e6b6586c73ea16d88848789e25a555c4daa"
+    },
+    "formal_independent_audit": {
+      "path": "evaluation/20261113-w16-fix-review/formal-stdlib-audit.json",
+      "bytes": 5544,
+      "sha256": "7272e93a60e65d5a41ebbc39cecfe387485ac687cb525cfe0f07025f2980784b"
+    },
+    "derivation_recomputed_without_asr": {
+      "path": "evaluation/20261113-w16-fix-review/derived-array-recomputation.json",
+      "bytes": 6614,
+      "sha256": "44b612c8c2bdf8b7314204911917b73d423267f450d0897c10569a6401a9544c"
+    }
+  },
+  "diagnosis": {
+    "quantization": "Q changes one transcript, total edits unchanged; quantization has an observed discrete output effect, not a solution.",
+    "chunk_schedule": "C all ten transcripts identical to A for these clips.",
+    "tail_length": "T adds one edit; 0.66s does not remove these failures.",
+    "external_resampling": "R reduces two edits (2.74 percentage points) yet all normal controls remain failed; no product adoption. Upsampling adds no missing bandwidth.",
+    "narrowband_public_news": "H8 has one more edit (0.69 percentage points) than H16 on these five clips. Existing ASR can recognize these narrowband news clips largely correctly; not proof of universal 8k support or isolated TTS causality.",
+    "tts_frontend": "Static official lexicon marker/word grouping risk for 空调; ordinary single-character 调 has diao4 while marked whole-word entry has tiao2. Native frontend output/acoustic intelligibility not measured, no TTS generation and no claim to repair frozen speech.",
+    "feature_path": "Encoder metadata=whisper; native chooses Whisper feature/normalization. No manual fbank gain or feature-family change."
+  },
+  "validation": {
+    "raw_index_artifacts": 72,
+    "observations": 60,
+    "independent_text_references": 9,
+    "ledger_rows": 138,
+    "state_snapshots_independently_checked": 2500,
+    "readonly_report_and_summary_byte_identical": true,
+    "existing_output_negative_cases": 5,
+    "negative_preserved_files": 97,
+    "additional_asr_tts_derivations_or_control_calls_for_negative_checks": 0,
+    "actual_text_fallback_commands": 3,
+    "new_asr_calls": 60,
+    "new_tts_calls": 0,
+    "microphone_calls": 0,
+    "playback_calls": 0,
+    "ha_or_physical_device_calls": 0,
+    "primary_mock_execute_attempts": 0,
+    "primary_fixture_setup_actions": 5,
+    "reference_execute_attempts": 6,
+    "reference_successful_actions": 5,
+    "reference_offline_rejections": 1
+  },
+  "limitations": [
+    "Original W16 42/73 and combined-style 43/73 failures remain unchanged.",
+    "All home inputs reuse first synthetic WAV/float; no regenerated TTS or label repair.",
+    "R changes the resampler path only and cannot restore missing >4kHz information.",
+    "H16/H8 are licensed public news, not human household commands or semantic controls.",
+    "Every contrast changes one declared factor relative to shared A; no repeated output-driven search.",
+    "Native ASR text, existing Voice/Mock state and independent reference controls remain distinct.",
+    "All five home development gates fail; no arm or percase best selection is adopted.",
+    "TTS phonetic intelligibility, short household utterance context and general bandwidth effects remain unseparated.",
+    "Home-human consent/license materials and personal understanding remain pending.",
+    "ASR weights license remains UNKNOWN_NOT_VERIFIED, framework Apache-2.0 is not weight authorization.",
+    "No live microphone E2E/overflow, audible feedback, real HA/physical completion or ARM acceptance; old RTF cannot establish live fixes."
+  ]
+}
